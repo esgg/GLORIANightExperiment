@@ -24,7 +24,7 @@
 .image_carousel {
 	padding: 15px 0 15px 40px;
 	position: relative;
-	top:-75px;
+	top:75px;
 	left:50px;
 	width:800px;
 }
@@ -35,8 +35,20 @@
 	border-radius:50%;
 	border:1px solid white;
 	overflow:hidden;
-	margin-top:138px;
-	margin-left:450px;
+	margin-top:-628px;
+	margin-left:270px;
+}
+.main_img{
+	max-width:300%;
+	height:480px;
+	margin-top: 0px;
+	margin-left: 0px;
+/*		transition-property: margin-top, margin-left;
+    transition-duration: 5s;
+    transition-timing-function: ease-out;
+	-webkit-transition-duration:5s;
+	-moz-transition-duration:5s;
+	-o-transition-duration:5s;*/
 }
 
 /* Image carousel */

@@ -9,18 +9,18 @@
 	</div>
 	<div id="right_controls" ng-controller="MountDevice">
 		<div id="mount_target_parameters">
-			<span class="title">MOUNT</span>
+			<span class="title">{{'telexp.mount.title' | i18n}}</span>
 			<table>
 				<tr>
-					<td><span class="regular">RA:</span></td>
+					<td><span class="regular">{{'telexp.mount.ra' | i18n}}:</span></td>
 					<td><input id="coords_ra" class="input_text" ng-model="ra" size="6"></input></td>
 				</tr>
 				<tr>
-					<td><span class="regular">DEC:</span></td>
+					<td><span class="regular">{{'telexp.mount.dec' | i18n}}:</span></td>
 					<td><input id="coords_dec" class="input_text" ng-model="dec" size="6"></input></td>
 				</tr>
 				<tr>
-					<td><span class="regular">NAME: </span></td>
+					<td><span class="regular">{{'telexp.mount.object' | i18n}}: </span></td>
 					<td><input id="tags" class="input_text" ng-model="target_name" size="6"></input></td>
 				</tr>
 			</table>
@@ -31,17 +31,17 @@
 				<button class="button_style"  ng-click="go()" ><span class="button_text">GO</span></button>
 			</div>				
 		</div>
-		<div id="main_ccd_panel">
-				<span class="title">CCD</span><a id="ccd_alert" href="#"><span id="ccd_budge" class="badge badge-important" style="visibility:hidden">0</span></a>
-				<div id="main_ccd_parameters" ng-controller="CcdDevice">
+		<div id="main_ccd_panel" ng-controller="CcdDevice" ng-init="ccd_alarm=false">
+				<span class="title">CCD</span><span id="ccd_budge" class="badge badge-important" ng-show="ccd_alarm" ng-mouseleave="ccd_alarm=false">0</span>
+				<div id="main_ccd_parameters">
 					<div>
 						<table>
 							<tr>
-								<td><span class="regular">TIME:</span></td>
+								<td><span class="regular">{{'telexp.ccd.exposure_time' | i18n}}:</span></td>
 								<td><input id="exposure_time" class="input_text" size="6" ng-model="exposure_time"></td>
 							</tr>
 							<tr>
-								<td><span class="regular">FILTER:</span></td>
+								<td><span class="regular">{{'telexp.ccd.filter' | i18n}}:</span></td>
 								<td>
 									<select id="filter_selector" class="selector" ng-model="filter" ng-change="setFilter()">
 										<option ng-repeat="filter in filters_0">{{filter}}</option>
@@ -49,13 +49,13 @@
 								</td>
 							</tr>
 							<tr>
-								<td><span class="regular">BINNING:</span></td>
+								<td><span class="regular">{{'telexp.ccd.binning' | i18n}}:</span></td>
 								<td><select id="binning_selector" class="selector" ng-model="binning" ng-init="binning='1x1'"><option>1x1</option></select></td>
 							</tr>
 						</table>
 					</div>
-					<div align="center" class="status" ng-model="status_main_ccd" ng-init="status_main_ccd='READY'">
-						<span id="ccd_status" class="status_text">{{status_main_ccd}}</span>
+					<div align="center" class="status" ng-model="status_main_ccd" ng-init="status_main_ccd='telexp.ccd.status.ready'">
+						<span id="ccd_status" class="status_text">{{status_main_ccd | i18n}}</span>
 					</div>
 					<div id="main_ccd_buttons_panel" style="float:right;">
 						<button id="expose_0_button"class="button_style" ng-click="expose()"><span class="button_text">START</span></button>
@@ -64,9 +64,14 @@
 			</div>
 			
 	</div>
-	
+	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:250px;width:40px;top:-120px" ng-controller="CcdDevice" ng-click="setOrder(1)">
+		CCD1
+	</div>
+	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-150px;left:710px;width:40px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
+		CCD0
+	</div>
  
-	<div style="width:500px;position:absolute;top:80px;left:270px;">
+	<!-- <div style="width:500px;position:absolute;top:80px;left:270px;"> -->  
 		
 		<div id="main_image">
 		<!--
@@ -75,18 +80,13 @@
 			</div>
 					-->
 			<div id="main_image_container" style="margin-left:0px">
-				<img id="image_0" src="experiments/teleoperation/images/nebulosa_tarantula.jpeg"/>	
+				<img id="image_0" class="main_img" src="experiments/teleoperation/images/nebulosa_tarantula.jpeg"/>	
 			</div> 
 		</div>
 
-	 </div>
-	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:250px;width:40px;top:-120px" ng-controller="CcdDevice" ng-click="setOrder(1)">
-		CCD1
-	</div>
-	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-150px;left:710px;width:40px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
-		CCD0
-	</div>
-	<div class="image_carousel">
+	  <!-- </div>  -->   
+	
+	<div class="image_carousel" ng-controller="ImageCarousel">
 		<div id="foo2">
 		</div>
 		<div class="clearfix"></div>

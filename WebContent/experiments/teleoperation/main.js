@@ -1,6 +1,9 @@
 'use strict';
 
 var numImages=0;
+var focuserPosition=0;
+var max_ccd_timer=5;
+var num_ccd_timer=max_ccd_timer;
 
 function TeleoperationExperimentCtrl(GloriaAPI, $scope, $timeout,
 		$gloriaLocale, $routeParams) {
@@ -116,7 +119,7 @@ function TeleoperationExperimentCtrl(GloriaAPI, $scope, $timeout,
 function InitDevices(GloriaAPI, $scope){
 	//GlAPI = GloriaAPI;
 	
-	//$scope.ccd_order = 0;
+	$scope.ccd_order = 0;
 
 		GloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
 			GloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
@@ -142,45 +145,7 @@ function InitDevices(GloriaAPI, $scope){
 		//alert(error);
 	});
 		
-		GloriaAPI.getImagesByContext($scope.requestRid,function(success){
-			 $.each(success, function(i, image){ //Iterate among all images generate previously
-					var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+image.jpg+"\" style=\"width:235px\">";
-					htmlCode = htmlCode + "<img src=\""+image.jpg+"\"/></a>";
-					$(htmlCode).appendTo("#foo2");
-					numImages++;
-					
-		            console.log(image.jpg);
-		        });
-			 
-			 //If number of  images is greater than 4, apply carousel effect
-			 if (numImages>4){
-					$("#foo2").carouFredSel({
-						circular: false,
-						infinity: false,
-						auto : false,
-						responsive:true,
-						items:4,
-						width:"variable",
-						prev : "#foo1_prev",
-						next : "#foo1_next"
-					});			
-				}
-			 	//If the number of images is greater than 0, apply pretty effect
-			 	if (numImages>0){
-					$("#foo2 a").prettyPhoto({
-						theme: "facebook",
-						changepicturecallback: function() {
-							$("#foo2").trigger("pause");
-						},
-						callback: function() {
-							$("#foo2").trigger("play");
-						}
-					});			 		
-			 	}
-			
-		}, function(error){
-			
-		});
+		
 		/*
 		GloriaAPI.getParameterTreeValue($scope.reservation,'focuser','position',function(success){
 			console.log("Initial position:"+success);
@@ -250,12 +215,14 @@ function MountDevice(GloriaAPI , $scope){
 		
 	};
 }
-function CcdDevice(GloriaAPI, $scope, $timeout){
+function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	
+	$scope.ccd_alarm = false;
 	
+	$scope.ccd_sequence = $sequenceFactory.getSequence();
 	
 	$scope.setFilter = function(){
-		GloriaAPI.setParameterTreeValue($scope.reservation,'fw','selected',$scope.filter,function(success){
+		GloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',$scope.filter,function(success){
 			
 		}, function(error){
 			
@@ -289,22 +256,65 @@ function CcdDevice(GloriaAPI, $scope, $timeout){
 			$("#expose_0_button").attr("disabled",true);
 			//$("#loading").css("visibility","visible");
 			$("#ccd_status").addClass("mess-info");
-			$scope.status_main_ccd = "EXPOSING";
+			$scope.status_main_ccd = "telexp.ccd.status.exposing";
 			$scope.exposure_time[$scope.ccd_order] = $scope.exposure_time;
 			num_ccd_timer=max_ccd_timer;
-			/*
+			
 			console.log("set exposure time");
-			SetExposureTime(GloriaAPI, Sequence, $scope);
+			SetExposureTime(GloriaAPI, $scope);
+
 			console.log("set ccd attributes");
-			SetCCDAttributes(GloriaAPI, Sequence, $scope);
+			SetCCDAttributes(GloriaAPI, $scope);
+			
 			console.log("start exposure");
-			StartExposure(GloriaAPI, Sequence, $scope, $timeout);
-			*/
+			StartExposure(GloriaAPI, $scope, $timeout);
+			
 		} else {
 			alert("Wrong parameter exposure time (MIN:0, MAX:120)");
 		}
 		
 	};
+}
+
+function ImageCarousel(GloriaAPI, $scope){
+	GloriaAPI.getImagesByContext($scope.requestRid,function(success){
+		 $.each(success, function(i, image){ //Iterate among all images generate previously
+				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+image.jpg+"\" style=\"width:235px\">";
+				htmlCode = htmlCode + "<img src=\""+image.jpg+"\"/></a>";
+				$(htmlCode).appendTo("#foo2");
+				numImages++;
+				console.log(image.jpg);
+	        });
+		 
+		 //If number of  images is greater than 4, apply carousel effect
+		 if (numImages>4){
+				$("#foo2").carouFredSel({
+					circular: false,
+					infinity: false,
+					auto : false,
+					responsive:true,
+					items:4,
+					width:"200",
+					prev : "#foo1_prev",
+					next : "#foo1_next"
+				});			
+			}
+		 	//If the number of images is greater than 0, apply pretty effect
+		 	if (numImages>0){
+				$("#foo2 a").prettyPhoto({
+					theme: "facebook",
+					changepicturecallback: function() {
+						$("#foo2").trigger("pause");
+					},
+					callback: function() {
+						$("#foo2").trigger("play");
+					}
+				});			 		
+		 	}
+		
+	}, function(error){
+		
+	});
 }
 
 /* Auxiliar functions */
@@ -337,4 +347,140 @@ function rotateAnnotationCropper(offsetSelector, xCoordinate, yCoordinate, cropp
 function convertThetaToCssDegs(theta){
 	var cssDegs = 90 - theta;
 	return cssDegs;
+}
+
+function SetExposureTime(GloriaAPI, data){
+	return data.ccd_sequence.execute(function() {
+		return GloriaAPI.setParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].exposure',parseFloat(data.exposure_time),function(success){
+				
+			}, function(error){
+				$("#expose_0_button").removeAttr("disabled");
+			});
+	});
+}
+function SetCCDAttributes(GloriaAPI, data){
+	return data.ccd_sequence.execute(function() {
+		return GloriaAPI.executeOperation(data.requestRid,'set_ccd_attributes',function(success){
+				
+			}, function(error){
+				//activateCcdAlarm("Fail to connect server");
+				data.ccd_alarm = true;
+				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
+				data.status_main_ccd = "telexp.ccd.status.error";
+			});
+	});
+}
+function activateCcdAlarm(message){
+	$("#ccd_budge").text("1");
+	$("#ccd_budge").css("visibility","visible");
+	$("#ccd_alert").attr("title",message);
+	$("#expose_0_button").removeAttr("disabled");
+}
+function StartExposure(GloriaAPI, data, $timeout){
+	return data.ccd_sequence.execute(function() {
+		return GloriaAPI.executeOperation(data.requestRid,'start_exposure',function(success){
+			GloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst.id',function(success){
+				if (success != -1){
+					console.log("Image with id "+success+" generated");
+					
+					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, parseInt(data.exposure_time*1000));
+					
+				} else {
+					$("#ccd_budge").text("1");
+					$("#ccd_budge").css("visibility","visible");
+					$("#ccd_alert").attr("title","No image id generated");
+					data.status_main_ccd = "telexp.ccd.status.error";
+				}
+			}, function(error){
+				$("#expose_0_button").removeAttr("disabled");
+				data.status_main_ccd = "telexp.ccd.status.error";
+				$("#ccd_budge").text("1");
+				$("#ccd_budge").css("visibility","visible");
+				$("#ccd_alert").attr("title","Error in service");
+			});
+				
+				
+			}, function(error){
+				$("#expose_0_button").removeAttr("disabled");
+				data.status_main_ccd = "telexp.ccd.status.error";
+				$("#ccd_budge").text("1");
+				$("#ccd_budge").css("visibility","visible");
+				$("#ccd_alert").attr("title","Impossible to execute operation");
+			});
+	});
+}
+
+/* Timers */
+
+function exposureTimer(GloriaAPI, data, $timeout){
+
+	console.log("Paso del timer");
+	data.status_main_ccd = "telexp.ccd.status.transfering";
+	GloriaAPI.executeOperation(data.requestRid,'load_image_urls',function(success){
+		GloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst',function(success){
+			if ((success.jpg!=null) && (success.fits)!=null){
+		
+				console.log("Deleting timer");
+				//clearInterval(expTimer);
+				var mImage = new Image();
+				mImage.src = success.jpg;
+				mImage.onload = function(e){
+					var yFactor = mImage.height/480;
+					var imageWidth = mImage.width/yFactor;
+					var shift = (480-imageWidth)/2;
+					$("#image_0").attr("src",success.jpg);
+					$("#image_0").load(function (e){
+						$("#main_image_container").css("margin-left",shift);
+						$("#loading").css("visibility","hidden");
+						$("#expose_0_button").removeAttr("disabled");
+						
+					});
+				};
+				data.status_main_ccd = "telexp.ccd.status.taken";
+				$("#ccd_status").removeClass("mess-info");
+				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\" style=\"width:235px\">";
+				htmlCode = htmlCode + "<img src=\""+mImage.src+"\"/></a>";
+				$(htmlCode).appendTo("#foo2");
+				numImages++;
+				if (numImages>4){
+					$("#foo2").carouFredSel({
+						circular: false,
+						infinity: false,
+						auto : false,
+						responsive:true,
+						items:4,
+						width:"variable",
+						prev : "#foo1_prev",
+						next : "#foo1_next"
+					});			
+				}
+				$("#foo2 a").prettyPhoto({
+					theme: "facebook",
+					changepicturecallback: function() {
+						$("#foo2").trigger("pause");
+					},
+					callback: function() {
+						$("#foo2").trigger("play");
+					}
+				});
+				/*$("#foo2 a").css("width",235);*/
+			}else{
+				console.log("Launching timer again");
+				if (num_ccd_timer == 0){
+					data.status_main_ccd = "telexp.ccd.status.error";	
+				} else {
+					num_ccd_timer--;
+					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000);
+				}
+
+			}
+		}, function(error){
+			$("#expose_0_button").removeAttr("disabled");
+			data.status_main_ccd = "telexp.ccd.status.error";
+		});
+	}, function(error){
+		$("#expose_0_button").removeAttr("disabled");
+		data.status_main_ccd = "telexp.ccd.status.error";
+	});
+						
 }
