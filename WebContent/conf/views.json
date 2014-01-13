@@ -2,7 +2,9 @@
 	"solar": {
 		"html": "experiments/teleoperation/parent.html",
 		"js": [
-			"experiments/teleoperation/main.js"
+			"experiments/teleoperation/main.js",
+			"experiments/teleoperation/js/jquery.carouFredSel-6.2.1.js",
+			"experiments/teleoperation/prettyphoto/js/jquery.prettyPhoto.js"
 		]
 	},
 	"wrong": {

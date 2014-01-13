@@ -1,4 +1,200 @@
-<div>Your interface content here!</div>
-<div>
-	Reservation id <strong>{{rid}}</strong>
+<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.jpg);height:766px">
+	<div id="reference_focuser"></div>
+	<div id="focus_marker">
+		<div id="focus_marker_info">0</div>
+	</div>
+	<div id="left_controls">
+		<div id="surveillance_panel" ng-controller="GetCamerasCtrl">
+		</div>
+	</div>
+	<div id="right_controls" ng-controller="MountDevice">
+		<div id="mount_target_parameters">
+			<span class="title">MOUNT</span>
+			<table>
+				<tr>
+					<td><span class="regular">RA:</span></td>
+					<td><input id="coords_ra" class="input_text" ng-model="ra" size="6"></input></td>
+				</tr>
+				<tr>
+					<td><span class="regular">DEC:</span></td>
+					<td><input id="coords_dec" class="input_text" ng-model="dec" size="6"></input></td>
+				</tr>
+				<tr>
+					<td><span class="regular">NAME: </span></td>
+					<td><input id="tags" class="input_text" ng-model="target_name" size="6"></input></td>
+				</tr>
+			</table>
+			<div align="center" class="status">
+				<span class="status_text">READY</span>
+			</div>
+			<div id="mount_buttons_panel" style="float:right;">
+				<button class="button_style"  ng-click="go()" ><span class="button_text">GO</span></button>
+			</div>				
+		</div>
+		<div id="main_ccd_panel">
+				<span class="title">CCD</span><a id="ccd_alert" href="#"><span id="ccd_budge" class="badge badge-important" style="visibility:hidden">0</span></a>
+				<div id="main_ccd_parameters" ng-controller="CcdDevice">
+					<div>
+						<table>
+							<tr>
+								<td><span class="regular">TIME:</span></td>
+								<td><input id="exposure_time" class="input_text" size="6" ng-model="exposure_time"></td>
+							</tr>
+							<tr>
+								<td><span class="regular">FILTER:</span></td>
+								<td>
+									<select id="filter_selector" class="selector" ng-model="filter" ng-change="setFilter()">
+										<option ng-repeat="filter in filters_0">{{filter}}</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td><span class="regular">BINNING:</span></td>
+								<td><select id="binning_selector" class="selector" ng-model="binning" ng-init="binning='1x1'"><option>1x1</option></select></td>
+							</tr>
+						</table>
+					</div>
+					<div align="center" class="status" ng-model="status_main_ccd" ng-init="status_main_ccd='READY'">
+						<span id="ccd_status" class="status_text">{{status_main_ccd}}</span>
+					</div>
+					<div id="main_ccd_buttons_panel" style="float:right;">
+						<button id="expose_0_button"class="button_style" ng-click="expose()"><span class="button_text">START</span></button>
+					</div>
+				</div>
+			</div>
+			
+	</div>
+	
+ 
+	<div style="width:500px;position:absolute;top:80px;left:270px;">
+		
+		<div id="main_image">
+		<!--
+			<div id="loading" style="text-align:center;position:absolute;top:210px;left:125px;visibility:hidden">
+				<img src="experiments/teleoperation/images/init_loading.gif" width="256px" height="30px"/> 
+			</div>
+					-->
+			<div id="main_image_container" style="margin-left:0px">
+				<img id="image_0" src="experiments/teleoperation/images/nebulosa_tarantula.jpeg"/>	
+			</div> 
+		</div>
+
+	 </div>
+	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:250px;width:40px;top:-120px" ng-controller="CcdDevice" ng-click="setOrder(1)">
+		CCD1
+	</div>
+	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-150px;left:710px;width:40px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
+		CCD0
+	</div>
+	<div class="image_carousel">
+		<div id="foo2">
+		</div>
+		<div class="clearfix"></div>
+		<a class="prev" id="foo1_prev" href="#"><span>prev</span></a>
+		<a class="next" id="foo1_next" href="#"><span>next</span></a> 
+	</div>
+	<!-- 
+	<div id="hand_controller_pad" style="position: absolute;top: -50px;left: 35px;">
+			<table>
+				<tr>
+					<td></td>
+					<td style="padding-left:2px;padding-right:2px;text-align:center">
+						<img id="top_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_top.png" width="20px" class="bright-button"/>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>
+						<img id="left_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_left.png" width="10px" class="bright-button"/>
+					</td>
+					<td></td>
+					<td>
+						<img id="right_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_right.png" width="10px" class="bright-button"/>
+					</td>						
+				</tr>
+				<tr>
+						<td></td>
+						<td style="padding-left:4px;padding-right:2px;">
+							<img id="down_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_down.png" width="20px" class="bright-button"/>
+						</td>
+						<td></td>
+				</tr>						
+			</table>
+		</div>
+		 -->
 </div>
+<script>
+var dragged = false;
+var initFocuserPosition = 0;
+var finalFocuserPosition = 1000;
+var currentFocuserPosition = 0;
+
+$('#focus_marker').on('mouseenter', function(e){
+	$('#focus_marker_info').text(currentFocuserPosition);
+	$('#focus_marker_info').css("visibility","visible");
+});
+
+$('#focus_marker').on('mouseleave', function(e){
+	if (!dragged){
+		$('#focus_marker_info').css("visibility","hidden");		
+	}
+});
+$('#focus_marker').on('mousedown', function(e){
+	
+	var movementDirection = 0;  //Undefined
+	var lastRotateDegree = 0;
+	var rotateDegree = 0;
+	
+	var limitClockwiseDirection = false;
+	var limitCounterClockwiseDirection = false;
+
+
+	dragged = true;
+	
+	$('#focus_marker').css("opacity","0.8");
+
+	e.originalEvent.preventDefault();
+
+    $(window).mousemove(function(event){
+        var rotateOriginalDegree = rotateAnnotationCropper($('#main_image').parent(), event.pageX,event.pageY, $('#focus_marker'));
+        
+        if ((rotateOriginalDegree < 270) && (rotateOriginalDegree > 180)){
+        	rotateDegree = rotateOriginalDegree - 360;
+        } else {
+        	rotateDegree = rotateOriginalDegree;
+        }
+        
+        var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+		var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
+
+		$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+		$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+		     
+         currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
+         $('#focus_marker_info').text(currentFocuserPosition);    
+        
+    });
+		
+    $(window).mouseup(function(event){ 
+
+    	if (dragged){
+    		
+    		$(window).unbind('mousemove');
+    		console.log("Moving focuser:"+$("#focus_marker_info").text());
+  
+			/*
+    		GlAPI.setParameterTreeValue(<%= reservationId %>,'focuser','position',currentFocuserPosition,function(success){
+
+ 			}, function(error){
+
+ 			});
+			*/
+    		$('#focus_marker').css("opacity","1.0");		
+    		dragged = false;
+    	}
+    	
+    });
+		
+    
+});   
+</script>
