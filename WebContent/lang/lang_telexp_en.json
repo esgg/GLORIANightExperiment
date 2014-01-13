@@ -1,3 +1,25 @@
 {
-	"header": "Experiment template"
+	"header": "Night Experiment",
+	"mount": {
+				"title":"MOUNT",
+				"ra":"RA",
+				"dec":"DEC",
+				"object":"OBJECT" 	
+			 },
+	"ccd": {
+				"title": "CCD",
+				"exposure_time": "TIME",
+				"filter": "FILTER",
+				"binning":"BINNING",
+				"status": {
+					"ready":"READY",
+					"exposing":"EXPOSING",
+					"transfering":"TRANSFERING",
+					"taken": "IMAGE TAKEN",
+					"error": "ERROR"
+				},
+				"messages": {
+					"internal_server": "Fail in server"
+				}
+		   }
 }
