@@ -1,4 +1,4 @@
-<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.jpg);height:766px">
+<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.jpg);height:760px">
 	<div id="reference_focuser"></div>
 	<div id="focus_marker">
 		<div id="focus_marker_info">0</div>
@@ -10,7 +10,7 @@
 	<div id="right_controls" ng-controller="MountDevice">
 		<div id="mount_target_parameters">
 			<span class="title">{{'telexp.mount.title' | i18n}}</span>
-			<table>
+			<table style="position:relative;left:10px">
 				<tr>
 					<td><span class="regular">{{'telexp.mount.ra' | i18n}}:</span></td>
 					<td><input id="coords_ra" class="input_text" ng-model="ra" size="6"></input></td>
@@ -31,11 +31,44 @@
 				<button class="button_style"  ng-click="go()" ><span class="button_text">GO</span></button>
 			</div>				
 		</div>
+		<div id="hand_controller_pad" style="position: absolute;top: -30px;left: 55px;">
+			<table>
+				<tr>
+					<td></td>
+					<td>
+						<div class="arrow_up"></div>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>
+						<div class="arrow_left"></div>
+					</td>
+					<td></td>
+					<td>
+						<div class="arrow_right"></div>
+					</td>						
+				</tr>
+				<tr>
+						<td></td>
+						<td>
+							<div class="arrow_down"></div>
+						</td>
+						<td></td>
+				</tr>						
+			</table>
+		</div>
 		<div id="main_ccd_panel" ng-controller="CcdDevice" ng-init="ccd_alarm=false">
-				<span class="title">CCD</span><span id="ccd_budge" class="badge badge-important" ng-show="ccd_alarm" ng-mouseleave="ccd_alarm=false">0</span>
+				<div style="display:block;">
+					<span class="title">CCD</span>
+					<a id="ccd_alert" href="#">
+					<span id="ccd_budge" class="badge badge-important" ng-show="ccd_alarm" ng-mouseleave="ccd_alarm=false">0</span>
+					</a>
+					<img src="experiments/teleoperation/images/information.png"/>
+				</div>
 				<div id="main_ccd_parameters">
 					<div>
-						<table>
+						<table style="position:relative;left:10px">
 							<tr>
 								<td><span class="regular">{{'telexp.ccd.exposure_time' | i18n}}:</span></td>
 								<td><input id="exposure_time" class="input_text" size="6" ng-model="exposure_time"></td>
@@ -64,13 +97,14 @@
 			</div>
 			
 	</div>
+	 
 	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:250px;width:40px;top:-120px" ng-controller="CcdDevice" ng-click="setOrder(1)">
 		CCD1
 	</div>
 	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-150px;left:710px;width:40px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
 		CCD0
 	</div>
- 
+  
 	<!-- <div style="width:500px;position:absolute;top:80px;left:270px;"> -->  
 		
 		<div id="main_image">
@@ -85,7 +119,37 @@
 		</div>
 
 	  <!-- </div>  -->   
-	
+	   
+	<div id="gloria_info">
+		<div id="weather_station" ng-controller="WeatherDevice" style="width:400px;margin:0 auto;">
+
+			<div style="float:left; display:inline-block;width:33%">
+				<div style="float:left">
+					<img height="32px" width="32px" src="experiments/teleoperation/images/humidity.png"/>
+				</div>
+				<div class="weather_condition_value">
+					<label class="no_alarm" id="humidity">--- % RH</label>
+				</div>
+			</div>
+			<div style="float:left; display:inline-block;width:33%">
+				<div style="float:left">
+					<img height="32px" width="32px" src="experiments/teleoperation/images/wind.png"/>
+				</div>
+				<div class="weather_condition_value">
+					<label class="no_alarm" id="velocity">--- m/s</label>
+				</div>
+			</div>
+			<div style="float:left; display:inline-block;width:33%">
+				<div style="float:left">
+					<img height="32px" width="32px" src="experiments/teleoperation/images/temperature.png"/>
+				</div>
+				<div class="weather_condition_value">
+					<label class="no_alarm" id="temperature">--- Deg. M</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	 
 	<div class="image_carousel" ng-controller="ImageCarousel">
 		<div id="foo2">
 		</div>
@@ -93,35 +157,7 @@
 		<a class="prev" id="foo1_prev" href="#"><span>prev</span></a>
 		<a class="next" id="foo1_next" href="#"><span>next</span></a> 
 	</div>
-	<!-- 
-	<div id="hand_controller_pad" style="position: absolute;top: -50px;left: 35px;">
-			<table>
-				<tr>
-					<td></td>
-					<td style="padding-left:2px;padding-right:2px;text-align:center">
-						<img id="top_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_top.png" width="20px" class="bright-button"/>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>
-						<img id="left_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_left.png" width="10px" class="bright-button"/>
-					</td>
-					<td></td>
-					<td>
-						<img id="right_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_right.png" width="10px" class="bright-button"/>
-					</td>						
-				</tr>
-				<tr>
-						<td></td>
-						<td style="padding-left:4px;padding-right:2px;">
-							<img id="down_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_down.png" width="20px" class="bright-button"/>
-						</td>
-						<td></td>
-				</tr>						
-			</table>
-		</div>
-		 -->
+		 
 </div>
 <script>
 var dragged = false;
@@ -197,4 +233,46 @@ $('#focus_marker').on('mousedown', function(e){
 		
     
 });   
+
+$("#coords_ra").keyup('keyup', function(e){
+	var text = $(this).val();
+	if(text==""){
+		if($("#coords_dec").val()==""){
+			$("#tags").removeAttr("disabled");
+		}
+	} else {
+		if($("#tags").val()==""){
+			$("#tags").attr("disabled",true);	
+		}
+	}
+
+});
+$("#coords_dec").bind('keyup', function(e){
+	if($(this).val()==""){
+		if($("#coords_ra").val()==""){
+			$("#tags").removeAttr("disabled");
+		}
+	} else {
+		if($("#tags").val()==""){
+			$("#tags").attr("disabled",true);	
+		}
+	}
+});
+$("#tags").bind('keyup', function(e){
+	if($(this).val()==""){
+		$("#coords_ra").removeAttr("disabled");
+		$("#coords_dec").removeAttr("disabled");
+	} else {
+		if ($("#coords_ra").val()=="" && $("#coords_dec").val()==""){
+			$("#coords_ra").attr("disabled",true);
+			$("#coords_dec").attr("disabled",true);		
+		}
+	}
+});
+$("#ccd_alert").tooltip({
+	show: {
+		 effect: "slideDown",
+	     delay: 250
+	}
+});
 </script>
