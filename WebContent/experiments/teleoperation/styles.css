@@ -104,6 +104,13 @@ a.prev span, a.next span {
 	float: none;
 	clear: both;
 }
+#gloria_info{
+	position:relative;
+	top:40px;
+	left:250px;
+	width:530px;
+}
+
 
 /* Text style */
 .title{
@@ -214,7 +221,7 @@ a.prev span, a.next span {
 	background: grey; 
 	position:relative; 
 	left:503px;
-	top: 35px;
+	top: 25px;
 	border-radius: 5px; 
 	cursor: move;
 	-moz-transform:rotate(0deg);
@@ -257,4 +264,44 @@ a.prev span, a.next span {
 	 -moz-transform:rotate(0deg);
 	 visibility:hidden;
 	 width:150%;
+}
+.arrow_up{
+ 	border-left:10px solid transparent;  /* left arrow slant */
+ 	border-right:10px solid transparent; /* right arrow slant */
+ 	border-bottom:10px solid white; /* bottom, add background color here */
+ 	opacity:0.5;
+}
+.arrow_down{
+ 	border-left:10px solid transparent;  /* left arrow slant */
+ 	border-right:10px solid transparent; /* right arrow slant */
+ 	border-top:10px solid white; /* bottom, add background color here */
+ 	opacity:0.5;
+}
+.arrow_left{
+ 	border-bottom:10px solid transparent;  /* left arrow slant */
+ 	border-top:10px solid transparent; /* right arrow slant */
+ 	border-right:10px solid white; /* bottom, add background color here */
+ 	opacity:0.5;
+}
+.arrow_right{
+ 	border-top:10px solid transparent;  /* left arrow slant */
+ 	border-bottom:10px solid transparent; /* right arrow slant */
+ 	border-left:10px solid white; /* bottom, add background color here */
+ 	opacity:0.5;
+}
+.arrow_up:hover{
+ 	opacity:1.0;
+ 	cursor:pointer;
+}
+.arrow_down:hover{
+ 	opacity:1.0;
+ 	cursor:pointer;
+}
+.arrow_left:hover{
+ 	opacity:1.0;
+ 	cursor:pointer;
+}
+.arrow_right:hover{
+ 	opacity:1.0;
+ 	cursor:pointer;
 }
