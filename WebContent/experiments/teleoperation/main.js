@@ -237,11 +237,11 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 		if (order == 0){
 			$("#ccd_button_0").attr("class", "ccd_button_selected");
 			$("#ccd_button_1").attr("class", "ccd_button");
-			$("#filter_selector").removeAttr("disabled");
+			//$("#filter_selector").removeAttr("disabled");
 		} else if (order == 1){
 			$("#ccd_button_1").attr("class", "ccd_button_selected");
 			$("#ccd_button_0").attr("class", "ccd_button");
-			$("#filter_selector").attr("disabled",true);
+			//$("#filter_selector").attr("disabled",true);
 		}
 		GloriaAPI.setParameterTreeValue($scope.requestRid,'cameras','ccd.order',parseInt(order),function(success){
 			//ccdOrder = parseInt(order);
@@ -253,7 +253,7 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	$scope.expose = function(){
 
 		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){
-			$("#expose_0_button").attr("disabled",true);
+			//$("#expose_0_button").attr("disabled",true);
 			//$("#loading").css("visibility","visible");
 			$("#ccd_status").addClass("mess-info");
 			$scope.status_main_ccd = "telexp.ccd.status.exposing";
@@ -365,6 +365,7 @@ function SetCCDAttributes(GloriaAPI, data){
 			}, function(error){
 				//activateCcdAlarm("Fail to connect server");
 				data.ccd_alarm = true;
+				$("#ccd_alert").attr("title","Problem to set exposure time");
 				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 				data.status_main_ccd = "telexp.ccd.status.error";
 			});
@@ -386,26 +387,28 @@ function StartExposure(GloriaAPI, data, $timeout){
 					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, parseInt(data.exposure_time*1000));
 					
 				} else {
-					$("#ccd_budge").text("1");
-					$("#ccd_budge").css("visibility","visible");
+					data.ccd_alarm = true;
 					$("#ccd_alert").attr("title","No image id generated");
+					data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 					data.status_main_ccd = "telexp.ccd.status.error";
 				}
 			}, function(error){
 				$("#expose_0_button").removeAttr("disabled");
 				data.status_main_ccd = "telexp.ccd.status.error";
-				$("#ccd_budge").text("1");
-				$("#ccd_budge").css("visibility","visible");
-				$("#ccd_alert").attr("title","Error in service");
+				data.ccd_alarm = true;
+				$("#ccd_alert").attr("title","Problem to start exposure");
+				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
+				data.status_main_ccd = "telexp.ccd.status.error";
 			});
 				
 				
 			}, function(error){
 				$("#expose_0_button").removeAttr("disabled");
 				data.status_main_ccd = "telexp.ccd.status.error";
-				$("#ccd_budge").text("1");
-				$("#ccd_budge").css("visibility","visible");
-				$("#ccd_alert").attr("title","Impossible to execute operation");
+				data.ccd_alarm = true;
+				$("#ccd_alert").attr("title","Problem to start exposure");
+				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
+				data.status_main_ccd = "telexp.ccd.status.error";
 			});
 	});
 }
@@ -483,4 +486,27 @@ function exposureTimer(GloriaAPI, data, $timeout){
 		data.status_main_ccd = "telexp.ccd.status.error";
 	});
 						
+}
+function drawWeatherConditions(GloriaAPI, $scope, $timeout){
+	console.log("Paso de estacion");
+	GloriaAPI.executeOperation($scope.requestRid,'load_weather_values',function(success){
+		GloriaAPI.getParameterValue($scope.requestRid,'weather',function(weather){
+			$("#velocity").text(Math.round(weather.wind.value)+" m/s");
+			$("#humidity").text(Math.round(weather.rh.value)+" % RH");
+			$("#temperature").text(Math.round(weather.temperature.value)+" Deg.");
+		}, function(error){
+
+		});
+	}, function(error){
+
+	});
+	$scope.weatherTimer = $timeout(function() {
+		drawWeatherConditions(GloriaAPI, $scope, $timeout);
+	}, 10000);
+}
+function WeatherDevice(GloriaAPI, $scope, $timeout){
+	$scope.weatherTimer = $timeout(function() {
+			drawWeatherConditions(GloriaAPI, $scope, $timeout);
+		}, 10000);
+	
 }
