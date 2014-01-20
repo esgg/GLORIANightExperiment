@@ -1,4 +1,4 @@
-<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.jpg);height:760px">
+<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.png);background-size:940px 744px">
 	<div id="reference_focuser"></div>
 	<div id="focus_marker">
 		<div id="focus_marker_info">0</div>
@@ -10,17 +10,14 @@
 	<div id="right_controls" ng-controller="MountDevice">
 		<div id="mount_target_parameters">
 			<span class="title">{{'telexp.mount.title' | i18n}}</span>
-			<table style="position:relative;left:10px">
+			<table style="position:relative;left:18px;border-spacing:5px">
 				<tr>
-					<td><span class="regular">{{'telexp.mount.ra' | i18n}}:</span></td>
 					<td><input id="coords_ra" class="input_text" ng-model="ra" size="6"></input></td>
 				</tr>
 				<tr>
-					<td><span class="regular">{{'telexp.mount.dec' | i18n}}:</span></td>
 					<td><input id="coords_dec" class="input_text" ng-model="dec" size="6"></input></td>
 				</tr>
 				<tr>
-					<td><span class="regular">{{'telexp.mount.object' | i18n}}: </span></td>
 					<td><input id="tags" class="input_text" ng-model="target_name" size="6"></input></td>
 				</tr>
 			</table>
