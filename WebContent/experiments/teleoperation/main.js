@@ -244,7 +244,11 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 			//$("#filter_selector").attr("disabled",true);
 		}
 		GloriaAPI.setParameterTreeValue($scope.requestRid,'cameras','ccd.order',parseInt(order),function(success){
-			//ccdOrder = parseInt(order);
+			GloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
+				
+			}, function(error){
+				//alert(error);
+			});
 		}, function(error){
 			
 		});

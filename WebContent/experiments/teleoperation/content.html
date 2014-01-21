@@ -1,5 +1,4 @@
-<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.png);background-size:940px 744px">
-	<div id="reference_focuser"></div>
+<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.png);background-size:940px 744px;background-repeat:no-repeat">
 	<div id="focus_marker">
 		<div id="focus_marker_info">0</div>
 	</div>
@@ -8,27 +7,29 @@
 		</div>
 	</div>
 	<div id="right_controls" ng-controller="MountDevice">
-		<div id="mount_target_parameters">
+		<div id="mount_target_panel">
 			<span class="title">{{'telexp.mount.title' | i18n}}</span>
-			<table style="position:relative;left:18px;border-spacing:5px">
-				<tr>
-					<td><input id="coords_ra" class="input_text" ng-model="ra" size="6"></input></td>
-				</tr>
-				<tr>
-					<td><input id="coords_dec" class="input_text" ng-model="dec" size="6"></input></td>
-				</tr>
-				<tr>
-					<td><input id="tags" class="input_text" ng-model="target_name" size="6"></input></td>
-				</tr>
-			</table>
-			<div align="center" class="status">
-				<span class="status_text">READY</span>
+			<div id="mount_parameters">
+				<table style="position:relative;left:12px;border-spacing:5px">
+					<tr>
+						<td><input id="coords_ra" class="input_text" ng-model="ra" size="6"></input></td>
+					</tr>
+					<tr>
+						<td><input id="coords_dec" class="input_text" ng-model="dec" size="6"></input></td>
+					</tr>
+					<tr>
+						<td><input id="tags" class="input_text" ng-model="target_name" size="6"></input></td>
+					</tr>
+				</table>
+				<div align="center" class="status">
+					<span class="status_text">READY</span>
+				</div>
+				<div id="mount_buttons_panel" style="float:right;">
+					<button class="button_style"  ng-click="go()" ><span class="button_text">GO</span></button>
+				</div>				
 			</div>
-			<div id="mount_buttons_panel" style="float:right;">
-				<button class="button_style"  ng-click="go()" ><span class="button_text">GO</span></button>
-			</div>				
 		</div>
-		<div id="hand_controller_pad" style="position: absolute;top: -30px;left: 55px;">
+		<div id="hand_controller_pad" style="position: absolute;top: -40px;left: 55px;">
 			<table>
 				<tr>
 					<td></td>
@@ -64,26 +65,23 @@
 					<img src="experiments/teleoperation/images/information.png"/>
 				</div>
 				<div id="main_ccd_parameters">
-					<div>
-						<table style="position:relative;left:10px">
+					
+						<table style="position:relative;left:18px;border-spacing:5px">
 							<tr>
-								<td><span class="regular">{{'telexp.ccd.exposure_time' | i18n}}:</span></td>
 								<td><input id="exposure_time" class="input_text" size="6" ng-model="exposure_time"></td>
 							</tr>
 							<tr>
-								<td><span class="regular">{{'telexp.ccd.filter' | i18n}}:</span></td>
-								<td>
-									<select id="filter_selector" class="selector" ng-model="filter" ng-change="setFilter()">
-										<option ng-repeat="filter in filters_0">{{filter}}</option>
-									</select>
-								</td>
+								<td><select id="filter_selector" class="selector" ng-model="filter" ng-change="setFilter()">
+									<option ng-repeat="filter in filters_0">{{filter}}</option>
+								</select></td>
 							</tr>
 							<tr>
-								<td><span class="regular">{{'telexp.ccd.binning' | i18n}}:</span></td>
-								<td><select id="binning_selector" class="selector" ng-model="binning" ng-init="binning='1x1'"><option>1x1</option></select></td>
+								<td><select id="binning_selector" class="selector" ng-model="binning" ng-init="binning='1x1'">
+									<option>1x1</option>
+								</select></td>
 							</tr>
 						</table>
-					</div>
+					
 					<div align="center" class="status" ng-model="status_main_ccd" ng-init="status_main_ccd='telexp.ccd.status.ready'">
 						<span id="ccd_status" class="status_text">{{status_main_ccd | i18n}}</span>
 					</div>
@@ -94,14 +92,12 @@
 			</div>
 			
 	</div>
-	 
-	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:250px;width:40px;top:-120px" ng-controller="CcdDevice" ng-click="setOrder(1)">
-		CCD1
+	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:175px;width:70px;top:-35px" ng-controller="CcdDevice" ng-click="setOrder(1)">
+		<img src="experiments/teleoperation/images/ccd.png" width="40px"/>
 	</div>
-	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-150px;left:710px;width:40px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
-		CCD0
+	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-75px;left:710px;width:70px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
+		<img src="experiments/teleoperation/images/main_ccd.png" width="54px" />
 	</div>
-  
 	<!-- <div style="width:500px;position:absolute;top:80px;left:270px;"> -->  
 		
 		<div id="main_image">
@@ -118,32 +114,21 @@
 	  <!-- </div>  -->   
 	   
 	<div id="gloria_info">
-		<div id="weather_station" ng-controller="WeatherDevice" style="width:400px;margin:0 auto;">
+		<span class="title_info">GLORIA</span> <span class="regular_info">Info</span>
+		<div id="weather_station" ng-controller="WeatherDevice" style="width:400px;margin:0 auto;margin-top:10px;">
 
-			<div style="float:left; display:inline-block;width:33%">
-				<div style="float:left">
-					<img height="32px" width="32px" src="experiments/teleoperation/images/humidity.png"/>
-				</div>
-				<div class="weather_condition_value">
-					<label class="no_alarm" id="humidity">--- % RH</label>
-				</div>
-			</div>
-			<div style="float:left; display:inline-block;width:33%">
-				<div style="float:left">
-					<img height="32px" width="32px" src="experiments/teleoperation/images/wind.png"/>
-				</div>
-				<div class="weather_condition_value">
-					<label class="no_alarm" id="velocity">--- m/s</label>
-				</div>
-			</div>
-			<div style="float:left; display:inline-block;width:33%">
-				<div style="float:left">
-					<img height="32px" width="32px" src="experiments/teleoperation/images/temperature.png"/>
-				</div>
-				<div class="weather_condition_value">
-					<label class="no_alarm" id="temperature">--- Deg. M</label>
-				</div>
-			</div>
+			<table>
+				<tr>
+					<td><img height="32px" width="32px" src="experiments/teleoperation/images/humidity.png"/></td>
+					<td><img height="32px" width="32px" src="experiments/teleoperation/images/wind.png"/></td>
+					<td><img height="32px" width="32px" src="experiments/teleoperation/images/temperature.png"/></td>
+				</tr>
+				<tr>
+					<td><label class="no_alarm" id="humidity">--- % RH</label></td>
+					<td><label class="no_alarm" id="velocity">--- m/s</label></td>
+					<td><label class="no_alarm" id="temperature">--- Deg. M</label></td>
+				</tr>
+			</table>
 		</div>
 	</div>
 	 

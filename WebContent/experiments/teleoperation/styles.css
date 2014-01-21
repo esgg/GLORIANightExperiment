@@ -1,25 +1,35 @@
 /* Panels position */
 #left_controls{
 	position:relative;
-	top:200px;
+	top:250px;
 	left:40px;
 	height:270px;
 }
 #right_controls{
 	position:relative;
-	top:-79px;
+	top:-65px;
 	left: 785px; 
 }
-#mount_target_parameters{
+#mount_target_panel{
 	position:relative;
-	top: 4px;
+	top: 15px;
+	left: 5px;
+}
+#mount_parameters{
+	position:relative;
+	top: 10px;
+	left: 5px;
+	width:130px;
+}
+#main_ccd_parameters{
+	position:relative;
+	top: 10px;
 	left: 5px;
 	width:130px;
 }
 #main_ccd_panel{
 	position:relative;
-	top: 35px;
-	width:100px;
+	top: 65px;
 }
 .image_carousel {
 	padding: 15px 0 15px 40px;
@@ -30,17 +40,17 @@
 }
 #main_image {
 	
-	height: 482px; 
-	width: 482px; 
+	height: 550px; 
+	width: 550px; 
 	border-radius:50%;
 	border:1px solid white;
 	overflow:hidden;
-	margin-top:-628px;
-	margin-left:270px;
+	margin-top:-618px;
+	margin-left:195px;
 }
 .main_img{
 	max-width:300%;
-	height:480px;
+	height:550px;
 	margin-top: 0px;
 	margin-left: 0px;
 /*		transition-property: margin-top, margin-left;
@@ -107,12 +117,20 @@ a.prev span, a.next span {
 #gloria_info{
 	position:relative;
 	top:40px;
-	left:250px;
+	left:200px;
 	width:530px;
 }
 
 
 /* Text style */
+.title_info{
+	color:#984d4a;
+	font-size:11px;
+}
+.regular_info{
+	color: silver;
+	font-size:11px;
+}
 .title{
 	color:#984d4a;
 	margin-right:5px;
@@ -123,6 +141,7 @@ a.prev span, a.next span {
 }
 .status{
 	width:120px;
+	margin-top:5px;
 }
 .status_text{
 	color:#FFFFFF;
@@ -157,7 +176,7 @@ a.prev span, a.next span {
  .selector{
 	border-radius:4px;
 	border:1px solid #FFFFFF;
-	width: 60px;
+	width: 82px;
 	height:15px;
 	font-size:11px;
 	padding-top:0px;
@@ -167,20 +186,16 @@ a.prev span, a.next span {
 }
  
  .ccd_button{
-	background-color:#6C7B8B;
 	opacity:0.2;
-	border-radius:5px;
-	padding:7px;
+	background-color: black;
 }
 .ccd_button:hover{
 	opacity:1.0;
 	cursor:pointer;
 }
 .ccd_button_selected{
-	background-color:#6C7B8B;
 	opacity:1.0;
-	border-radius:5px;
-	padding:7px;
+	background-color: black;
 }
  
  /* Animation style */
@@ -220,8 +235,8 @@ a.prev span, a.next span {
 	height:25px; 
 	background: grey; 
 	position:relative; 
-	left:503px;
-	top: 25px;
+	left:460px;
+	top: 30px;
 	border-radius: 5px; 
 	cursor: move;
 	-moz-transform:rotate(0deg);
