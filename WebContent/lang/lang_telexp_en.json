@@ -4,7 +4,13 @@
 				"title":"MOUNT",
 				"ra":"RA",
 				"dec":"DEC",
-				"object":"OBJECT" 	
+				"object":"OBJECT",
+				"messages": {
+					"ra_text": "Right Ascension Coordinate",
+					"dec_text": "Declination Coordinate"	,
+					"target_text": "Object Name",
+					"relative_move": "Move the telescope a few steps"
+				}	
 			 },
 	"ccd": {
 				"title": "CCD",
@@ -19,7 +25,11 @@
 					"error": "ERROR"
 				},
 				"messages": {
-					"internal_server": "Fail in server"
+					"internal_server": "Fail in server",
+					"time_text": "Set the exposure time in seconds",
+					"filter_text": "Set a filter",
+					"binning_text": "Set the binning factor",
+					"expose_text": "Start exposition"
 				}
 		   }
 }
