@@ -159,9 +159,13 @@ function GetCamerasCtrl(GloriaAPI, $scope){
 	//Cambiar a $scope.rid
 		GloriaAPI.getParameterValue($scope.requestRid,'cameras',function(success){
 			
-			//$("#scam0").append("<img src=\""+success.scam.images[0].url+"\" width=\"100px\"/>");
-			//$("#scam1").append("<img src=\""+success.scam.images[1].url+"\"/>");
+			$("#scam0_name").text(success.scam.images[0].name);
+			$("#scam0_img").attr("src",success.scam.images[0].url);
+			
+			$("#scam1_name").text(success.scam.images[1].name);
+			$("#scam1_img").attr("src",success.scam.images[1].url);
 				
+			/*
 				for (var nscam=0;nscam<success.scam.number;nscam++){
 					
 					var scamCode = "<div style=\"margin-top:"+80+"px;\">" +
@@ -174,7 +178,7 @@ function GetCamerasCtrl(GloriaAPI, $scope){
 					
 					$("#surveillance_panel").append(scamCode);	
 				}
-				
+				*/
 			}, function(error){
 					alert(error);
 					});
@@ -203,7 +207,7 @@ function MountDevice(GloriaAPI , $scope){
 						alert("Wrong dec value (MIN:-90, MAX:90)");
 					}
 			}  else {
-				alert("Wrong ra value (MIN:0, MAX:360 not incluided)");
+				alert("Wrong ra value (MIN:0, MAX:360)");
 			}	
 		} else {
 			//Set target name
@@ -230,7 +234,7 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	};
 	
 	$scope.setOrder = function(order) {
-		$scope.ccd_order = order;
+		
 		/*if ($scope.exposure_time[$scope.ccd_order] != undefined){
 			$scope.exposure_time = $scope.exposure_time[$scope.ccd_order];
 		}*/
@@ -244,6 +248,8 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 			//$("#filter_selector").attr("disabled",true);
 		}
 		GloriaAPI.setParameterTreeValue($scope.requestRid,'cameras','ccd.order',parseInt(order),function(success){
+			console.log("Paso:"+parseInt(order));
+			$scope.ccd_order = parseInt(order);
 			GloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
 				
 			}, function(error){
@@ -256,28 +262,31 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	
 	$scope.expose = function(){
 
-		console.log($scope.exposure_time);
-		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){
-			//$("#expose_0_button").attr("disabled",true);
-			//$("#loading").css("visibility","visible");
-			$("#ccd_status").addClass("mess-info");
-			$scope.status_main_ccd = "telexp.ccd.status.exposing";
-			$scope.exposure_time[$scope.ccd_order] = $scope.exposure_time;
-			num_ccd_timer=max_ccd_timer;
-			
-			console.log("set exposure time");
-			SetExposureTime(GloriaAPI, $scope);
+		console.log("Order:"+$scope.ccd_order);
+		if (!$scope.isExposing){
+			if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){			
+				
+				$scope.status_main_ccd = "telexp.ccd.status.exposing";
+				$scope.isExposing = true;
+				$scope.exposure_time[$scope.ccd_order] = $scope.exposure_time;
+				num_ccd_timer=max_ccd_timer;
+				
+				console.log("set exposure time");
+				SetExposureTime(GloriaAPI, $scope);
 
-			console.log("set ccd attributes");
-			SetCCDAttributes(GloriaAPI, $scope);
-			
-			console.log("start exposure");
-			StartExposure(GloriaAPI, $scope, $timeout);
-			
+				console.log("set ccd attributes");
+				SetCCDAttributes(GloriaAPI, $scope);
+				
+				console.log("start exposure");
+				StartExposure(GloriaAPI, $scope, $timeout);
+				
+				
+			} else {
+				alert("Wrong parameter exposure time (MIN:0, MAX:120)");
+			}
 		} else {
-			alert("Wrong parameter exposure time (MIN:0, MAX:120)");
+			alert("Operation in progress");
 		}
-		
 	};
 }
 
@@ -359,7 +368,7 @@ function SetExposureTime(GloriaAPI, data){
 		return GloriaAPI.setParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].exposure',parseFloat(data.exposure_time),function(success){
 				
 			}, function(error){
-				$("#expose_0_button").removeAttr("disabled");
+				data.isExposing = false;
 			});
 	});
 }
@@ -373,6 +382,7 @@ function SetCCDAttributes(GloriaAPI, data){
 				$("#ccd_alert").attr("title","Problem to set exposure time");
 				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 				data.status_main_ccd = "telexp.ccd.status.error";
+				data.isExposing = false;
 			});
 	});
 }
@@ -383,9 +393,13 @@ function activateCcdAlarm(message){
 	$("#expose_0_button").removeAttr("disabled");
 }
 function StartExposure(GloriaAPI, data, $timeout){
+	console.log("ee"+data.ccd_order);
 	return data.ccd_sequence.execute(function() {
+		console.log("ee1"+data.ccd_order);
 		return GloriaAPI.executeOperation(data.requestRid,'start_exposure',function(success){
+			console.log("ee2"+data.ccd_order);
 			GloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst.id',function(success){
+				console.log("ee3"+data.ccd_order);
 				if (success != -1){
 					console.log("Image with id "+success+" generated");
 					
@@ -396,9 +410,10 @@ function StartExposure(GloriaAPI, data, $timeout){
 					$("#ccd_alert").attr("title","No image id generated");
 					data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 					data.status_main_ccd = "telexp.ccd.status.error";
+					data.isExposing = false;
 				}
 			}, function(error){
-				$("#expose_0_button").removeAttr("disabled");
+				data.isExposing = false;
 				data.status_main_ccd = "telexp.ccd.status.error";
 				data.ccd_alarm = true;
 				$("#ccd_alert").attr("title","Problem to start exposure");
@@ -408,7 +423,7 @@ function StartExposure(GloriaAPI, data, $timeout){
 				
 				
 			}, function(error){
-				$("#expose_0_button").removeAttr("disabled");
+				data.isExposing = false;
 				data.status_main_ccd = "telexp.ccd.status.error";
 				data.ccd_alarm = true;
 				$("#ccd_alert").attr("title","Problem to start exposure");
@@ -445,7 +460,8 @@ function exposureTimer(GloriaAPI, data, $timeout){
 					});
 				};
 				data.status_main_ccd = "telexp.ccd.status.taken";
-				$("#ccd_status").removeClass("mess-info");
+				//$("#ccd_status").removeClass("mess-info");
+				data.isExposing = false;
 				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\" style=\"width:235px\">";
 				htmlCode = htmlCode + "<img src=\""+mImage.src+"\"/></a>";
 				$(htmlCode).appendTo("#foo2");
@@ -475,7 +491,8 @@ function exposureTimer(GloriaAPI, data, $timeout){
 			}else{
 				console.log("Launching timer again");
 				if (num_ccd_timer == 0){
-					data.status_main_ccd = "telexp.ccd.status.error";	
+					data.status_main_ccd = "telexp.ccd.status.error";
+					data.isExposing = false;
 				} else {
 					num_ccd_timer--;
 					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000);
@@ -483,11 +500,11 @@ function exposureTimer(GloriaAPI, data, $timeout){
 
 			}
 		}, function(error){
-			$("#expose_0_button").removeAttr("disabled");
+			data.isExposing = false;
 			data.status_main_ccd = "telexp.ccd.status.error";
 		});
 	}, function(error){
-		$("#expose_0_button").removeAttr("disabled");
+		data.isExposing = false;
 		data.status_main_ccd = "telexp.ccd.status.error";
 	});
 						

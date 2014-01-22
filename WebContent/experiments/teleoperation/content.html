@@ -9,6 +9,30 @@
 	</div>
 	<div id="left_controls">
 		<div id="surveillance_panel" ng-controller="GetCamerasCtrl">
+			<div style="margin-top:80px;">
+				<div style="width:100px;text-align:center;">
+					<span id="scam0_name" class="title">SCAM 0</span>
+				</div>
+				<div class="expand" style="z-index:500;">
+					<div class="positioner">
+						<a class="slide" aria-haspopup="true">
+							<img id="scam0_img" src="experiments/teleoperation/images/white_noise.gif"/>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div style="margin-top:80px;">
+				<div style="width:100px;text-align:center;">
+					<span id="scam1_name" class="title">SCAM 1</span>
+				</div>
+				<div class="expand" style="z-index:409;">
+					<div class="positioner">
+						<a class="slide" aria-haspopup="true">
+							<img id="scam1_img" src="experiments/teleoperation/images/white_noise.gif"/>
+						</a>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="right_controls" ng-controller="MountDevice">
@@ -17,13 +41,13 @@
 			<div id="mount_parameters">
 				<table style="position:relative;left:12px;border-spacing:5px">
 					<tr>
-						<td><input id="coords_ra" class="input_text" ng-model="ra" size="6" value="{{'telexp.mount.ra' | i18n}}" tooltip="{{'telexp.mount.messages.ra_text' | i18n}}"></input></td>
+						<td><input id="coords_ra" class="input_text" ng-model="ra" tooltip="{{'telexp.mount.messages.ra_text' | i18n}}" placeholder="{{'telexp.mount.ra' | i18n}}"></input></td>
 					</tr>
 					<tr>
-						<td><input id="coords_dec" class="input_text" ng-model="dec" size="6" tooltip="{{'telexp.mount.messages.dec_text' | i18n}}"></input></td>
+						<td><input id="coords_dec" class="input_text" ng-model="dec" tooltip="{{'telexp.mount.messages.dec_text' | i18n}}" placeholder="{{'telexp.mount.dec' | i18n}}"></input></td>
 					</tr>
 					<tr>
-						<td><input id="tags" class="input_text" ng-model="target_name" size="6" tooltip="{{'telexp.mount.messages.target_text' | i18n}}"></input></td>
+						<td><input id="tags" class="input_text" ng-model="target_name" tooltip="{{'telexp.mount.messages.target_text' | i18n}}" placeholder="{{'telexp.mount.object' | i18n}}"></input></td>
 					</tr>
 				</table>
 				<div align="center" class="status">
@@ -71,11 +95,11 @@
 					<img src="experiments/teleoperation/images/information.png" />
 					</div>
 				</div>
-				<div id="main_ccd_parameters">
+				<div id="main_ccd_parameters" ng-model="isExposing" ng-init="isExposing=false">
 					
 						<table style="position:relative;left:18px;border-spacing:5px">
 							<tr>
-								<td><input id="exposure_time" class="input_text" ng-model="exposure_time"></td>
+								<td><input id="exposure_time" class="input_text" ng-model="exposure_time" placeholder="{{'telexp.ccd.exposure_time' | i18n}}"></td>
 							</tr>
 							<tr>
 								<td><select id="filter_selector" class="selector" ng-model="filter" ng-change="setFilter()" tooltip="{{'telexp.ccd.messages.filter_text' | i18n}}">
@@ -90,21 +114,22 @@
 						</table>
 					
 					<div align="center" class="status" ng-model="status_main_ccd" ng-init="status_main_ccd='telexp.ccd.status.ready'">
-						<span id="ccd_status" class="status_text">{{status_main_ccd | i18n}}</span>
+						<span id="ccd_status" class="status_text" ng-class="{'mess-info':isExposing}">{{status_main_ccd | i18n}}</span>
 					</div>
-					<div id="main_ccd_buttons_panel" style="float:right;">
+					<div id="main_ccd_buttons_panel" style="float:right;" >
 						<img src="experiments/teleoperation/images/eye.png" width="49px" height="34px" ng-click="expose()" tooltip="{{'telexp.ccd.messages.expose_text' | i18n}}"/>
 					</div>
 				</div>
+				 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:175px;width:70px;top:-35px" ng-click="setOrder(1)">
+		<img src="experiments/teleoperation/images/ccd.png" width="40px"/>
+	</div>
+	<div id="ccd_button_0" class="ccd_button_selected" style="position:relative;top:-75px;left:710px;width:70px;" ng-click="setOrder(0)">
+		<img src="experiments/teleoperation/images/main_ccd.png" width="54px" />
+	</div>
 			</div>
 			
 	</div>
-	 <div id="ccd_button_1" class="ccd_button" style="position:relative;left:175px;width:70px;top:-35px" ng-controller="CcdDevice" ng-click="setOrder(1)">
-		<img src="experiments/teleoperation/images/ccd.png" width="40px"/>
-	</div>
-	<div id="ccd_button_0" class="ccd_button_selected" ng-init="ccd_order=0" style="position:relative;top:-75px;left:710px;width:70px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
-		<img src="experiments/teleoperation/images/main_ccd.png" width="54px" />
-	</div>
+	
 	<!-- <div style="width:500px;position:absolute;top:80px;left:270px;"> -->  
 		
 		

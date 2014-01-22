@@ -268,7 +268,7 @@ a.prev span, a.next span {
     -ms-transform-origin:5px 270px;                                
                         
     -webkit-transform:rotate(0deg);
-    -webkit-transform-origin:5px 270px;
+    -webkit-transform-origin:5px 325px;
     
     /*z-index:170;*/ 	
 }
@@ -341,4 +341,27 @@ a.prev span, a.next span {
 }
 .badge_alarm{
 	opacity:1.0;
+}
+
+/* Animations */
+.mess-info
+{
+   	animation-name: mess-info-animation;
+   	animation-duration: 1.5s;
+   	animation-iteration-count: infinite;
+   	-webkit-animation-name: mess-info-animation;
+   	-webkit-animation-duration: 1.5s;
+   	-webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes mess-info-animation {
+    0% { opacity: 0.5; }
+    50% { opacity: 1.0; }    
+    100% { opacity: 0.5; }
+}
+
+@keyframes mess-info-animation {
+    0% { opacity: 0.5; }
+    50% { opacity: 1.0; }    
+    100% { opacity: 0.5; }
 }
