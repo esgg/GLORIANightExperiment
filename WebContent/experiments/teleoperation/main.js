@@ -256,6 +256,7 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	
 	$scope.expose = function(){
 
+		console.log($scope.exposure_time);
 		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){
 			//$("#expose_0_button").attr("disabled",true);
 			//$("#loading").css("visibility","visible");
@@ -432,9 +433,9 @@ function exposureTimer(GloriaAPI, data, $timeout){
 				var mImage = new Image();
 				mImage.src = success.jpg;
 				mImage.onload = function(e){
-					var yFactor = mImage.height/480;
+					var yFactor = mImage.height/550;
 					var imageWidth = mImage.width/yFactor;
-					var shift = (480-imageWidth)/2;
+					var shift = (550-imageWidth)/2;
 					$("#image_0").attr("src",success.jpg);
 					$("#image_0").load(function (e){
 						$("#main_image_container").css("margin-left",shift);

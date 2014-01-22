@@ -34,7 +34,7 @@
 .image_carousel {
 	padding: 15px 0 15px 40px;
 	position: relative;
-	top:75px;
+	top:50px;
 	left:50px;
 	width:800px;
 }
@@ -45,8 +45,9 @@
 	border-radius:50%;
 	border:1px solid white;
 	overflow:hidden;
-	margin-top:-618px;
+	margin-top:75px;
 	margin-left:195px;
+	position:absolute;
 }
 .main_img{
 	max-width:300%;
@@ -86,7 +87,7 @@ a.prev, a.next {
 	height: 50px;
 	display: block;
 	position: absolute;
-	top: 50px;
+	top: 100px;
 }
 a.prev {			
 	left: -22px;
@@ -116,9 +117,9 @@ a.prev span, a.next span {
 }
 #gloria_info{
 	position:relative;
-	top:40px;
 	left:200px;
 	width:530px;
+	top:-20px;
 }
 
 
@@ -174,15 +175,18 @@ a.prev span, a.next span {
 	font-size:0.7em;
  }
  .selector{
-	border-radius:4px;
-	border:1px solid #FFFFFF;
+	background-color:#000000;
+	color: #FFFFFF;
+	border:1px solid #1A1414;
 	width: 82px;
-	height:15px;
-	font-size:11px;
+	height:16px;
+	font-size:12px;
 	padding-top:0px;
 	padding-bottom:0px;
 	margin-top:5px;
 	margin-bottom:5px;
+	padding-left:0px;
+	padding-right:0px;
 }
  
  .ccd_button{
@@ -197,7 +201,22 @@ a.prev span, a.next span {
 	opacity:1.0;
 	background-color: black;
 }
- 
+
+#mount_buttons_panel{
+	opacity:0.5;
+}
+#mount_buttons_panel:hover{
+	opacity:1.0;
+	cursor:pointer;
+}
+
+#main_ccd_buttons_panel{
+	opacity:0.5;
+}
+#main_ccd_buttons_panel:hover{
+	opacity:1.0;
+	cursor:pointer;
+}
  /* Animation style */
 .expand{
 	position:relative;
@@ -319,4 +338,7 @@ a.prev span, a.next span {
 .arrow_right:hover{
  	opacity:1.0;
  	cursor:pointer;
+}
+.badge_alarm{
+	opacity:1.0;
 }
