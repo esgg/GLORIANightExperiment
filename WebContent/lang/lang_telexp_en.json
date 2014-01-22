@@ -4,7 +4,7 @@
 				"title":"MOUNT",
 				"ra":"RA",
 				"dec":"DEC",
-				"object":"OBJECT",
+				"object":"TARGET",
 				"messages": {
 					"ra_text": "Right Ascension Coordinate",
 					"dec_text": "Declination Coordinate"	,
