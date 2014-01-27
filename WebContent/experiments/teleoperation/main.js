@@ -121,6 +121,7 @@ function InitDevices(GloriaAPI, $scope){
 	
 	$scope.ccd_order = 0;
 
+	/*
 		GloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
 			GloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
 				$scope.filters_0 = listFilters.filters;
@@ -137,7 +138,7 @@ function InitDevices(GloriaAPI, $scope){
 		}, function(dataError, statusError){
 
 		});
-	
+	*/
 	
 	GloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
 			
@@ -187,6 +188,33 @@ function GetCamerasCtrl(GloriaAPI, $scope){
 /* Devices controllers */
 function MountDevice(GloriaAPI , $scope){
 	
+	console.log("Paso:"+$scope.target_name);
+	$scope.hasMove= true;
+	
+	$scope.move_north = function(){
+		if ($scope.hasMove){
+			
+		}
+	};
+	
+	$scope.move_south = function(){
+		if ($scope.hasMove){
+			
+		}
+	};
+	
+	$scope.move_east = function(){
+		if ($scope.hasMove){
+			
+		}
+	};
+	
+	$scope.move_west = function(){
+		if ($scope.hasMove){
+			
+		}
+	};
+	
 	$scope.go = function(){
 
 		var raRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
@@ -218,12 +246,43 @@ function MountDevice(GloriaAPI , $scope){
 		}
 		
 	};
+	
+	$scope.open_catalog = function(){
+		$("#CatalogModal").modal();
+	};
 }
 function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
+	
+
+	$scope.hasCcd = [false,false];
+	$scope.hasFilterWheel = [false, false];
+	$scope.hasFocuser = [false, false];
+	
+	$scope.hasCcd[0] = true;
+	$scope.hasFilterWheel[0] = true;
+	$scope.hasCcd[1] = true;
 	
 	$scope.ccd_alarm = false;
 	
 	$scope.ccd_sequence = $sequenceFactory.getSequence();
+	
+	//Load filters for CCD0.
+	GloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
+		GloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
+			$scope.filters_0 = listFilters.filters;
+			//We select the first of the list as default value
+			GloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',listFilters.filters[0],function(success){
+				
+			}, function(error){
+				
+			});
+		}, function(error){
+			//alert(error);
+		});
+			
+	}, function(dataError, statusError){
+
+	});
 	
 	$scope.setFilter = function(){
 		GloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',$scope.filter,function(success){
@@ -233,11 +292,11 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 		});
 	};
 	
+
+
+	/*
 	$scope.setOrder = function(order) {
 		
-		/*if ($scope.exposure_time[$scope.ccd_order] != undefined){
-			$scope.exposure_time = $scope.exposure_time[$scope.ccd_order];
-		}*/
 		if (order == 0){
 			$("#ccd_button_0").attr("class", "ccd_button_selected");
 			$("#ccd_button_1").attr("class", "ccd_button");
@@ -259,7 +318,17 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 			
 		});
 	};
+	*/
+	$scope.setOrder = function(order){
+		console.log("Set order:"+order);
+		
+		$scope.ccd_order = parseInt(order);
+	};
 	
+	$scope.expose = function(){
+		console.log("Exponiendo");
+	};
+	/*
 	$scope.expose = function(){
 
 		console.log("Order:"+$scope.ccd_order);
@@ -288,6 +357,7 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 			alert("Operation in progress");
 		}
 	};
+	*/
 }
 
 function ImageCarousel(GloriaAPI, $scope){
@@ -532,3 +602,4 @@ function WeatherDevice(GloriaAPI, $scope, $timeout){
 		}, 10000);
 	
 }
+
