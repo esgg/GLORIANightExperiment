@@ -151,7 +151,27 @@ a.prev span, a.next span {
 	font-weight: bold;
 }
 
+.action_component{
+	opacity:0.5;
+}
+.action_component:hover{
+	opacity:1.0;
+	cursor:pointer;
+}
 
+.modal-header{
+	text-align:center;
+	background-color:black;
+	color:silver;
+}
+.modal-body{
+	background-color:black;
+	color:silver;
+}
+.modal-footer{
+	background-color:black;
+	color:silver;
+}
 /* Form style */
 
 .input_text{
@@ -189,9 +209,12 @@ a.prev span, a.next span {
 	padding-right:0px;
 }
  
+ .ccd_button_disabled{
+ 	opacity:0.2;
+ }
+ 
  .ccd_button{
 	opacity:0.2;
-	background-color: black;
 }
 .ccd_button:hover{
 	opacity:1.0;
@@ -303,44 +326,39 @@ a.prev span, a.next span {
  	border-left:10px solid transparent;  /* left arrow slant */
  	border-right:10px solid transparent; /* right arrow slant */
  	border-bottom:10px solid white; /* bottom, add background color here */
- 	opacity:0.5;
 }
 .arrow_down{
  	border-left:10px solid transparent;  /* left arrow slant */
  	border-right:10px solid transparent; /* right arrow slant */
  	border-top:10px solid white; /* bottom, add background color here */
- 	opacity:0.5;
 }
 .arrow_left{
  	border-bottom:10px solid transparent;  /* left arrow slant */
  	border-top:10px solid transparent; /* right arrow slant */
  	border-right:10px solid white; /* bottom, add background color here */
- 	opacity:0.5;
 }
 .arrow_right{
  	border-top:10px solid transparent;  /* left arrow slant */
  	border-bottom:10px solid transparent; /* right arrow slant */
  	border-left:10px solid white; /* bottom, add background color here */
- 	opacity:0.5;
 }
-.arrow_up:hover{
- 	opacity:1.0;
+.component_disabled{
+	opacity:0.5;
+}
+.component_enabled{
+	opacity:0.5;
+}
+.component_enabled:hover{
+	opacity:1.0;
  	cursor:pointer;
 }
-.arrow_down:hover{
- 	opacity:1.0;
- 	cursor:pointer;
-}
-.arrow_left:hover{
- 	opacity:1.0;
- 	cursor:pointer;
-}
-.arrow_right:hover{
- 	opacity:1.0;
- 	cursor:pointer;
-}
+
 .badge_alarm{
 	opacity:1.0;
+}
+
+.catalog_title{
+	text-align:center;
 }
 
 /* Animations */
