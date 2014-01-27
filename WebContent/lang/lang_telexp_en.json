@@ -10,6 +10,15 @@
 					"dec_text": "Declination Coordinate"	,
 					"target_text": "Object Name",
 					"relative_move": "Move the telescope a few steps"
+				},
+				"catalog": {
+					"mercury": "MERCURY",
+					"venus": "VENUS",
+					"mars": "MARS",
+					"jupiter": "JUPITER",
+					"saturn": "SATURN",
+					"neptune": "NEPTUNE",
+					"uranus": "URANUS"
 				}	
 			 },
 	"ccd": {
