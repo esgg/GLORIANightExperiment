@@ -188,12 +188,16 @@ function GetCamerasCtrl(GloriaAPI, $scope){
 /* Devices controllers */
 function MountDevice(GloriaAPI , $scope){
 	
-	console.log("Paso:"+$scope.target_name);
-	$scope.hasMove= true;
+	//console.log("Paso:"+$scope.target_name);
+	//$scope.hasMove= true;
 	
 	$scope.move_north = function(){
 		if ($scope.hasMove){
-			
+			GloriaAPI.executeOperation($scope.requestRid,'move_north',function(success){
+				
+			}, function(dataError, statusError){
+
+			});
 		}
 	};
 	
@@ -248,8 +252,27 @@ function MountDevice(GloriaAPI , $scope){
 	};
 	
 	$scope.open_catalog = function(){
+		console.log("Dec:"+$scope.dec);
+		if (($scope.dec!=undefined) && ($scope.dec.length>0)){
+			console.log("longitud:"+$scope.dec.length);
+		}
 		$("#CatalogModal").modal();
 	};
+	
+	$scope.hasCoordinates = function(){
+		return (($scope.ra != undefined) && ($scope.ra != undefined) && (($scope.ra.length > 0) || ($scope.dec.length >0)));
+	};
+	
+	$scope.hasTargetName = function(){
+		return (($scope.target_name != undefined ) && ($scope.target_name.length > 0));
+	};
+	
+	$scope.setTargetName = function(name){
+		$scope.target_name = name;
+		$scope.ra = undefined;
+		$scope.dec = undefined;
+	}
+	
 }
 function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	
@@ -370,6 +393,18 @@ function ImageCarousel(GloriaAPI, $scope){
 				console.log(image.jpg);
 	        });
 		 
+		//If the number of images is greater than 0, apply pretty effect
+		 	if (numImages>0){
+				$("#foo2 a").prettyPhoto({
+					theme: "facebook",
+					changepicturecallback: function() {
+						$("#foo2").trigger("pause");
+					},
+					callback: function() {
+						$("#foo2").trigger("play");
+					}
+				});			 		
+		 	}
 		 //If number of  images is greater than 4, apply carousel effect
 		 if (numImages>4){
 				$("#foo2").carouFredSel({
@@ -383,18 +418,7 @@ function ImageCarousel(GloriaAPI, $scope){
 					next : "#foo1_next"
 				});			
 			}
-		 	//If the number of images is greater than 0, apply pretty effect
-		 	if (numImages>0){
-				$("#foo2 a").prettyPhoto({
-					theme: "facebook",
-					changepicturecallback: function() {
-						$("#foo2").trigger("pause");
-					},
-					callback: function() {
-						$("#foo2").trigger("play");
-					}
-				});			 		
-		 	}
+		 	
 		
 	}, function(error){
 		

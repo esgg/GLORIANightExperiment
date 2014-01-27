@@ -35,8 +35,9 @@
 			</div>
 		</div>
 	</div>
-	<div id="right_controls" ng-controller="MountDevice">
-		<div id="mount_target_panel">
+	<div id="right_controls">
+		<div ng-controller="MountDevice">
+		<div id="mount_target_panel" >
 			<span class="title">{{'telexp.mount.title' | i18n}}</span>
 			<div id="mount_parameters">
 				<div class="modal hide fade" id="CatalogModal">
@@ -54,10 +55,10 @@
 										<td height="20px" class="catalog_title">{{'telexp.mount.catalog.jupiter' | i18n}}</td>
 									</tr>
 									<tr>
-										<td height="100px"><div class="action_component" ng-click="target_name='mercury'"><img src="experiments/teleoperation/images/catalog/mercury.jpg" height="100px"/></div></td>
-										<td height="100px"><div class="action_component"><img src="experiments/teleoperation/images/catalog/venus.jpg" height="100px"/></div></td>
-										<td height="100px"><div class="action_component"><img src="experiments/teleoperation/images/catalog/mars.jpg" height="100px"/></div></td>
-										<td height="100px"><div class="action_component"><img src="experiments/teleoperation/images/catalog/jupiter.jpg" height="100px"/></div></td>
+										<td height="100px"><div class="action_component" ng-click="setTargetName('mercury')"><img src="experiments/teleoperation/images/catalog/mercury.jpg" height="100px"/></div></td>
+										<td height="100px"><div class="action_component" ng-click="setTargetName('venus')"><img src="experiments/teleoperation/images/catalog/venus.jpg" height="100px"/></div></td>
+										<td height="100px"><div class="action_component" ng-click="setTargetName('mars')"><img src="experiments/teleoperation/images/catalog/mars.jpg" height="100px"/></div></td>
+										<td height="100px"><div class="action_component" ng-click="setTargetName('jupiter')"><img src="experiments/teleoperation/images/catalog/jupiter.jpg" height="100px"/></div></td>
 									</tr>
 									<tr>
 										<td height="20px" class="catalog_title">{{'telexp.mount.catalog.saturn' | i18n}}</td>
@@ -66,14 +67,14 @@
 										<td height="20px">&nbsp;</td>
 									</tr>
 									<tr>
-										<td height="20px"><div class="action_component"><img src="experiments/teleoperation/images/catalog/saturn.jpg" height="100px"/></div></td>
-										<td height="20px"><div class="action_component"><img src="experiments/teleoperation/images/catalog/neptune.jpg" height="100px"/></div></td>
-										<td height="20px"><div class="action_component"><img src="experiments/teleoperation/images/catalog/uranus.jpg" height="100px"/></div></td>
+										<td height="20px"><div class="action_component" ng-click="setTargetName('saturn')"><img src="experiments/teleoperation/images/catalog/saturn.jpg" height="100px"/></div></td>
+										<td height="20px"><div class="action_component" ng-click="setTargetName('neptune')"><img src="experiments/teleoperation/images/catalog/neptune.jpg" height="100px"/></div></td>
+										<td height="20px"><div class="action_component" ng-click="setTargetName('uranus')"><img src="experiments/teleoperation/images/catalog/uranus.jpg" height="100px"/></div></td>
 										<td height="20px">&nbsp;</td>
 									</tr>
 								</table>
 							</tab>
-						<tab heading="NEBULAES">
+						<tab heading="NEBULAE">
 							Nebulosas
 						</tab>
 						</tabset>
@@ -86,13 +87,13 @@
     			</div> 
 				<table style="position:relative;left:12px;border-spacing:5px">
 					<tr>
-						<td><input id="coords_ra" class="input_text" ng-model="ra" tooltip="{{'telexp.mount.messages.ra_text' | i18n}}" placeholder="{{'telexp.mount.ra' | i18n}}"></input></td>
+						<td><input id="coords_ra" class="input_text" ng-model="ra" ng-disabled="hasTargetName()" placeholder="{{'telexp.mount.ra' | i18n}}"></input></td>
 					</tr>
 					<tr>
-						<td><input id="coords_dec" class="input_text" ng-model="dec" tooltip="{{'telexp.mount.messages.dec_text' | i18n}}" placeholder="{{'telexp.mount.dec' | i18n}}"></input></td>
+						<td><input id="coords_dec" class="input_text" ng-model="dec" ng-disabled="hasTargetName()"  placeholder="{{'telexp.mount.dec' | i18n}}"></input></td>
 					</tr>
 					<tr>
-						<td><input id="tags" class="input_text" ng-model="target_name" tooltip="{{'telexp.mount.messages.target_text' | i18n}}" placeholder="{{'telexp.mount.object' | i18n}}" ></input></td>
+						<td><input id="tags" class="input_text" ng-model="target_name"  ng-disabled="hasCoordinates()" placeholder="{{'telexp.mount.object' | i18n}}" ></input></td>
 						<td><div class="action_component"><img src="experiments/teleoperation/images/catalog.png" width="32px" height="32px" ng-click="open_catalog()"/></div></td>
 					</tr>
 				</table>
@@ -131,12 +132,15 @@
 				</tr>						
 			</table>
 		</div>
+		</div>
 		<div id="main_ccd_panel" ng-controller="CcdDevice" ng-init="ccd_alarm=false">
 				<div style="display:block;">
 					<span class="title">CCD</span>
+					<!-- 
 					<a id="ccd_alert" href="#" >
 					<span id="ccd_budge" style="opacity:0.1" class="badge badge-important" ng-class="'badge_alarm':ccd_alarm"  ng-mouseleave="ccd_alarm=false">0</span>
 					</a>
+					 -->
 					<div style="float:right;">
 						<img src="experiments/teleoperation/images/information.png"/>
 					</div>
@@ -324,7 +328,7 @@ $('#focus_marker').on('mousedown', function(e){
 		
     
 });   
-
+/*
 $("#coords_ra").keyup('keyup', function(e){
 	var text = $(this).val();
 	if(text==""){
@@ -366,6 +370,7 @@ $("#coords_dec").tooltip({
 	     delay: 250
 	}
 })
+*/
 $("#ccd_alert").tooltip({
 	show: {
 		 effect: "slideDown",
