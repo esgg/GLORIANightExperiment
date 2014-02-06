@@ -4,9 +4,31 @@
 			</div> 
 		</div>
 <div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.png);background-size:940px 744px;background-repeat:no-repeat">
-	<div id="focus_marker">
-		<div id="focus_marker_info">0</div>
+	<div ng-controller="FocuserCtrl" ng-init="focuserPressed=false;currentFocuserPosition=0">
+		<div id="focus_marker"  ng-mousedown="activate_focuser()">
+		
+		</div>
+		<div id="focus_marker_info"  ng-style="{opacity: (focuserPressed && '1.0') || '0.0'}">
+			<br>
+			<table>
+				<tr>
+					<td><label for="focuserPosition">Current Position:</label></td>
+	  				<td><span id="focuserPosition" style="border:0; color:#f6931f; font-weight:bold;">0</span></td>
+	  			</tr>
+	  		</table>
+	  		<br>
+			<div id="focuser_slider">
+			</div>
+			<br>
+			<div style="float:right">
+				<button class="button_style" ng-click="set_focuser()">SET</button>
+				<button class="button_style" ng-click="cancel()">CANCEL</button>
+			</div>
+		
+		</div>
 	</div>
+	
+	
 	<div id="left_controls">
 		<div id="surveillance_panel" ng-controller="GetCamerasCtrl">
 			<div style="margin-top:80px;">
@@ -74,7 +96,7 @@
 									</tr>
 								</table>
 							</tab>
-						<tab heading="NEBULAE">
+						<tab heading="GALAXIES">
 							Nebulosas
 						</tab>
 						</tabset>
@@ -141,7 +163,7 @@
 					<span id="ccd_budge" style="opacity:0.1" class="badge badge-important" ng-class="'badge_alarm':ccd_alarm"  ng-mouseleave="ccd_alarm=false">0</span>
 					</a>
 					 -->
-					<div style="float:right;">
+					<div id="ccd_information" style="float:right;" data-trigger="hover">
 						<img src="experiments/teleoperation/images/information.png"/>
 					</div>
 				</div>
@@ -234,6 +256,7 @@
 </div>
 
 <script>
+/*
 var dragged = false;
 var initFocuserPosition = 0;
 var finalFocuserPosition = 1000;
@@ -278,23 +301,7 @@ $('#focus_marker').on('mousedown', function(e){
         } else {
         	rotateDegree = rotateOriginalDegree;
         }
-    /*    
-        if (rotateOriginalDegree < 0){
-        	newRotate = 360 + rotateOriginalDegree;
-        } else {
-        	newRotate = rotateOriginalDegree;
-        }
-        
-        if (newRotate > lastRotate){
-        	direction = 1;
-        } else {
-        	direction = 2;
-        }
-        
-        if ((newRotate > 180) && (direction == 1){
-        	limitClockwiseDirection = true;
-        }
-      */  
+
         var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
 		var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
 
@@ -313,13 +320,7 @@ $('#focus_marker').on('mousedown', function(e){
     		$(window).unbind('mousemove');
     		console.log("Moving focuser:"+$("#focus_marker_info").text());
   
-			/*
-    		GlAPI.setParameterTreeValue(<%= reservationId %>,'focuser','position',currentFocuserPosition,function(success){
 
- 			}, function(error){
-
- 			});
-			*/
     		$('#focus_marker').css("opacity","1.0");		
     		dragged = false;
     	}
@@ -328,6 +329,7 @@ $('#focus_marker').on('mousedown', function(e){
 		
     
 });   
+*/
 /*
 $("#coords_ra").keyup('keyup', function(e){
 	var text = $(this).val();
@@ -378,5 +380,17 @@ $("#ccd_alert").tooltip({
 	}
 });
 
-
+$("#ccd_information").popover('show');
+$("#focuser_slider").slider({
+	range:"max",
+	min: -1000,
+	max: 1000,
+	value:0,
+    slide: function( event, ui ) {
+       $( "#focuserPosition" ).text( ui.value );
+       rotateOriginalDegree = (ui.value*18)/100;
+       var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+       $('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+    }
+});
 </script>
