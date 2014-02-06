@@ -185,11 +185,17 @@ a.prev span, a.next span {
 	font-size:12px;
 }
 .button_style{
-	border-radius:4px;
+	background-color:#000000;
+	color: #FFFFFF;
+	border:1px solid #1A1414;
 	padding-top:0px;
 	padding-bottom:0px;
 	padding-right:5px;
 	padding-left:5px;
+ }
+ .button_style:hover{
+ 	background-color:#FFFFFF;
+ 	color: #000000;
  }
  .button_text{
 	font-size:0.7em;
@@ -293,7 +299,7 @@ a.prev span, a.next span {
     -webkit-transform:rotate(0deg);
     -webkit-transform-origin:5px 325px;
     
-    /*z-index:170;*/ 	
+    z-index:1000; 	
 }
 #reference_focuser{
 	position:relative;
@@ -306,12 +312,10 @@ a.prev span, a.next span {
 	left: 487px;
 }
 #focus_marker_info{
-	position:relative;
+	position:absolute;
 	background-color:black;
 	color:white;
 	padding:5px;
-	top:-35px;
-	left:30px;
 	opacity:1.0;
 	border-radius:20%;
 	border:1px solid white;
@@ -319,8 +323,12 @@ a.prev span, a.next span {
 	 -ms-transform:rotate(0deg);
 	 transform:rotate(0deg);
 	 -moz-transform:rotate(0deg);
-	 visibility:hidden;
-	 width:150%;
+	 width:150px;
+	 height:150px;
+	 top:400px;
+	 left:850px;
+	 z-index:1000;
+    
 }
 .arrow_up{
  	border-left:10px solid transparent;  /* left arrow slant */
@@ -382,4 +390,9 @@ a.prev span, a.next span {
     0% { opacity: 0.5; }
     50% { opacity: 1.0; }    
     100% { opacity: 0.5; }
+}
+
+.focuser-info
+{
+	opacity:1.0;
 }
