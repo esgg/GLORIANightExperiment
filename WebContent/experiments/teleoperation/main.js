@@ -120,6 +120,10 @@ function InitDevices(GloriaAPI, $scope){
 	//GlAPI = GloriaAPI;
 	
 	$scope.ccd_order = 0;
+	
+	$scope.initFocuserPosition = 0;
+	$scope.finalFocuserPosition = 1000;
+	$scope.currentFocuserPosition = 0;
 
 	/*
 		GloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
@@ -146,6 +150,43 @@ function InitDevices(GloriaAPI, $scope){
 		//alert(error);
 	});
 		
+	
+	$scope.activate_drag = function(){
+		$scope.dragged = true;
+		console.log("Order:"+$scope.ccd_order);
+	};
+	
+	$scope.deactivate_drag = function(){
+		$scope.dragged = false;
+	};
+	
+	$scope.setOrder = function(order){
+		console.log("Set order:"+order);
+		
+		$scope.ccd_order = parseInt(order);
+	};
+	
+	$scope.moving_focuser = function(){
+		
+		  console.log("Moves:"+event.x+" "+ event.y+" "+$scope.dragged);
+		  var rotateDegree = 0;
+		  var rotateOriginalDegree = rotateAnnotationCropper($('#container'), event.x,event.y, $('#focus_marker'));
+	        
+	        if ((rotateOriginalDegree < 270) && (rotateOriginalDegree > 180)){
+	        	rotateDegree = rotateOriginalDegree - 360;
+	        } else {
+	        	rotateDegree = rotateOriginalDegree;
+	        }
+
+	        var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+			var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
+
+			$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+			     
+	         $scope.currentFocuserPosition = $scope.initFocuserPosition + parseInt(rotateDegree*(($scope.finalFocuserPosition - $scope.initFocuserPosition) / 180));
+	         
+	};
 		
 		/*
 		GloriaAPI.getParameterTreeValue($scope.reservation,'focuser','position',function(success){
@@ -154,6 +195,48 @@ function InitDevices(GloriaAPI, $scope){
 
 		});
  */
+}
+
+function FocuserCtrl(GloriaAPI, $scope){
+	
+	//Read the initial position of the focuser
+	GloriaAPI.getParameterTreeValue($scope.requestRid,'focuser','steps',function(success){
+		console.log("Initial position:"+success);
+		if (success != ""){
+			$( "#focuserPosition" ).text(success);
+			$("#focuser_slider").slider("value",success );
+			
+			var angle = (success*18)/100;
+		     var rotate = 'rotate(' +angle + 'deg)';
+		     $('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+		}
+	}, function(dataError,statusError){
+		alert(statusError);
+	});
+	
+	$scope.activate_focuser = function(){
+		$scope.focuserPressed = true;
+
+	};
+	
+	$scope.set_focuser = function(){
+		$scope.focuserPressed = false;
+		GloriaAPI.setParameterTreeValue($scope.requestRid,'focuser','steps',$( "#focuserPosition" ).text(),function(success){
+			$scope.currentFocuserPosition = $( "#focuserPosition" ).text();
+		}, function(error){
+
+		});
+	};
+	
+	$scope.cancel = function(){
+		$scope.focuserPressed = false;
+		 $( "#focuserPosition" ).text($scope.currentFocuserPosition);
+		 $("#focuser_slider").slider("value",$scope.currentFocuserPosition );
+		 
+		 rotateOriginalDegree = ($scope.currentFocuserPosition*18)/100;
+	     var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+	     $('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+	};
 }
 
 function GetCamerasCtrl(GloriaAPI, $scope){
@@ -342,16 +425,13 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 		});
 	};
 	*/
-	$scope.setOrder = function(order){
-		console.log("Set order:"+order);
-		
-		$scope.ccd_order = parseInt(order);
-	};
-	
+
+	/*
 	$scope.expose = function(){
 		console.log("Exponiendo");
 	};
-	/*
+	*/
+	
 	$scope.expose = function(){
 
 		console.log("Order:"+$scope.ccd_order);
@@ -380,7 +460,7 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 			alert("Operation in progress");
 		}
 	};
-	*/
+	
 }
 
 function ImageCarousel(GloriaAPI, $scope){
