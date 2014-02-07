@@ -132,6 +132,10 @@ a.prev span, a.next span {
 	color: silver;
 	font-size:11px;
 }
+.popover{
+	color:silver;
+	font-size:10px;
+}
 .title{
 	color:#984d4a;
 	margin-right:5px;
@@ -157,6 +161,9 @@ a.prev span, a.next span {
 .action_component:hover{
 	opacity:1.0;
 	cursor:pointer;
+}
+.action_component_enabled{
+	opacity:1.0;
 }
 
 .modal-header{
