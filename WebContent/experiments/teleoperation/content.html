@@ -77,10 +77,10 @@
 										<td height="20px" class="catalog_title">{{'telexp.mount.catalog.jupiter' | i18n}}</td>
 									</tr>
 									<tr>
-										<td height="100px"><div class="action_component" ng-click="setTargetName('mercury')"><img src="experiments/teleoperation/images/catalog/mercury.jpg" height="100px"/></div></td>
-										<td height="100px"><div class="action_component" ng-click="setTargetName('venus')"><img src="experiments/teleoperation/images/catalog/venus.jpg" height="100px"/></div></td>
-										<td height="100px"><div class="action_component" ng-click="setTargetName('mars')"><img src="experiments/teleoperation/images/catalog/mars.jpg" height="100px"/></div></td>
-										<td height="100px"><div class="action_component" ng-click="setTargetName('jupiter')"><img src="experiments/teleoperation/images/catalog/jupiter.jpg" height="100px"/></div></td>
+										<td height="100px"><div ng-class="(target_selected == 'mercury') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('mercury')"><img src="experiments/teleoperation/images/catalog/mercury.jpg" height="100px"/></div></td>
+										<td height="100px"><div ng-class="(target_selected == 'venus') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('venus')"><img src="experiments/teleoperation/images/catalog/venus.jpg" height="100px"/></div></td>
+										<td height="100px"><div ng-class="(target_selected == 'mars') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('mars')"><img src="experiments/teleoperation/images/catalog/mars.jpg" height="100px"/></div></td>
+										<td height="100px"><div ng-class="(target_selected == 'jupiter') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('jupiter')"><img src="experiments/teleoperation/images/catalog/jupiter.jpg" height="100px"/></div></td>
 									</tr>
 									<tr>
 										<td height="20px" class="catalog_title">{{'telexp.mount.catalog.saturn' | i18n}}</td>
@@ -89,12 +89,13 @@
 										<td height="20px">&nbsp;</td>
 									</tr>
 									<tr>
-										<td height="20px"><div class="action_component" ng-click="setTargetName('saturn')"><img src="experiments/teleoperation/images/catalog/saturn.jpg" height="100px"/></div></td>
-										<td height="20px"><div class="action_component" ng-click="setTargetName('neptune')"><img src="experiments/teleoperation/images/catalog/neptune.jpg" height="100px"/></div></td>
-										<td height="20px"><div class="action_component" ng-click="setTargetName('uranus')"><img src="experiments/teleoperation/images/catalog/uranus.jpg" height="100px"/></div></td>
+										<td height="20px"><div ng-class="(target_selected == 'saturn') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('saturn')"><img src="experiments/teleoperation/images/catalog/saturn.jpg" height="100px"/></div></td>
+										<td height="20px"><div ng-class="(target_selected == 'neptune') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('neptune')"><img src="experiments/teleoperation/images/catalog/neptune.jpg" height="100px"/></div></td>
+										<td height="20px"><div ng-class="(target_selected == 'uranus') ?  'action_component_enabled': 'action_component'" ng-click="selectTarget('uranus')"><img src="experiments/teleoperation/images/catalog/uranus.jpg" height="100px"/></div></td>
 										<td height="20px">&nbsp;</td>
 									</tr>
 								</table>
+								 
 							</tab>
 						<tab heading="GALAXIES">
 							Nebulosas
@@ -103,8 +104,8 @@
 						Source: wikipedia
         			</div>
         			<div class="modal-footer">
-            			<button class="btn btn-primary" ng-click="ok()">OK</button>
-            			<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            			<button class="btn btn-primary" ng-click="setTargetName()">Select</button>
+            			<button class="btn btn-warning" data-dismiss="modal" ng-click="cancel()">Close</button>
         			</div>
     			</div> 
 				<table style="position:relative;left:12px;border-spacing:5px">
@@ -163,7 +164,7 @@
 					<span id="ccd_budge" style="opacity:0.1" class="badge badge-important" ng-class="'badge_alarm':ccd_alarm"  ng-mouseleave="ccd_alarm=false">0</span>
 					</a>
 					 -->
-					<div id="ccd_information" style="float:right;" data-trigger="hover">
+					<div id="ccd_information" style="float:right;" popover-placement="right" popover-animation="true" popover-trigger="mouseenter" popover="{{'telexp.ccd.information_exp' | i18n}}{{'telexp.ccd.information_filter' | i18n}}">
 						<img src="experiments/teleoperation/images/information.png"/>
 					</div>
 				</div>
@@ -189,7 +190,7 @@
 						<span id="ccd_status" class="status_text" ng-class="{'mess-info':isExposing}">{{status_main_ccd | i18n}}</span>
 					</div>
 					<div id="main_ccd_buttons_panel" style="float:right;" >
-						<img src="experiments/teleoperation/images/eye.png" width="49px" height="34px" ng-click="expose()" tooltip="{{'telexp.ccd.messages.expose_text' | i18n}}"/>
+						<img src="experiments/teleoperation/images/eye.png" width="49px" height="34px" ng-click="!isExposing && expose()" tooltip="{{'telexp.ccd.messages.expose_text' | i18n}}"/>
 					</div>
 				</div>
 				<div id="ccd_button_1" ng-class="hasCcd[1] ? ((ccd_order == 1) && 'ccd_button_selected' || 'ccd_button') : 'ccd_button_disabled'" ng-click="hasCcd[1] && setOrder(1)" style="position:relative;width:40px;left:-600px;top:-20px;">
@@ -256,131 +257,17 @@
 </div>
 
 <script>
-/*
-var dragged = false;
-var initFocuserPosition = 0;
-var finalFocuserPosition = 1000;
-var currentFocuserPosition = 0;
-
-$('#focus_marker').on('mouseenter', function(e){
-	$('#focus_marker_info').text(currentFocuserPosition);
-	$('#focus_marker_info').css("visibility","visible");
-});
-
-$('#focus_marker').on('mouseleave', function(e){
-	if (!dragged){
-		$('#focus_marker_info').css("visibility","hidden");		
-	}
-});
-$('#focus_marker').on('mousedown', function(e){
-	
-	var movementDirection = 0;  //Undefined
-	var lastRotateDegree = 0;
-	var rotateDegree = 0;
-	
-	var limitClockwiseDirection = false;
-	var limitCounterClockwiseDirection = false;
-	
-	var newRotate = 0;
-	var lastRotate = 0;
-	
-	var direction = 0;  //1 clockwise, 2 counter clockwise
-
-
-	dragged = true;
-	
-	$('#focus_marker').css("opacity","0.8");
-
-	e.originalEvent.preventDefault();
-
-    $(window).mousemove(function(event){
-        var rotateOriginalDegree = rotateAnnotationCropper($('#main_image').parent(), event.pageX,event.pageY, $('#focus_marker'));
-        
-        if ((rotateOriginalDegree < 270) && (rotateOriginalDegree > 180)){
-        	rotateDegree = rotateOriginalDegree - 360;
-        } else {
-        	rotateDegree = rotateOriginalDegree;
-        }
-
-        var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
-		var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
-
-		$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
-		$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
-		     
-         currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
-         $('#focus_marker_info').text(currentFocuserPosition);    
-        
-    });
-		
-    $(window).mouseup(function(event){ 
-
-    	if (dragged){
-    		
-    		$(window).unbind('mousemove');
-    		console.log("Moving focuser:"+$("#focus_marker_info").text());
-  
-
-    		$('#focus_marker').css("opacity","1.0");		
-    		dragged = false;
-    	}
-    	
-    });
-		
-    
-});   
-*/
-/*
-$("#coords_ra").keyup('keyup', function(e){
-	var text = $(this).val();
-	if(text==""){
-		if($("#coords_dec").val()==""){
-			$("#tags").removeAttr("disabled");
-		}
-	} else {
-		if($("#tags").val()==""){
-			$("#tags").attr("disabled",true);	
-		}
-	}
-
-});
-$("#coords_dec").bind('keyup', function(e){
-	if($(this).val()==""){
-		if($("#coords_ra").val()==""){
-			$("#tags").removeAttr("disabled");
-		}
-	} else {
-		if($("#tags").val()==""){
-			$("#tags").attr("disabled",true);	
-		}
-	}
-});
-$("#tags").bind('keyup', function(e){
-	if($(this).val()==""){
-		$("#coords_ra").removeAttr("disabled");
-		$("#coords_dec").removeAttr("disabled");
-	} else {
-		if ($("#coords_ra").val()=="" && $("#coords_dec").val()==""){
-			$("#coords_ra").attr("disabled",true);
-			$("#coords_dec").attr("disabled",true);		
-		}
-	}
-});
-$("#coords_dec").tooltip({
-	show: {
-		 effect: "slideDown",
-	     delay: 250
-	}
-})
-*/
 $("#ccd_alert").tooltip({
 	show: {
 		 effect: "slideDown",
 	     delay: 250
 	}
 });
-
-$("#ccd_information").popover('show');
+/*
+$("#ccd_information").popover({
+	content: "{{'telexp.ccd.exposure_time' | i18n}}",
+});
+*/
 $("#focuser_slider").slider({
 	range:"max",
 	min: -1000,
