@@ -3,9 +3,9 @@
 				<img id="image_0" class="main_img" src="experiments/teleoperation/images/nebulosa_tarantula.jpeg"/>	
 			</div> 
 		</div>
-<div id="container" ng-controller="InitDevices" style="background-image: url(images/Template.png);background-size:940px 744px;background-repeat:no-repeat">
+<div id="container" ng-controller="InitDevices" style="background-image: url(experiments/teleoperation/images/Template.png);background-size:940px 744px;background-repeat:no-repeat">
 	<div ng-controller="FocuserCtrl" ng-init="focuserPressed=false;currentFocuserPosition=0">
-		<div id="focus_marker"  ng-mousedown="activate_focuser()">
+		<div id="focus_marker"  tooltip="{{'telexp.focuser.tooltip' | i18n}}" ng-mousedown="activate_focuser()">
 		
 		</div>
 		<div id="focus_marker_info"  ng-style="{opacity: (focuserPressed && '1.0') || '0.0'}">
@@ -104,8 +104,8 @@
 						Source: wikipedia
         			</div>
         			<div class="modal-footer">
-            			<button class="btn btn-primary" ng-click="setTargetName()">Select</button>
-            			<button class="btn btn-warning" data-dismiss="modal" ng-click="cancel()">Close</button>
+            			<button class="btn btn-primary" ng-click="setTargetName()">{{'telexp.mount.apply' | i18n}}</button>
+            			<button class="btn btn-warning" data-dismiss="modal" ng-click="cancel()">{{'telexp.mount.close' | i18n}}</button>
         			</div>
     			</div> 
 				<table style="position:relative;left:12px;border-spacing:5px">
@@ -156,14 +156,12 @@
 			</table>
 		</div>
 		</div>
-		<div id="main_ccd_panel" ng-controller="CcdDevice" ng-init="ccd_alarm=false">
+		<div id="main_ccd_panel" ng-controller="CcdDevice" ng-init="ccd_alarm=false;ccd_alarm_message='telexp.ccd.messages.no_alarm'">
 				<div style="display:block;">
 					<span class="title">CCD</span>
-					<!-- 
-					<a id="ccd_alert" href="#" >
-					<span id="ccd_budge" style="opacity:0.1" class="badge badge-important" ng-class="'badge_alarm':ccd_alarm"  ng-mouseleave="ccd_alarm=false">0</span>
-					</a>
-					 -->
+					
+					<span id="ccd_budge" title="{{ccd_alarm_message | i18n}}" ng-style="{'opacity': ccd_alarm ? 1 : 0.1}" class="badge badge-important"  ng-mouseleave="ccd_alarm=false">0</span>
+					
 					<div id="ccd_information" style="float:right;" popover-placement="right" popover-animation="true" popover-trigger="mouseenter" popover="{{'telexp.ccd.information_exp' | i18n}}{{'telexp.ccd.information_filter' | i18n}}">
 						<img src="experiments/teleoperation/images/information.png"/>
 					</div>
@@ -257,12 +255,13 @@
 </div>
 
 <script>
+/*
 $("#ccd_alert").tooltip({
 	show: {
 		 effect: "slideDown",
 	     delay: 250
 	}
-});
+});*/
 /*
 $("#ccd_information").popover({
 	content: "{{'telexp.ccd.exposure_time' | i18n}}",
