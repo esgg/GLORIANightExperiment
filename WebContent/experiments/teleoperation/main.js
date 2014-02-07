@@ -117,94 +117,40 @@ function TeleoperationExperimentCtrl(GloriaAPI, $scope, $timeout,
 }
 
 function InitDevices(GloriaAPI, $scope){
-	//GlAPI = GloriaAPI;
+	
 	
 	$scope.ccd_order = 0;
 	
+	//Variables to manage the focuser
 	$scope.initFocuserPosition = 0;
-	$scope.finalFocuserPosition = 1000;
+	$scope.finalFocuserPosition = 1000;  //This could be set by experiment model
 	$scope.currentFocuserPosition = 0;
 
-	/*
-		GloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
-			GloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
-				$scope.filters_0 = listFilters.filters;
-				//$scope.filter = listFilters.filters[0];
-				GloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',listFilters.filters[0],function(success){
-					
-				}, function(error){
-					
-				});
-			}, function(error){
-				//alert(error);
-			});
-				
-		}, function(dataError, statusError){
-
-		});
-	*/
-	
+		
+	//Load ccd attributes automatilly
 	GloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
 			
 	}, function(error){
 		//alert(error);
 	});
-		
 	
-	$scope.activate_drag = function(){
-		$scope.dragged = true;
-		console.log("Order:"+$scope.ccd_order);
-	};
-	
-	$scope.deactivate_drag = function(){
-		$scope.dragged = false;
-	};
-	
+	//Change the order of the ccd
 	$scope.setOrder = function(order){
-		console.log("Set order:"+order);
-		
+				
 		$scope.ccd_order = parseInt(order);
 	};
-	
-	$scope.moving_focuser = function(){
 		
-		  console.log("Moves:"+event.x+" "+ event.y+" "+$scope.dragged);
-		  var rotateDegree = 0;
-		  var rotateOriginalDegree = rotateAnnotationCropper($('#container'), event.x,event.y, $('#focus_marker'));
-	        
-	        if ((rotateOriginalDegree < 270) && (rotateOriginalDegree > 180)){
-	        	rotateDegree = rotateOriginalDegree - 360;
-	        } else {
-	        	rotateDegree = rotateOriginalDegree;
-	        }
-
-	        var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
-			var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
-
-			$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
-			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
-			     
-	         $scope.currentFocuserPosition = $scope.initFocuserPosition + parseInt(rotateDegree*(($scope.finalFocuserPosition - $scope.initFocuserPosition) / 180));
-	         
-	};
-		
-		/*
-		GloriaAPI.getParameterTreeValue($scope.reservation,'focuser','position',function(success){
-			console.log("Initial position:"+success);
-		}, function(dataError,statusError){
-
-		});
- */
 }
 
 function FocuserCtrl(GloriaAPI, $scope){
 	
 	//Read the initial position of the focuser
-	GloriaAPI.getParameterTreeValue($scope.requestRid,'focuser','steps',function(success){
+	GloriaAPI.getParameterTreeValue($scope.requestRid,'focuser','position',function(success){
 		console.log("Initial position:"+success);
 		if (success != ""){
 			$( "#focuserPosition" ).text(success);
 			$("#focuser_slider").slider("value",success );
+			$scope.currentFocuserPosition = success;
 			
 			var angle = (success*18)/100;
 		     var rotate = 'rotate(' +angle + 'deg)';
@@ -219,28 +165,50 @@ function FocuserCtrl(GloriaAPI, $scope){
 
 	};
 	
+	//Set the focuser new value
 	$scope.set_focuser = function(){
 		$scope.focuserPressed = false;
-		GloriaAPI.setParameterTreeValue($scope.requestRid,'focuser','steps',$( "#focuserPosition" ).text(),function(success){
-			$scope.currentFocuserPosition = $( "#focuserPosition" ).text();
-		}, function(error){
+		var newPositionInt = parseInt($( "#focuserPosition" ).text()); 
+		var currentPositionInt = parseInt($scope.currentFocuserPosition);
+		var numSteps = newPositionInt - currentPositionInt;
 
+		GloriaAPI.setParameterTreeValue($scope.requestRid,'focuser','position',$( "#focuserPosition" ).text(),function(success){
+			
+		}, function(error){
+			//TODO Error message
 		});
+		
+		GloriaAPI.setParameterTreeValue($scope.requestRid,'focuser','steps',numSteps,function(success){
+			GloriaAPI.executeOperation($scope.requestRid,'move_focuser', function(success){
+				//Update text in popup
+				$scope.currentFocuserPosition = $( "#focuserPosition" ).text();
+			}, function(error){
+				//alert(error);
+			});
+			
+		}, function(error){
+			//TODO Error message
+		});
+		
 	};
 	
+	//Cancel the new position of the focuser
 	$scope.cancel = function(){
 		$scope.focuserPressed = false;
+		//Update to original value  in popup and slide
 		 $( "#focuserPosition" ).text($scope.currentFocuserPosition);
 		 $("#focuser_slider").slider("value",$scope.currentFocuserPosition );
 		 
+		 //Go to original position
 		 rotateOriginalDegree = ($scope.currentFocuserPosition*18)/100;
 	     var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
 	     $('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
 	};
 }
 
+//Draw surveillance cameras
 function GetCamerasCtrl(GloriaAPI, $scope){
-	//Cambiar a $scope.rid
+	//Change to a $scope.rid
 		GloriaAPI.getParameterValue($scope.requestRid,'cameras',function(success){
 			
 			$("#scam0_name").text(success.scam.images[0].name);
@@ -249,30 +217,15 @@ function GetCamerasCtrl(GloriaAPI, $scope){
 			$("#scam1_name").text(success.scam.images[1].name);
 			$("#scam1_img").attr("src",success.scam.images[1].url);
 				
-			/*
-				for (var nscam=0;nscam<success.scam.number;nscam++){
-					
-					var scamCode = "<div style=\"margin-top:"+80+"px;\">" +
-							"<div style=\"width:100px;text-align:center;\"><span class=\"title\">"+success.scam.images[nscam].name+"</span></div>" +
-							"<div class=\"expand\" style=\"z-index:"+(500-nscam)+";\">" +
-							"<div class=\"positioner\">" +
-							"<a class=\"slide\" aria-haspopup=\"true\">";
-					scamCode = scamCode + "<img src=\""+success.scam.images[nscam].url+"\"/>";
-					scamCode = scamCode + "</a></div></div></div>";
-					
-					$("#surveillance_panel").append(scamCode);	
-				}
-				*/
 			}, function(error){
 					alert(error);
 					});
 
 }
 /* Devices controllers */
-function MountDevice(GloriaAPI , $scope){
+function MountDevice(GloriaAPI , $scope, $sequenceFactory){
 	
-	//console.log("Paso:"+$scope.target_name);
-	//$scope.hasMove= true;
+	$scope.mount_sequence = $sequenceFactory.getSequence();
 	
 	$scope.move_north = function(){
 		if ($scope.hasMove){
@@ -286,19 +239,31 @@ function MountDevice(GloriaAPI , $scope){
 	
 	$scope.move_south = function(){
 		if ($scope.hasMove){
-			
+			GloriaAPI.executeOperation($scope.requestRid,'move_south',function(success){
+				
+			}, function(dataError, statusError){
+
+			});
 		}
 	};
 	
 	$scope.move_east = function(){
 		if ($scope.hasMove){
-			
+			GloriaAPI.executeOperation($scope.requestRid,'move_east',function(success){
+				
+			}, function(dataError, statusError){
+
+			});
 		}
 	};
 	
 	$scope.move_west = function(){
 		if ($scope.hasMove){
-			
+			GloriaAPI.executeOperation($scope.requestRid,'move_west',function(success){
+				
+			}, function(dataError, statusError){
+
+			});
 		}
 	};
 	
@@ -313,9 +278,9 @@ function MountDevice(GloriaAPI , $scope){
 			if ((ra_value.match(raRegularExpr)) && (ra_value>=0) && (ra_value<360)){
 					if ((dec_value.match(decRegularExpr) && (dec_value>=-90) && (dec_value<=90))){
 						//Set radec
-						SetRADEC(GloriaAPI, Sequence, $scope);
+						SetRADEC(GloriaAPI, $scope);
 						//Execute go operation
-						//GoRADEC(GloriaAPI, Sequence, $scope);
+						GoRADEC(GloriaAPI,  $scope);
 						
 						
 					} else {
@@ -326,9 +291,9 @@ function MountDevice(GloriaAPI , $scope){
 			}	
 		} else {
 			//Set target name
-			SetTargetName(GloriaAPI, Sequence, $scope);
+			SetTargetName(GloriaAPI, $scope);
 			//Execute go operation
-			//GoTargetName(GloriaAPI, Sequence, $scope)
+			GoTargetName(GloriaAPI, $scope);
 
 		}
 		
@@ -350,13 +315,71 @@ function MountDevice(GloriaAPI , $scope){
 		return (($scope.target_name != undefined ) && ($scope.target_name.length > 0));
 	};
 	
-	$scope.setTargetName = function(name){
-		$scope.target_name = name;
+	$scope.setTargetName = function(){
+//		$scope.target_name = name;
+		$scope.target_name = $scope.target_selected;
 		$scope.ra = undefined;
 		$scope.dec = undefined;
 	}
+	$scope.selectTarget = function(name){
+		$scope.target_selected = name;
+	}
 	
 }
+
+function SetRADEC(GloriaAPI, data){
+	
+	var coordinates = new Object();
+	coordinates.ra = data.ra;
+	coordinates.dec = data.dec;
+	
+	return data.mount_sequence.execute(function() {
+		return GloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.coordinates',coordinates,function(success){
+			
+		}, function(error){
+			
+		});
+	});
+	
+}
+
+function GoRADEC(GloriaAPI, data){
+	
+		
+	return data.mount_sequence.execute(function() {
+		return GloriaAPI.executeOperation(data.requestRid,'point_to_coordinates',function(success){
+			
+		}, function(error){
+			
+		});
+	});
+	
+}
+
+function SetTargetName(GloriaAPI, data){
+		
+	return data.mount_sequence.execute(function() {
+		return GloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.object',data.target_name,function(success){
+			
+		}, function(error){
+			
+		});
+	});
+	
+}
+
+function GoTargetName(GloriaAPI, data){
+	
+	return data.mount_sequence.execute(function() {
+		return GloriaAPI.executeOperation(data.requestRid,'point_to_object',function(success){
+			
+		}, function(error){
+			
+		});
+	});
+	
+}
+
 function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 	
 
@@ -401,36 +424,15 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 
 
 	/*
-	$scope.setOrder = function(order) {
-		
-		if (order == 0){
-			$("#ccd_button_0").attr("class", "ccd_button_selected");
-			$("#ccd_button_1").attr("class", "ccd_button");
-			//$("#filter_selector").removeAttr("disabled");
-		} else if (order == 1){
-			$("#ccd_button_1").attr("class", "ccd_button_selected");
-			$("#ccd_button_0").attr("class", "ccd_button");
-			//$("#filter_selector").attr("disabled",true);
-		}
-		GloriaAPI.setParameterTreeValue($scope.requestRid,'cameras','ccd.order',parseInt(order),function(success){
-			console.log("Paso:"+parseInt(order));
-			$scope.ccd_order = parseInt(order);
-			GloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
-				
-			}, function(error){
-				//alert(error);
-			});
-		}, function(error){
-			
-		});
-	};
-	*/
-
-	/*
 	$scope.expose = function(){
-		console.log("Exponiendo");
+		$scope.ccd_alarm = true;
+		$scope.isExposing = false;
+		$scope.ccd_alarm_message = "telexp.ccd.messages.internal_server";
+		
+		
 	};
 	*/
+	
 	
 	$scope.expose = function(){
 
@@ -466,7 +468,7 @@ function CcdDevice(GloriaAPI, $scope, $timeout, $sequenceFactory){
 function ImageCarousel(GloriaAPI, $scope){
 	GloriaAPI.getImagesByContext($scope.requestRid,function(success){
 		 $.each(success, function(i, image){ //Iterate among all images generate previously
-				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+image.jpg+"\" style=\"width:235px\">";
+				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+image.jpg+"\" target=\"_self\" style=\"width:235px\">";
 				htmlCode = htmlCode + "<img src=\""+image.jpg+"\"/></a>";
 				$(htmlCode).appendTo("#foo2");
 				numImages++;
@@ -553,7 +555,6 @@ function SetCCDAttributes(GloriaAPI, data){
 			}, function(error){
 				//activateCcdAlarm("Fail to connect server");
 				data.ccd_alarm = true;
-				$("#ccd_alert").attr("title","Problem to set exposure time");
 				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 				data.status_main_ccd = "telexp.ccd.status.error";
 				data.isExposing = false;
@@ -563,7 +564,6 @@ function SetCCDAttributes(GloriaAPI, data){
 function activateCcdAlarm(message){
 	$("#ccd_budge").text("1");
 	$("#ccd_budge").css("visibility","visible");
-	$("#ccd_alert").attr("title",message);
 	$("#expose_0_button").removeAttr("disabled");
 }
 function StartExposure(GloriaAPI, data, $timeout){
@@ -581,7 +581,6 @@ function StartExposure(GloriaAPI, data, $timeout){
 					
 				} else {
 					data.ccd_alarm = true;
-					$("#ccd_alert").attr("title","No image id generated");
 					data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 					data.status_main_ccd = "telexp.ccd.status.error";
 					data.isExposing = false;
@@ -590,7 +589,6 @@ function StartExposure(GloriaAPI, data, $timeout){
 				data.isExposing = false;
 				data.status_main_ccd = "telexp.ccd.status.error";
 				data.ccd_alarm = true;
-				$("#ccd_alert").attr("title","Problem to start exposure");
 				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 				data.status_main_ccd = "telexp.ccd.status.error";
 			});
@@ -600,7 +598,6 @@ function StartExposure(GloriaAPI, data, $timeout){
 				data.isExposing = false;
 				data.status_main_ccd = "telexp.ccd.status.error";
 				data.ccd_alarm = true;
-				$("#ccd_alert").attr("title","Problem to start exposure");
 				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
 				data.status_main_ccd = "telexp.ccd.status.error";
 			});
