@@ -1,0 +1,65 @@
+{
+	"header": "Night Experiment",
+	 "reservation": {
+        "obsolete": {
+            "l1": "The reservation id @{p1}@ is obsolete",
+            "l2": "Want to get a new one?. Click",
+            "here": "here"
+        },
+        "unknown": "The reservation id @{p1}@ does not exist",
+        "loading": "Loading",
+        "problem": "The telescope is not working properly. Please try again in a few minutes",
+        "end": "Your reservation has ended, we hope you enjoyed the experiment!",
+        "login": "You are not logged in. Redirecting",
+        "nvalid": "The reservation id @{p1}@ is not valid"
+    },
+	"focuser": {
+				"tooltip":"Click to change change position"
+	 		   },
+	"mount": {
+				"title":"MOUNT",
+				"ra":"RA",
+				"dec":"DEC",
+				"object":"TARGET",
+				"apply" : "Apply",
+				"close" : "Close",
+				"messages": {
+					"ra_text": "Right Ascension Coordinate",
+					"dec_text": "Declination Coordinate"	,
+					"target_text": "Object Name",
+					"relative_move": "Move the telescope a few steps"
+				},
+				"catalog": {
+					"mercury": "MERCURY",
+					"venus": "VENUS",
+					"mars": "MARS",
+					"jupiter": "JUPITER",
+					"saturn": "SATURN",
+					"neptune": "NEPTUNE",
+					"uranus": "URANUS"
+				}	
+			 },
+	"ccd": {
+				"title": "CCD",
+				"exposure_time": "TIME",
+				"information_exp": "The exposure time is the time that camera's shutter is open. The longer is open, more objects can be seen.",
+				"information_filter": "Filters are used by amateurs to enhance the details of celestial objects. Professional astronomers use them in order to understand the astrophysics.",
+				"filter": "FILTER",
+				"binning":"BINNING",
+				"status": {
+					"ready":"READY",
+					"exposing":"EXPOSING",
+					"transfering":"TRANSFERING",
+					"taken": "IMAGE TAKEN",
+					"error": "ERROR"
+				},
+				"messages": {
+					"no_alarm": "No alarm",
+					"internal_server": "Fail in server",
+					"time_text": "Set the exposure time in seconds",
+					"filter_text": "Set a filter",
+					"binning_text": "Set the binning factor",
+					"expose_text": "Start exposition"
+				}
+		   }
+}

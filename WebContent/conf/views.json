@@ -1,14 +1,23 @@
 {
-	"solar": {
-		"html": "experiments/teleoperation/parent.html",
+	"night": {
+		"type": "main",
+		"path": "/view",
+		"html": "night/html/parent.html",
 		"js": [
-			"experiments/teleoperation/main.js",
-			"experiments/teleoperation/js/jquery.carouFredSel-6.2.1.js",
-			"experiments/teleoperation/prettyphoto/js/jquery.prettyPhoto.js"
+			"night/js/jquery.carouFredSel-6.2.1.js",
+			"night/prettyPhoto/js/jquery.prettyPhoto.js",
+			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js",
+			"night/js/main.js",
+			"night/js/night.js"
 		]
 	},
 	"wrong": {
-		"html": "partials/wrong.html",
-		"js": []		
+		"type": "wrong-path",
+		"path": "/view"
+	},
+	"issues": {
+		"path": "/issues",
+		"html": "issues/html/content.html",
+		"js": ["issues/js/issues.js", "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap-collapse.js"]		
 	}
 }
