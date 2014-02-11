@@ -1,0 +1,33 @@
+{
+    "titles": {
+        "home": "Home",
+        "experiments": {
+            "header": "Esperimenti",
+            "online": {
+                "header": "ONLINE",
+                "solar": "Solare",
+                "night": "Notturno"
+            },
+            "reservations": {
+                "header": "Prenotazioni",
+                "new": "Nuova",
+                "pending": "In attesa"
+            },
+            "offline": {
+                "header": "OFFLINE",
+                "pspace": "Personal Space",
+                "wolf": "Attività solare",
+                "luiza": "Stelle variabili"
+            }
+        },
+        "images": {
+            "header": "Immagini"
+        },
+        "profile": {
+            "header": "Profile"
+        },
+        "issues": {
+            "header": "Issues"
+        }
+    }
+}
