@@ -68,7 +68,7 @@ function FocuserCtrl($gloriaAPI, $scope){
 		});
 		
 		$gloriaAPI.setParameterTreeValue($scope.requestRid,'focuser','steps',numSteps,function(success){
-			$gloriaAPI.executeOperation($scope.requestRid,'move_focuser', function(success){
+			$gloriaAPI.executeOperation($scope.requestRid,'move_focus', function(success){
 				//Update text in popup
 				$scope.currentFocuserPosition = $( "#focuserPosition" ).text();
 			}, function(error){
@@ -329,7 +329,7 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		if (!$scope.isExposing){
 			if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){			
 				
-				$scope.status_main_ccd = "telexp.ccd.status.exposing";
+				$scope.status_main_ccd = "night.ccd.status.exposing";
 				$scope.isExposing = true;
 				$scope.exposure_time[$scope.ccd_order] = $scope.exposure_time;
 				num_ccd_timer=max_ccd_timer;
@@ -444,8 +444,8 @@ function SetCCDAttributes($gloriaAPI, data){
 			}, function(error){
 				//activateCcdAlarm("Fail to connect server");
 				data.ccd_alarm = true;
-				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
-				data.status_main_ccd = "telexp.ccd.status.error";
+				data.ccd_alarm_message = "night.ccd.messages.internal_server";
+				data.status_main_ccd = "night.ccd.status.error";
 				data.isExposing = false;
 			});
 	});
@@ -470,25 +470,25 @@ function StartExposure($gloriaAPI, data, $timeout){
 					
 				} else {
 					data.ccd_alarm = true;
-					data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
-					data.status_main_ccd = "telexp.ccd.status.error";
+					data.ccd_alarm_message = "night.ccd.messages.internal_server";
+					data.status_main_ccd = "night.ccd.status.error";
 					data.isExposing = false;
 				}
 			}, function(error){
 				data.isExposing = false;
-				data.status_main_ccd = "telexp.ccd.status.error";
+				data.status_main_ccd = "night.ccd.status.error";
 				data.ccd_alarm = true;
-				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
-				data.status_main_ccd = "telexp.ccd.status.error";
+				data.ccd_alarm_message = "night.ccd.messages.internal_server";
+				data.status_main_ccd = "night.ccd.status.error";
 			});
 				
 				
 			}, function(error){
 				data.isExposing = false;
-				data.status_main_ccd = "telexp.ccd.status.error";
+				data.status_main_ccd = "night.ccd.status.error";
 				data.ccd_alarm = true;
-				data.ccd_alarm_message = "telexp.ccd.messages.internal_server";
-				data.status_main_ccd = "telexp.ccd.status.error";
+				data.ccd_alarm_message = "night.ccd.messages.internal_server";
+				data.status_main_ccd = "night.ccd.status.error";
 			});
 	});
 }
@@ -498,7 +498,7 @@ function StartExposure($gloriaAPI, data, $timeout){
 function exposureTimer($gloriaAPI, data, $timeout){
 
 	console.log("Paso del timer");
-	data.status_main_ccd = "telexp.ccd.status.transfering";
+	data.status_main_ccd = "night.ccd.status.transfering";
 	$gloriaAPI.executeOperation(data.requestRid,'load_image_urls',function(success){
 		$gloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst',function(success){
 			if ((success.jpg!=null) && (success.fits)!=null){
@@ -519,7 +519,7 @@ function exposureTimer($gloriaAPI, data, $timeout){
 						
 					});
 				};
-				data.status_main_ccd = "telexp.ccd.status.taken";
+				data.status_main_ccd = "night.ccd.status.taken";
 				//$("#ccd_status").removeClass("mess-info");
 				data.isExposing = false;
 				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\" style=\"width:235px\">";
@@ -551,7 +551,7 @@ function exposureTimer($gloriaAPI, data, $timeout){
 			}else{
 				console.log("Launching timer again");
 				if (num_ccd_timer == 0){
-					data.status_main_ccd = "telexp.ccd.status.error";
+					data.status_main_ccd = "night.ccd.status.error";
 					data.isExposing = false;
 				} else {
 					num_ccd_timer--;
@@ -561,11 +561,11 @@ function exposureTimer($gloriaAPI, data, $timeout){
 			}
 		}, function(error){
 			data.isExposing = false;
-			data.status_main_ccd = "telexp.ccd.status.error";
+			data.status_main_ccd = "night.ccd.status.error";
 		});
 	}, function(error){
 		data.isExposing = false;
-		data.status_main_ccd = "telexp.ccd.status.error";
+		data.status_main_ccd = "night.ccd.status.error";
 	});
 						
 }
