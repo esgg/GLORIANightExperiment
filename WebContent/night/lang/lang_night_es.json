@@ -3,15 +3,15 @@
 	"reservation": {
 		"obsolete": {
 			"l1": "El identificador de reserva @{p1}@ es obsoleto",
-			"l2": "¿Quieres uno nuevo?. Haz click",
-			"here": "aquí"
+			"l2": "Â¿Quieres uno nuevo?. Haz click",
+			"here": "aquÃ­"
 		},
 		"unknown": "El identificador de reserva @{p1}@ no existe",
 		"loading": "Cargando",
-		"problem": "Parece que el telescopio no está funcionando bien. Por favor, inténtalo de nuevo en unos minutos",
-		"end": "Tu reserva ha terminado, ¡Esperamos que hayas disfrutado!",
-		"login": "Sesión no iniciada. Redireccionando",
-		"nvalid" : "El identificador de reserva @{p1}@ no es válido"	
+		"problem": "Parece que el telescopio no estÃ¡ funcionando bien. Por favor, intÃ©ntalo de nuevo en unos minutos",
+		"end": "Tu reserva ha terminado, Â¡Esperamos que hayas disfrutado!",
+		"login": "SesiÃ³n no iniciada. Redireccionando",
+		"nvalid" : "El identificador de reserva @{p1}@ no es vÃ¡lido"	
 	},
 	"mount": "MONTURA"
 }

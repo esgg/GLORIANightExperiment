@@ -44,7 +44,7 @@
 	<div class="animate-show alert alert-g" ng-if="wrongReservation"
 		style="width: 40%; margin-left: 30%; margin-top: 20px">
 		{{'night.reservation.nvalid'|i18n:preRid}}</div>
-	<div ng-if="infoUpdated" class="animate-show"
+	<div class="animate-show"
 		ng-show="!deviceProblem && reservationActive && !notAuthorized"
 		ng-class="{'transparent': reservationEnd || notAuthorized || ccdProblem}">
 
