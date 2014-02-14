@@ -192,8 +192,10 @@
 								</div></td>
 						</tr>
 					</table>
-					<div align="center" class="status">
-						<span class="status_text">READY</span>
+					<div align="center" class="status" ng-model="status_mount"
+					ng-init="status_mount='night.mount.status.ready'">
+					<span id="mount_status" class="status_text">{{status_mount |
+						i18n}}</span>
 					</div>
 					<div id="mount_buttons_panel" style="float: right;">
 						<img src="night/img/telescope.png"
