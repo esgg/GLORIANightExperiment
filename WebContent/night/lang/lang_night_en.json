@@ -29,7 +29,10 @@
 					"dec_text": "Declination Coordinate"	,
 					"target_text": "Object Name",
 					"relative_move": "Move the telescope a few steps",
-					"no_alarm":"No alarm"
+					"no_alarm":"No alarm",
+					"alarm_set_radec": "Problem to set the RADEC coordinates",
+					"alarm_set_target": "Problem to set the target",
+					"alarm_taget":"Impossible to reach the target"
 				},
 				"catalog": {
 					"mercury": "MERCURY",
@@ -39,6 +42,10 @@
 					"saturn": "SATURN",
 					"neptune": "NEPTUNE",
 					"uranus": "URANUS"
+				},
+				"status": {
+					"ready":"READY",
+					"error": "ERROR"
 				}	
 			 },
 	"ccd": {
@@ -57,7 +64,7 @@
 				},
 				"messages": {
 					"no_alarm": "No alarm",
-					"internal_server": "Fail in server",
+					"internal_server": "Problem to execute the operation",
 					"time_text": "Set the exposure time in seconds",
 					"filter_text": "Set a filter",
 					"binning_text": "Set the binning factor",
