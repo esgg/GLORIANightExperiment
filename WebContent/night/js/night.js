@@ -236,7 +236,9 @@ function SetRADEC($gloriaAPI, data){
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.coordinates',coordinates,function(success){
 			
 		}, function(error){
-			
+			data.mount_alarm = true;
+			data.mount_alarm_message = "night.mount.messages.alarm_set_radec";
+			data.status_main_ccd = "night.ccd.status.error";
 		});
 	});
 	
@@ -249,7 +251,9 @@ function GoRADEC($gloriaAPI, data){
 		return $gloriaAPI.executeOperation(data.requestRid,'point_to_coordinates',function(success){
 			
 		}, function(error){
-			
+			data.mount_alarm = true;
+			data.mount_alarm_message = "night.mount.messages.alarm_taget";
+			data.status_main_ccd = "night.ccd.status.error";
 		});
 	});
 	
@@ -261,7 +265,9 @@ function SetTargetName($gloriaAPI, data){
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.object',data.target_name,function(success){
 			
 		}, function(error){
-			
+			data.mount_alarm = true;
+			data.mount_alarm_message = "alarm_set_target";
+			data.status_main_ccd = "night.ccd.status.error";
 		});
 	});
 	
@@ -273,7 +279,9 @@ function GoTargetName($gloriaAPI, data){
 		return $gloriaAPI.executeOperation(data.requestRid,'point_to_object',function(success){
 			
 		}, function(error){
-			
+			data.mount_alarm = true;
+			data.mount_alarm_message = "night.mount.messages.alarm_taget";
+			data.status_main_ccd = "night.ccd.status.error";
 		});
 	});
 	
