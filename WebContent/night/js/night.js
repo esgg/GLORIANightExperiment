@@ -1,11 +1,10 @@
-'use strict';
 
 var numImages=0;
 var focuserPosition=0;
 var max_ccd_timer=5;
 var num_ccd_timer=max_ccd_timer;
 
-function InitDevices($gloriaAPI, $scope){
+function InitDevices($gloriaAPI, $sequenceFactory, $scope){
 	
 	
 	$scope.ccd_order = 0;
@@ -16,20 +15,31 @@ function InitDevices($gloriaAPI, $scope){
 	$scope.currentFocuserPosition = 0;
 
 		
+	//Init sequence
 	//Load ccd attributes automatilly
+	$scope.init_sequence = $sequenceFactory.getSequence();
+	
+	
+	/*
 	$gloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
 			
 	}, function(error){
 		//alert(error);
 	});
-	
+	*/
 	//Change the order of the ccd
 	$scope.setOrder = function(order){
 				
 		$scope.ccd_order = parseInt(order);
+		$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
+			
+		}, function(error){
+			
+		});
 	};
 		
 }
+
 
 function FocuserCtrl($gloriaAPI, $scope){
 	
@@ -284,23 +294,38 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	
 	$scope.ccd_sequence = $sequenceFactory.getSequence();
 	
-	//Load filters for CCD0.
-	$gloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
-		$gloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
-			$scope.filters_0 = listFilters.filters;
-			//We select the first of the list as default value
-			$gloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',listFilters.filters[0],function(success){
-				
-			}, function(error){
-				
-			});
-		}, function(error){
-			//alert(error);
-		});
-			
-	}, function(dataError, statusError){
+	
 
+	$scope.$watch('rid', function(){
+		if ($scope.rid > 0){
+			console.log("Run init sequence");
+			LoadCcdAttributes($gloriaAPI,$scope);
+			SetCcdOrder($gloriaAPI,$scope,1);
+			LoadCcdAttributes($gloriaAPI,$scope);
+			SetCcdOrder($gloriaAPI,$scope,0);
+			//Load filters for CCD0.
+			$gloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
+				$gloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
+					$scope.filters_0 = listFilters.filters;
+					//We select the first of the list as default value
+					$gloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',listFilters.filters[0],function(success){
+						$scope.filter = $scope.filters_0[0];
+					}, function(error){
+						
+					});
+				}, function(error){
+					//alert(error);
+				});
+					
+			}, function(dataError, statusError){
+
+			});
+			console.log("Finish init sequence");
+			
+		}
 	});
+	
+	
 	
 	$scope.setFilter = function(){
 		$gloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',$scope.filter,function(success){
@@ -352,6 +377,26 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		}
 	};
 	
+}
+
+function LoadCcdAttributes($gloriaAPI, data){
+	return data.ccd_sequence.execute(function() {
+		return $gloriaAPI.executeOperation(data.rid,'get_ccd_attributes', function(success){
+			
+		}, function(error){
+			//alert(error);
+		});
+	});
+}
+
+function SetCcdOrder($gloriaAPI, data, order){
+	return data.ccd_sequence.execute(function() {
+		return $gloriaAPI.setParameterTreeValue(data.rid,'cameras','ccd.order',order,function(success){
+			
+		}, function(error){
+			
+		});
+	});
 }
 
 function ImageCarousel($gloriaAPI, $scope){
@@ -456,7 +501,6 @@ function activateCcdAlarm(message){
 	$("#expose_0_button").removeAttr("disabled");
 }
 function StartExposure($gloriaAPI, data, $timeout){
-	console.log("ee"+data.ccd_order);
 	return data.ccd_sequence.execute(function() {
 		console.log("ee1"+data.ccd_order);
 		return $gloriaAPI.executeOperation(data.requestRid,'start_exposure',function(success){
