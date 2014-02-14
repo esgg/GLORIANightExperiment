@@ -23,11 +23,13 @@
 				"object":"TARGET",
 				"apply" : "Apply",
 				"close" : "Close",
+				"information": "You can move the mount introducing the RADEC coordinates or the target name",
 				"messages": {
 					"ra_text": "Right Ascension Coordinate",
 					"dec_text": "Declination Coordinate"	,
 					"target_text": "Object Name",
-					"relative_move": "Move the telescope a few steps"
+					"relative_move": "Move the telescope a few steps",
+					"no_alarm":"No alarm"
 				},
 				"catalog": {
 					"mercury": "MERCURY",
