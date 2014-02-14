@@ -65,9 +65,21 @@
 		</div>
 	</div>
 	<div id="right_controls">
-		<div ng-controller="MountDevice">
+		<div ng-controller="MountDevice" ng-init="mount_alarm=false;mount_alarm_message='night.mount.messages.no_alarm'">
 			<div id="mount_target_panel">
-				<span class="title">{{'night.mount.title' | i18n}}</span>
+				<div style="display: block;">
+					<span class="title">{{'night.mount.title' | i18n}}</span> <span id="mount_budge"
+						title="{{mount_alarm_message | i18n}}"
+						ng-style="{'opacity': mount_alarm ? 1 : 0.1}"
+						class="badge badge-important" ng-mouseleave="mount_alarm=false">0</span>
+	
+					<div id="mount_information" style="float: right;"
+						popover-placement="right" popover-animation="true"
+						popover-trigger="mouseenter"
+						popover="{{'night.mount.information' | i18n}}">
+						<img src="night/img/information.png" />
+					</div>
+				</div>
 				<div id="mount_parameters">
 					<div class="modal hide fade" id="CatalogModal">
 						<div class="modal-header">
@@ -252,8 +264,8 @@
 						<td><select id="filter_selector" class="selector"
 							ng-model="filter" ng-change="setFilter()"
 							ng-disabled="!hasFilterWheel[ccd_order]"
-							tooltip="{{'night.ccd.messages.filter_text' | i18n}}">
-								<option ng-repeat="filter in filters_0">{{filter}}</option>
+							ng-options="item for item in filters_0">
+								<!-- <option ng-repeat="filter in filters_0">{{filter}}</option> -->
 						</select></td>
 					</tr>
 					<tr>
