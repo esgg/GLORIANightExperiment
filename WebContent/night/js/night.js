@@ -19,14 +19,18 @@ function InitDevices($gloriaAPI, $sequenceFactory, $scope){
 	//Load ccd attributes automatilly
 	$scope.init_sequence = $sequenceFactory.getSequence();
 	
-	
 	/*
-	$gloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
-			
-	}, function(error){
-		//alert(error);
+	$scope.$watch('rid', function(){
+		if ($scope.rid > 0){
+			$gloriaAPI.executeOperation($scope.requestRid,'get_ccd_attributes', function(success){
+				
+			}, function(error){
+				//alert(error);
+			});
+		}
 	});
 	*/
+	
 	//Change the order of the ccd
 	$scope.setOrder = function(order){
 				
@@ -167,6 +171,19 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 	};
 	
 	$scope.go = function(){
+		if ((($scope.rah>=0) && ($scope.rah<=24)) && (($scope.ram>=0) && ($scope.ram<=60)) && (($scope.ras>=0) && ($scope.ras<=60))){
+			if ((($scope.decg>=-90) && ($scope.decg<=90)) && (($scope.decm>=0) && ($scope.decm<=60)) && (($scope.decs>=0) && ($scope.decs<=60))){
+				alert(convertRaToDecimal($scope.rah, $scope.ram, $scope.ras)+" "+convertDecToDecimal($scope.decg, $scope.decm,$scope.decs));
+			} else {
+				alert("Wrong dev value: [-90-+90]:[0-60]:[0-60]");
+			}
+		} else {
+			alert("Wrong ra value: [0-24]:[0-60]:[0-60]");
+		}
+		
+	};
+	/*
+	$scope.go = function(){
 
 		var raRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
 		var decRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
@@ -197,7 +214,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 		}
 		
 	};
-	
+	*/
 	$scope.open_catalog = function(){
 		console.log("Dec:"+$scope.dec);
 		if (($scope.dec!=undefined) && ($scope.dec.length>0)){
@@ -224,6 +241,25 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 		$scope.target_selected = name;
 	}
 	
+}
+
+function convertRaToDecimal(hour, minutes, seconds){
+	var raDecimal = 0.0;
+	raDecimal = raDecimal + hour * 15;
+	raDecimal = raDecimal + minutes * 0.25;
+	raDecimal = raDecimal + seconds * (15 / 3600);
+	return raDecimal.toFixed(3);
+}
+function convertDecToDecimal(grades, arcminutes, arcseconds){
+	var decDecimal=parseFloat(grades);
+	if (grades<0){
+		decDecimal = decDecimal - (arcminutes / 60);
+		decDecimal = decDecimal - (arcseconds / 3600);
+	} else {
+		decDecimal = decDecimal + (arcminutes / 60);
+		decDecimal = decDecimal + (arcseconds / 3600);		
+	}
+	return decDecimal.toFixed(3);
 }
 
 function SetRADEC($gloriaAPI, data){
@@ -302,15 +338,34 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	
 	$scope.ccd_sequence = $sequenceFactory.getSequence();
 	
-	
+	/*
+	$gloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
+		$gloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
+			$scope.filters_0 = listFilters.filters;
+			//We select the first of the list as default value
+			$gloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',listFilters.filters[0],function(success){
+				$scope.filter = $scope.filters_0[0];
+			}, function(error){
+				
+			});
+		}, function(error){
+			//alert(error);
+		});
+			
+	}, function(dataError, statusError){
+
+	});
+	*/
 
 	$scope.$watch('rid', function(){
 		if ($scope.rid > 0){
 			console.log("Run init sequence");
+			
 			LoadCcdAttributes($gloriaAPI,$scope);
 			SetCcdOrder($gloriaAPI,$scope,1);
 			LoadCcdAttributes($gloriaAPI,$scope);
 			SetCcdOrder($gloriaAPI,$scope,0);
+			
 			//Load filters for CCD0.
 			$gloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
 				$gloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
@@ -361,13 +416,13 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		console.log("Order:"+$scope.ccd_order);
 		if (!$scope.isExposing){
 			if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){			
-				
+				$scope.ccd_sequence = $sequenceFactory.getSequence();
 				$scope.status_main_ccd = "night.ccd.status.exposing";
 				$scope.isExposing = true;
 				$scope.exposure_time[$scope.ccd_order] = $scope.exposure_time;
 				num_ccd_timer=max_ccd_timer;
 				
-				console.log("set exposure time");
+				console.log("set exposure time:"+$scope.exposure_time[$scope.ccd_order]+" "+num_ccd_timer);
 				SetExposureTime($gloriaAPI, $scope);
 
 				console.log("set ccd attributes");
@@ -375,6 +430,9 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 				
 				console.log("start exposure");
 				StartExposure($gloriaAPI, $scope, $timeout);
+				
+				console.log("load inst images")
+				CheckInstImages($gloriaAPI, $scope, $timeout);
 				
 				
 			} else {
@@ -388,9 +446,10 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 }
 
 function LoadCcdAttributes($gloriaAPI, data){
+	console.log("load_ccd");
 	return data.ccd_sequence.execute(function() {
 		return $gloriaAPI.executeOperation(data.rid,'get_ccd_attributes', function(success){
-			
+			console.log("get ccd attributes");
 		}, function(error){
 			//alert(error);
 		});
@@ -398,9 +457,10 @@ function LoadCcdAttributes($gloriaAPI, data){
 }
 
 function SetCcdOrder($gloriaAPI, data, order){
+	console.log("set ccd order")
 	return data.ccd_sequence.execute(function() {
 		return $gloriaAPI.setParameterTreeValue(data.rid,'cameras','ccd.order',order,function(success){
-			
+			console.log("ccd order");
 		}, function(error){
 			
 		});
@@ -509,39 +569,44 @@ function activateCcdAlarm(message){
 	$("#expose_0_button").removeAttr("disabled");
 }
 function StartExposure($gloriaAPI, data, $timeout){
+	console.log("eee0"+data.ccd_order);
 	return data.ccd_sequence.execute(function() {
 		console.log("ee1"+data.ccd_order);
 		return $gloriaAPI.executeOperation(data.requestRid,'start_exposure',function(success){
 			console.log("ee2"+data.ccd_order);
-			$gloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst.id',function(success){
-				console.log("ee3"+data.ccd_order);
-				if (success != -1){
-					console.log("Image with id "+success+" generated");
-					
-					data.timer = $timeout(function() {exposureTimer($gloriaAPI, data, $timeout);}, parseInt(data.exposure_time*1000));
-					
-				} else {
-					data.ccd_alarm = true;
-					data.ccd_alarm_message = "night.ccd.messages.internal_server";
-					data.status_main_ccd = "night.ccd.status.error";
-					data.isExposing = false;
-				}
+			scope.$parent.imageTaken = false;
 			}, function(error){
 				data.isExposing = false;
 				data.status_main_ccd = "night.ccd.status.error";
 				data.ccd_alarm = true;
-				data.ccd_alarm_message = "night.ccd.messages.internal_server";
-				data.status_main_ccd = "night.ccd.status.error";
+				data.ccd_alarm_message = "night.ccd.messages.alarm_start_exposure";
 			});
+	});
+}
+
+function CheckInstImages($gloriaAPI, data, $timeout){
+	console.log("ee4"+data.ccd_order);
+	return data.ccd_sequence.execute(function(){
+		console.log("ee5"+data.ccd_order);
+		return $gloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst.id',function(success){
+			console.log("ee3"+data.ccd_order);
+			if (success != -1){
+				console.log("Image with id "+success+" generated");
 				
+				data.timer = $timeout(function() {exposureTimer($gloriaAPI, data, $timeout);}, parseInt(data.exposure_time*1000));
 				
-			}, function(error){
-				data.isExposing = false;
-				data.status_main_ccd = "night.ccd.status.error";
+			} else {
 				data.ccd_alarm = true;
 				data.ccd_alarm_message = "night.ccd.messages.internal_server";
 				data.status_main_ccd = "night.ccd.status.error";
-			});
+				data.isExposing = false;
+			}
+		}, function(error){
+			data.isExposing = false;
+			data.status_main_ccd = "night.ccd.status.error";
+			data.ccd_alarm = true;
+			data.ccd_alarm_message = "night.ccd.messages.internal_server";
+		});
 	});
 }
 
@@ -574,6 +639,8 @@ function exposureTimer($gloriaAPI, data, $timeout){
 				data.status_main_ccd = "night.ccd.status.taken";
 				//$("#ccd_status").removeClass("mess-info");
 				data.isExposing = false;
+				data.$parent.imageTaken = true;
+				/*
 				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\" style=\"width:235px\">";
 				htmlCode = htmlCode + "<img src=\""+mImage.src+"\"/></a>";
 				$(htmlCode).appendTo("#foo2");
@@ -599,6 +666,7 @@ function exposureTimer($gloriaAPI, data, $timeout){
 						$("#foo2").trigger("play");
 					}
 				});
+				*/
 				/*$("#foo2 a").css("width",235);*/
 			}else{
 				console.log("Launching timer again");
@@ -623,7 +691,7 @@ function exposureTimer($gloriaAPI, data, $timeout){
 }
 function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	console.log("Paso de estacion");
-	$gloriaAPI.executeOperation($scope.requestRid,'load_weather_values',function(success){
+	$gloriaAPI.executeOperation($scope.rid,'load_weather_values',function(success){
 		$gloriaAPI.getParameterValue($scope.requestRid,'weather',function(weather){
 			$("#velocity").text(Math.round(weather.wind.value)+" m/s");
 			$("#humidity").text(Math.round(weather.rh.value)+" % RH");
@@ -639,9 +707,178 @@ function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	}, 10000);
 }
 function WeatherDevice($gloriaAPI, $scope, $timeout){
-	$scope.weatherTimer = $timeout(function() {
-			drawWeatherConditions($gloriaAPI, $scope, $timeout);
-		}, 10000);
-	
+	$scope.$watch('rid', function(){
+		if ($scope.rid > 0){
+			$scope.weatherTimer = $timeout(function() {
+				drawWeatherConditions($gloriaAPI, $scope, $timeout);
+			}, 10000);
+		}
+	});
 }
 
+/* Solar Album  */
+
+function LoadMyImages($gloriaAPI, scope) {
+	scope.images = [];
+
+	return $gloriaAPI.getImagesByContext(scope.rid, function(data) {
+		var i = 0;
+
+		data.forEach(function(element) {
+			scope.images.push({
+				order : i,
+				jpg : element.jpg,
+				fits : element.fits,
+				date : element.creationDate,
+				target : element.target
+			});
+			i++;
+		});
+	});
+
+}
+
+function SolarImagesCtrl($gloriaAPI, $sequenceFactory, $scope, $timeout, $modal, $log) {
+
+	$scope.sequence = $sequenceFactory.getSequence();
+	$scope.images = [];
+	$scope.currentIndex = 0;
+	$scope.thumbsReady = true;	
+
+	$scope.items = [ 'item1', 'item2', 'item3' ];
+
+	$scope.sliderStyle = {
+		left : "0px"
+	};
+
+	$scope.$watch('rid', function() {
+		if ($scope.rid > 0) {
+			LoadMyImages($gloriaAPI, $scope);
+			$scope.sliderStyle.left = "0px";
+		}
+	});
+	
+	$scope.latencyTimeout = function() {
+		$scope.thumbsReady = true;
+	};
+
+	$scope.$watch('imageTaken', function() {
+		if ($scope.rid > 0 && $scope.$parent.imageTaken) {			
+			LoadMyImages($gloriaAPI, $scope).then(function() {
+				$scope.thumbsReady = false;	
+				$scope.currentIndex = Math.max(0, $scope.images.length - 6);
+				$scope.latencyTimer = $timeout($scope.latencyTimeout, 1000);
+			});
+		}
+	});
+
+	$scope.nextRight = function() {
+		if ($scope.currentIndex + 6 < $scope.images.length) {
+			$scope.currentIndex++;
+		}
+	};
+
+	$scope.nextLeft = function() {
+		if ($scope.currentIndex > 0) {
+			$scope.currentIndex--;
+		}
+	};
+
+	$scope.filterFn = function(element) {
+		return element.order >= $scope.currentIndex
+				&& element.order < $scope.currentIndex + 6;
+	};
+
+	$scope.$on('$destroy', function() {
+		$timeout.cancel($scope.latencyTimer);
+	});
+
+	$scope.open = function(image) {
+
+		var modalInstance = $modal.open({
+			templateUrl : 'myModalContent.html',
+			controller : ModalInstanceCtrl,
+			resolve : {
+				image : function() {
+					return image;
+				}
+			},
+			windowClass : "image-modal"
+		});
+
+		modalInstance.result.then(function(selectedItem) {
+			$scope.selected = selectedItem;
+		}, function() {
+			$log.info('Modal dismissed at: ' + new Date());
+		});
+	};
+
+}
+
+var ModalInstanceCtrl = function($scope, $modalInstance, $location, image) {
+
+	$scope.image = image;
+	/*
+	 * $scope.selected = { item : $scope.items[0] };
+	 */
+
+	$scope.ok = function() {
+		$modalInstance.close($scope.url);
+	};
+
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+
+	$scope.downloadJpg = function() {
+
+	};
+};
+
+function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
+	$scope.$watch('rid', function() {
+		if ($scope.rid > 0) {
+			
+			$gloriaAPI.getRemainingTime($scope.rid, function(data) {
+				var remainingTime = Math.max(0, parseInt(data))
+				var remainingMinutes = parseInt(remainingTime / 60);
+				var remainingSeconds = remainingTime % 60;
+				
+				$("#timer_minutes").text(remainingMinutes);
+				$("#timer_seconds").text(remainingSeconds);
+				
+				setInterval(function(){
+					remainingTime = Math.max(0,remainingTime - 1);
+					remainingMinutes = Math.max(0,parseInt(remainingTime / 60));
+					remainingSeconds = Math.max(0,remainingTime % 60);
+					
+					if (remainingMinutes < 10){
+						$("#timer_minutes").text("0"+remainingMinutes);
+					} else {
+						$("#timer_minutes").text(remainingMinutes);	
+					}
+					if (remainingSeconds < 10){
+						$("#timer_seconds").text("0"+remainingSeconds);
+					} else {
+						$("#timer_seconds").text(remainingSeconds);	
+					}
+					
+				},1000);
+				$scope.remainingTimer = $timeout ($scope.onTimeOut, (remainingTime-120)*1000);
+//				console.log("Segundos para que empiece:"+remainingTime);
+			});
+		}
+	});
+	$scope.onTimeOut = function(){
+		$gloriaAPI.getRemainingTime($scope.rid, function(data) {
+			console.log("Queda un minuto");
+			$scope.last_minutes = true;
+			$scope.remainingTimer = $timeout ($scope.onTimeOut, 5000);
+		}, function(response){
+			console.log("Fin de la reserva en response");
+			if (response.status == 406) {
+				console.log("Fin de la reserva");
+			}
+		});
+	};
+}
