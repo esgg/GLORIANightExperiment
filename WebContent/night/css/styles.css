@@ -119,7 +119,7 @@ a.prev span, a.next span {
 	position:relative;
 	left:180px;
 	width:530px;
-	top:-20px;
+	top:-30px;
 	display:inline;
 }
 
@@ -278,7 +278,7 @@ a.prev span, a.next span {
 	opacity:1.0;
 	cursor:pointer;
 }
-
+/*
 #main_ccd_buttons_panel{
 	opacity:0.5;
 }
@@ -286,6 +286,7 @@ a.prev span, a.next span {
 	opacity:1.0;
 	cursor:pointer;
 }
+*/
  /* Animation style */
 .expand{
 	position:relative;
