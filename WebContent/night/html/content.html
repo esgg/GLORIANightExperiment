@@ -173,14 +173,27 @@
 					</div>
 					<table style="position: relative; left: 12px; border-spacing: 5px">
 						<tr>
-							<td><input id="coords_ra" class="input_text" ng-model="ra"
+							<td><!-- 
+								<input id="coords_ra" class="input_text" ng-model="ra"
 								ng-disabled="hasTargetName()"
-								placeholder="{{'night.mount.ra' | i18n}}"></input></td>
+								placeholder="{{'night.mount.ra' | i18n}}"></input>
+								 -->
+								 <input id="rah" class="input_text_dec" ng-model="rah" ng-disabled="hasTargetName()"></input> :
+								 <input id="ram" class="input_text_radec" ng-model="ram" ng-disabled="hasTargetName()"></input> :
+								 <input id="ras" class="input_text_radec" ng-model="ras" ng-disabled="hasTargetName()"></input>
+								</td>
 						</tr>
 						<tr>
-							<td><input id="coords_dec" class="input_text" ng-model="dec"
+							<td>
+								<input id="decg" class="input_text_dec" ng-model="decg" ng-disabled="hasTargetName()"></input> º
+								<input id="decm" class="input_text_radec" ng-model="decm" ng-disabled="hasTargetName()"></input> '
+								<input id="decs" class="input_text_radec" ng-model="decs" ng-disabled="hasTargetName()"></input> ''
+							<!-- 
+								<input id="coords_dec" class="input_text" ng-model="dec"
 								ng-disabled="hasTargetName()"
-								placeholder="{{'night.mount.dec' | i18n}}"></input></td>
+								placeholder="{{'night.mount.dec' | i18n}}"></input>
+								 -->
+							</td>
 						</tr>
 						<tr>
 							<td><input id="tags" class="input_text"
@@ -294,13 +307,15 @@
 			<div id="ccd_button_1"
 				ng-class="hasCcd[1] ? ((ccd_order == 1) && 'ccd_button_selected' || 'ccd_button') : 'ccd_button_disabled'"
 				ng-click="hasCcd[1] && setOrder(1)"
-				style="position: relative; width: 40px; left: -600px; top: -20px;">
+				style="position: relative; width: 40px; left: -600px; top: -20px;"
+				tooltip="{{'night.ccd.messages.main_ccd' | i18n}}">
 				<img src="night/img/ccd.png" />
 			</div>
 			<div id="ccd_button_0"
 				ng-class="hasCcd[0] ? ((ccd_order == 0) && 'ccd_button_selected' || 'ccd_button') : 'ccd_button_disabled'"
 				ng-click="hasCcd[0] && setOrder(0)"
-				style="position: relative; width: 54px; top: -63px; left: -100px">
+				style="position: relative; width: 54px; top: -63px; left: -100px"
+				tooltip="{{'night.ccd.messages.secondary_ccd' | i18n}}">
 				<img src="night/img/main_ccd.png" />
 			</div>
 		</div>
@@ -353,16 +368,67 @@
 				</table>
 			</div>
 		</div>
-
+		<div id="remainingTimer" class="timer" ng-controller="TimeReservationCtrl" ng-init="last_minutes=false">
+			<span id="timer_minutes" ng-style="{color: (last_minutes && 'red') || 'silver'}">--</span>
+			<span ng-style="{color: (last_minutes && 'red') || 'silver'}">:</span>
+			<span id="timer_seconds" ng-style="{color: (last_minutes && 'red') || 'silver'}">--</span>
+		</div>
 	</div>
-
-	<div class="image_carousel" ng-controller="ImageCarousel">
-		<div id="foo2"></div>
-		<div class="clearfix"></div>
-		<a class="prev" id="foo1_prev" href="#"><span>prev</span></a> <a
-			class="next" id="foo1_next" href="#"><span>next</span></a>
+<!-- 
+	<div ng-controller="SolarImagesCtrl" class="span9"
+		style="height: 100px; cursor: default">
+		<div align="center">
+			<h5 class="label-info title_night" style="margin-top: 0px">Álbum</h5>
+		</div>
+		<div
+			style="float: left; cursor: pointer; width: 18px; margin-top: 12px; margin-left: 12px; height: 36px">
+			<img ng-show="currentIndex > 0" class="animate-show bright-button"
+				ng-src="night/img/left.png" ng-click="nextLeft()">
+		</div>
+		<div
+			style="float: left; position: relative; overflow: hidden; width: 616px; height: 70px; margin-left: 15px; margin-right: 15px;"
+			class="span8 animate-show">
+			<div class="images" ng-style="sliderStyle" id="thumbnails"
+				style="width: 850px; position: absolute;">
+				<div class="image-thumb" style="margin-top: 2px"
+					ng-show="thumbsReady" ng-repeat="image in images | filter:filterFn"
+					ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
+					<div style="position: relative">
+						<a> <img ng-click="open(image)"
+							style="border-radius: 3px; cursor: pointer" class="bright-button"
+							ng-src="{{image.jpg}}" alt="">
+						</a>
+						<div style="opacity: 1.0; position: absolute; top: 65%; left: 5%">
+							{{image.order}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			style="float: left; cursor: pointer; width: 18px; margin-top: 12px; height: 36px">
+			<img ng-show="currentIndex + 6 < images.length"
+				class="animate-show bright-button"
+				ng-src="night/img/right.png" ng-click="nextRight()">
+		</div>
+		<div>
+			<script type="text/ng-template" id="myModalContent.html">
+						<div>
+    	    				<div class="modal-header">
+		            			<h3>Image {{image.order}}</h3>
+        					</div>
+        					<div class="modal-body" style="max-height: 1000px;">
+	            				<img ng-src="{{image.jpg}}">        			
+        					</div>
+        					<div class="modal-footer" style="background-color: rgba(0, 0, 0, 0.6); border: none">
+								<p class="pull-left">{{'solar.blocks.images.took'}} {{image.date | utc | date:short}} UT.</p>
+								<a class="btn btn-primary" download="image.jpg" ng-href="{{image.jpg + '&download=true'}}">JPEG</a>
+								<a class="btn btn-warning" download="image.jpg" ng-href="{{image.fits + '&download=true'}}">FITS</a>            					
+        					</div>
+						</div>
+   			 		</script>
+		</div>
 	</div>
-
+  -->
 </div>
 
 <script>
