@@ -865,7 +865,6 @@ function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
 					
 				},1000);
 				$scope.remainingTimer = $timeout ($scope.onTimeOut, (remainingTime-120)*1000);
-//				console.log("Segundos para que empiece:"+remainingTime);
 			});
 		}
 	});
@@ -875,7 +874,8 @@ function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
 			$scope.last_minutes = true;
 			$scope.remainingTimer = $timeout ($scope.onTimeOut, 5000);
 		}, function(response){
-			console.log("Fin de la reserva en response");
+			console.log("Fin de la reserva en response:"+response.status);
+			$scope.$parent.$parent.$parent.reservationEnd = true;
 			if (response.status == 406) {
 				console.log("Fin de la reserva");
 			}
