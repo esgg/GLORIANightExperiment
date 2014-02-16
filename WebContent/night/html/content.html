@@ -86,7 +86,7 @@
 							<h3>Catalog</h3>
 						</div>
 						<div class="modal-body">
-							<tabset> <tab heading="PLANETS">
+							<tabset> <tab heading="{{'night.mount.catalog.solar_tab' | i18n}}">
 							<table cellspacing="10px">
 								<tr>
 									<td height="20px" class="catalog_title">{{'night.mount.catalog.mercury'
@@ -133,7 +133,8 @@
 										| i18n}}</td>
 									<td height="20px" class="catalog_title">{{'night.mount.catalog.uranus'
 										| i18n}}</td>
-									<td height="20px">&nbsp;</td>
+									<td height="20px" class="catalog_title">{{'night.mount.catalog.moon'
+										| i18n}}</td>
 								</tr>
 								<tr>
 									<td height="20px"><div
@@ -157,11 +158,19 @@
 												src="night/img/catalog/uranus.jpg"
 												height="100px" />
 										</div></td>
-									<td height="20px">&nbsp;</td>
+									<td height="20px"><div
+											ng-class="(target_selected == 'moon') ?  'action_component_enabled': 'action_component'"
+											ng-click="selectTarget('moon')">
+											<img
+												src="night/img/catalog/moon.jpg"
+												height="100px" />
+										</div></td>
+									
 								</tr>
 							</table>
 
-							</tab> <tab heading="GALAXIES"> Nebulosas </tab> </tabset>
+							</tab> 
+							</tabset>
 							Source: wikipedia
 						</div>
 						<div class="modal-footer">
@@ -298,10 +307,19 @@
 						ng-class="{'mess-info':isExposing}">{{status_main_ccd |
 						i18n}}</span>
 				</div>
-				<div id="main_ccd_buttons_panel" style="float: right;">
-					<img src="night/img/eye.png" width="49px"
-						height="34px" ng-click="!isExposing && expose()"
-						tooltip="{{'night.ccd.messages.expose_text' | i18n}}" />
+				<div id="main_ccd_buttons_panel" style="float: right">
+					<div style="display:inline"
+						ng-class="hasVideoMode[ccd_order] ? (isExposing && 'ccd_button_disabled' || (isVideo && 'ccd_button_selected' || 'ccd_button')) : 'ccd_button_disabled'"
+						ng-click="hasVideoMode[ccd_order] && !isExposing && video()">
+						<img src="night/img/video.png" width="40px"
+							height="34px" tooltip="{{'night.ccd.messages.video_text' | i18n}}" />
+					</div>
+					<div style="display:inline"
+						ng-class="isExposing ? 'ccd_button_selected' : 'ccd_button'"
+						ng-click="!isExposing && expose()">
+						<img src="night/img/eye.png" width="40px"
+							height="34px" tooltip="{{'night.ccd.messages.expose_text' | i18n}}" />
+					</div>	
 				</div>
 			</div>
 			<div id="ccd_button_1"
