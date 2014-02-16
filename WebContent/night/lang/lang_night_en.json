@@ -65,10 +65,13 @@
 				"messages": {
 					"no_alarm": "No alarm",
 					"internal_server": "Problem to execute the operation",
+					"alarm_start_exposure": "Problem to start the exposition",
 					"time_text": "Set the exposure time in seconds",
 					"filter_text": "Set a filter",
 					"binning_text": "Set the binning factor",
-					"expose_text": "Start exposition"
+					"expose_text": "Start exposition",
+					"main_ccd": "Click here to select the main ccd",
+					"secondary_ccd": "Click here to select the secondary ccd"
 				}
 		   }
 }
