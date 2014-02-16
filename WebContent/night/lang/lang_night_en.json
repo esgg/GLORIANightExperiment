@@ -35,13 +35,15 @@
 					"alarm_taget":"Impossible to reach the target"
 				},
 				"catalog": {
+					"solar_tab": "SOLAR SYSTEM",
 					"mercury": "MERCURY",
 					"venus": "VENUS",
 					"mars": "MARS",
 					"jupiter": "JUPITER",
 					"saturn": "SATURN",
 					"neptune": "NEPTUNE",
-					"uranus": "URANUS"
+					"uranus": "URANUS",
+					"moon":"MOON"
 				},
 				"status": {
 					"ready":"READY",
@@ -69,7 +71,8 @@
 					"time_text": "Set the exposure time in seconds",
 					"filter_text": "Set a filter",
 					"binning_text": "Set the binning factor",
-					"expose_text": "Start exposition",
+					"expose_text": "Click here to start the exposition",
+					"video_text" : "Click here to select the video mode",
 					"main_ccd": "Click here to select the main ccd",
 					"secondary_ccd": "Click here to select the secondary ccd"
 				}
