@@ -170,6 +170,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 		}
 	};
 	
+	/*
 	$scope.go = function(){
 		if ((($scope.rah>=0) && ($scope.rah<=24)) && (($scope.ram>=0) && ($scope.ram<=60)) && (($scope.ras>=0) && ($scope.ras<=60))){
 			if ((($scope.decg>=-90) && ($scope.decg<=90)) && (($scope.decm>=0) && ($scope.decm<=60)) && (($scope.decs>=0) && ($scope.decs<=60))){
@@ -182,17 +183,14 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 		}
 		
 	};
-	/*
+	*/
+	
 	$scope.go = function(){
 
-		var raRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
-		var decRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
-		var ra_value = $("#coords_ra").val();
-		var dec_value = $("#coords_dec").val();
-		
+				
 		if ($("#tags").val() == ""){	//Check if this field is empty
-			if ((ra_value.match(raRegularExpr)) && (ra_value>=0) && (ra_value<360)){
-					if ((dec_value.match(decRegularExpr) && (dec_value>=-90) && (dec_value<=90))){
+			if ((($scope.rah>=0) && ($scope.rah<=24)) && (($scope.ram>=0) && ($scope.ram<=60)) && (($scope.ras>=0) && ($scope.ras<=60))){
+				if ((($scope.decg>=-90) && ($scope.decg<=90)) && (($scope.decm>=0) && ($scope.decm<=60)) && (($scope.decs>=0) && ($scope.decs<=60))){
 						//Set radec
 						SetRADEC($gloriaAPI, $scope);
 						//Execute go operation
@@ -200,10 +198,10 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 						
 						
 					} else {
-						alert("Wrong dec value (MIN:-90, MAX:90)");
+						alert("Wrong dev value: [-90-+90]:[0-60]:[0-60]");
 					}
 			}  else {
-				alert("Wrong ra value (MIN:0, MAX:360)");
+				alert("Wrong ra value: [0-24]:[0-60]:[0-60]");
 			}	
 		} else {
 			//Set target name
@@ -214,7 +212,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 		}
 		
 	};
-	*/
+	
 	$scope.open_catalog = function(){
 		console.log("Dec:"+$scope.dec);
 		if (($scope.dec!=undefined) && ($scope.dec.length>0)){
@@ -224,7 +222,10 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 	};
 	
 	$scope.hasCoordinates = function(){
-		return (($scope.ra != undefined) && ($scope.ra != undefined) && (($scope.ra.length > 0) || ($scope.dec.length >0)));
+		var hasRaCoordinate = (($scope.rah != undefined) && ($scope.rah.length > 0)) || (($scope.ram != undefined) && ($scope.ram.length > 0)) || (($scope.ras != undefined) && ($scope.ras.length > 0)); 
+		var hasDecCoordinate = (($scope.decg != undefined) && ($scope.decg.length > 0)) || (($scope.decm != undefined) && ($scope.decm.length > 0)) || (($scope.decs != undefined) && ($scope.decs.length > 0)); 
+		return (hasRaCoordinate || hasDecCoordinate);
+		//		return (($scope.ra != undefined) && ($scope.dec != undefined) && (($scope.ra.length > 0) || ($scope.dec.length >0)));
 	};
 	
 	$scope.hasTargetName = function(){
@@ -234,8 +235,12 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 	$scope.setTargetName = function(){
 //		$scope.target_name = name;
 		$scope.target_name = $scope.target_selected;
-		$scope.ra = undefined;
-		$scope.dec = undefined;
+		$scope.rah = undefined;
+		$scope.ram = undefined;
+		$scope.ras = undefined;
+		$scope.decg = undefined;
+		$scope.decm = undefined;
+		$scope.decs = undefined;
 	}
 	$scope.selectTarget = function(name){
 		$scope.target_selected = name;
@@ -265,8 +270,8 @@ function convertDecToDecimal(grades, arcminutes, arcseconds){
 function SetRADEC($gloriaAPI, data){
 	
 	var coordinates = new Object();
-	coordinates.ra = data.ra;
-	coordinates.dec = data.dec;
+	coordinates.ra = convertRaToDecimal(data.rah, data.ram, data.ras);
+	coordinates.dec = convertDecToDecimal(data.decg, data.decm,data.decs);
 	
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.coordinates',coordinates,function(success){
@@ -329,10 +334,12 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	$scope.hasCcd = [false,false];
 	$scope.hasFilterWheel = [false, false];
 	$scope.hasFocuser = [false, false];
+	$scope.hasVideoMode = [false,false];
 	
 	$scope.hasCcd[0] = true;
 	$scope.hasFilterWheel[0] = true;
 	$scope.hasCcd[1] = true;
+	$scope.hasVideoMode [0] = true;
 	
 	$scope.ccd_alarm = false;
 	
@@ -402,18 +409,22 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 
 	/*
 	$scope.expose = function(){
-		$scope.ccd_alarm = true;
-		$scope.isExposing = false;
-		$scope.ccd_alarm_message = "telexp.ccd.messages.internal_server";
-		
+		//$scope.ccd_alarm = true;
+		$scope.isExposing = true;
+		//$scope.ccd_alarm_message = "telexp.ccd.messages.internal_server";
+		console.log("Exposition...");
 		
 	};
 	*/
-	
+	$scope.video = function(){
+		console.log("Video mode ....");
+		$scope.isVideo = true;
+	};
 	
 	$scope.expose = function(){
 
 		console.log("Order:"+$scope.ccd_order);
+		$scope.isVideo = false;
 		if (!$scope.isExposing){
 			if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){			
 				$scope.ccd_sequence = $sequenceFactory.getSequence();
