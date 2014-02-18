@@ -256,11 +256,11 @@ a.prev span, a.next span {
 }
  
  .ccd_button_disabled{
- 	opacity:0.2;
+ 	opacity:0.0;
  }
  
  .ccd_button{
-	opacity:0.2;
+	opacity:0.5;
 }
 .ccd_button:hover{
 	opacity:1.0;
@@ -392,7 +392,7 @@ a.prev span, a.next span {
  	border-left:10px solid white; /* bottom, add background color here */
 }
 .component_disabled{
-	opacity:0.5;
+	opacity:0.0;
 }
 .component_enabled{
 	opacity:0.5;
