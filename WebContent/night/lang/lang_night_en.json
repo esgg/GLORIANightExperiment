@@ -14,7 +14,7 @@
         "nvalid": "The reservation id @{p1}@ is not valid"
     },
 	"focuser": {
-				"tooltip":"Click to change change position"
+				"tooltip":"Click here to change change the focuser position"
 	 		   },
 	"mount": {
 				"title":"MOUNT",
@@ -23,7 +23,7 @@
 				"object":"TARGET",
 				"apply" : "Apply",
 				"close" : "Close",
-				"information": "You can move the mount introducing the RADEC coordinates or the target name",
+				"information": "You can move the telescope introducing the RADEC coordinates (first and second box) or the target name (third box)",
 				"messages": {
 					"ra_text": "Right Ascension Coordinate",
 					"dec_text": "Declination Coordinate"	,
@@ -32,7 +32,9 @@
 					"no_alarm":"No alarm",
 					"alarm_set_radec": "Problem to set the RADEC coordinates",
 					"alarm_set_target": "Problem to set the target",
-					"alarm_taget":"Impossible to reach the target"
+					"alarm_taget":"Impossible to reach the target",
+					"alarm_status": "Problem to load mount status",
+					"info_ra" : "Right Ascension coordinates. Format:[0-23]:[0-59]:[0:59]"
 				},
 				"catalog": {
 					"solar_tab": "SOLAR SYSTEM",
@@ -47,14 +49,20 @@
 				},
 				"status": {
 					"ready":"READY",
-					"error": "ERROR"
+					"error": "ERROR",
+					"stop": "STOP",
+					"undefined": "UNDEFINED",
+					"moving":"MOVING",
+					"tracking": "TRACKING",
+					"parked":"PARKED",
+					"parking":"PARKING"
 				}	
 			 },
 	"ccd": {
 				"title": "CCD",
 				"exposure_time": "TIME",
-				"information_exp": "The exposure time is the time that camera's shutter is open. The longer is open, more objects can be seen.",
-				"information_filter": "Filters are used by amateurs to enhance the details of celestial objects. Professional astronomers use them in order to understand the astrophysics.",
+				"information_exp": "This is the panel to control the cdds. To take an image, you have to introduce the time in the first box in seconds (max 120).",
+				"information_filter": "In the second box, you can choose one of the available filters in the telescope",
 				"filter": "FILTER",
 				"binning":"BINNING",
 				"status": {
@@ -76,5 +84,13 @@
 					"main_ccd": "Click here to select the main ccd",
 					"secondary_ccd": "Click here to select the secondary ccd"
 				}
-		   }
+		   },
+	"weather": {
+		"alert": "Weather alert",
+		"alarm_text" : "An alarm has been activated in the telescope. The telescope will not be able to work properly."
+	},
+	"general": {
+		"alert":"Alert",
+		"expiration_time": "Your reservation time is close to expire"
+	}
 }
