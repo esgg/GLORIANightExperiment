@@ -190,13 +190,15 @@
 								 <input id="rah" class="input_text_dec" ng-model="rah" ng-disabled="hasTargetName()"></input> :
 								 <input id="ram" class="input_text_radec" ng-model="ram" ng-disabled="hasTargetName()"></input> :
 								 <input id="ras" class="input_text_radec" ng-model="ras" ng-disabled="hasTargetName()"></input>
+								
+								 
 								</td>
 						</tr>
 						<tr>
 							<td>
-								<input id="decg" class="input_text_dec" ng-model="decg" ng-disabled="hasTargetName()"></input> º
-								<input id="decm" class="input_text_radec" ng-model="decm" ng-disabled="hasTargetName()"></input> '
-								<input id="decs" class="input_text_radec" ng-model="decs" ng-disabled="hasTargetName()"></input> ''
+								<input id="decg" class="input_text_dec" ng-model="decg" ng-disabled="hasTargetName()"></input> :
+								<input id="decm" class="input_text_radec" ng-model="decm" ng-disabled="hasTargetName()"></input> :
+								<input id="decs" class="input_text_radec" ng-model="decs" ng-disabled="hasTargetName()"></input>
 							<!-- 
 								<input id="coords_dec" class="input_text" ng-model="dec"
 								ng-disabled="hasTargetName()"
@@ -326,14 +328,14 @@
 				ng-class="hasCcd[1] ? ((ccd_order == 1) && 'ccd_button_selected' || 'ccd_button') : 'ccd_button_disabled'"
 				ng-click="hasCcd[1] && setOrder(1)"
 				style="position: relative; width: 40px; left: -600px; top: -20px;"
-				tooltip="{{'night.ccd.messages.main_ccd' | i18n}}">
+				tooltip="{{'night.ccd.messages.secondary_ccd' | i18n}}">
 				<img src="night/img/ccd.png" />
 			</div>
 			<div id="ccd_button_0"
 				ng-class="hasCcd[0] ? ((ccd_order == 0) && 'ccd_button_selected' || 'ccd_button') : 'ccd_button_disabled'"
 				ng-click="hasCcd[0] && setOrder(0)"
 				style="position: relative; width: 54px; top: -63px; left: -100px"
-				tooltip="{{'night.ccd.messages.secondary_ccd' | i18n}}">
+				tooltip="{{'night.ccd.messages.main_ccd' | i18n}}">
 				<img src="night/img/main_ccd.png" />
 			</div>
 		</div>
@@ -347,9 +349,20 @@
 
 	<div id="gloria_info">
 		<span class="title_info">GLORIA</span> <span class="regular_info">Info</span>
-		<div id="weather_station" ng-controller="WeatherDevice"
+		<div id="weather_station" ng-controller="WeatherDevice" ng-init="weather_alarm=false"
 			style="width: 400px; margin-top: -5px; margin-left: 100px">
-
+			<div class="modal hide fade" id="WeatherAlarmModal">
+				<div class="modal-header">
+					<h3>{{'night.weather.alert' | i18n}}</h3>
+				</div>
+				<div class="modal-body">
+					<span class="regular_text">{{'night.weather.alarm_text' | i18n}}</span>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-warning" data-dismiss="modal"
+							ng-click="">{{'night.mount.close' | i18n}}</button>
+				</div>
+			</div>
 			<div style="float: left; display: inline-block; width: 33%">
 				<table>
 					<tr>
@@ -387,12 +400,24 @@
 			</div>
 		</div>
 		<div id="remainingTimer" class="timer" ng-controller="TimeReservationCtrl" ng-init="last_minutes=false">
+			<div class="modal hide fade" id="ReservationTimeModal">
+				<div class="modal-header">
+					<h3>{{'night.general.alert' | i18n}}</h3>
+				</div>
+				<div class="modal-body">
+					<span class="regular_text">{{'night.general.expiration_time' | i18n}}</span>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-warning" data-dismiss="modal"
+							ng-click="">{{'night.mount.close' | i18n}}</button>
+				</div>
+			</div>
 			<span id="timer_minutes" ng-style="{color: (last_minutes && 'red') || 'silver'}">--</span>
 			<span ng-style="{color: (last_minutes && 'red') || 'silver'}">:</span>
 			<span id="timer_seconds" ng-style="{color: (last_minutes && 'red') || 'silver'}">--</span>
 		</div>
 	</div>
-<!-- 
+
 	<div ng-controller="SolarImagesCtrl" class="span9"
 		style="height: 100px; cursor: default">
 		<div align="center">
@@ -446,7 +471,7 @@
    			 		</script>
 		</div>
 	</div>
-  -->
+  
 </div>
 
 <script>
