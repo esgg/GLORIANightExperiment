@@ -1,18 +1,18 @@
 {
-	"header": "Experimento Nocturno",
-	"reservation": {
-		"obsolete": {
-			"l1": "El identificador de reserva @{p1}@ es obsoleto",
-			"l2": "¿Quieres uno nuevo?. Haz click",
-			"here": "aquí"
-		},
-		"unknown": "El identificador de reserva @{p1}@ no existe",
-		"loading": "Cargando",
-		"problem": "Parece que el telescopio no está funcionando bien. Por favor, inténtalo de nuevo en unos minutos",
-		"end": "Tu reserva ha terminado, ¡Esperamos que hayas disfrutado!",
-		"login": "Sesión no iniciada. Redireccionando",
-		"nvalid" : "El identificador de reserva @{p1}@ no es válido"	
-	},
+    "header": "Солнечный эксперимент",
+    "reservation": {
+        "obsolete": {
+            "l1": "Бронирование @{p1}@ устарело",
+            "l2": "Хотите забронировать новое время? Нажмите",
+            "here": "сюда"
+        },
+        "unknown": "Бронирование @{p1}@ не существует",
+        "loading": "Загрузка",
+        "problem": "Телескоп не работает как нужно. Пожалуйста попробуйте снова через несколько минут",
+        "end": "Время вашего бронирования истекло. Мы надеемся, эксперимент вам понравился!",
+        "login": "Вы не вошли в систему. Перенаправляем вас",
+        "nvalid": "Бронирование @{p1}@ некорректно"
+    },
 	"focuser": {
 				"tooltip":"Click here to change change the focuser position"
 	 		   },

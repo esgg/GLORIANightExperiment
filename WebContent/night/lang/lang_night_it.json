@@ -1,18 +1,18 @@
 {
-	"header": "Experimento Nocturno",
-	"reservation": {
-		"obsolete": {
-			"l1": "El identificador de reserva @{p1}@ es obsoleto",
-			"l2": "¿Quieres uno nuevo?. Haz click",
-			"here": "aquí"
-		},
-		"unknown": "El identificador de reserva @{p1}@ no existe",
-		"loading": "Cargando",
-		"problem": "Parece que el telescopio no está funcionando bien. Por favor, inténtalo de nuevo en unos minutos",
-		"end": "Tu reserva ha terminado, ¡Esperamos que hayas disfrutado!",
-		"login": "Sesión no iniciada. Redireccionando",
-		"nvalid" : "El identificador de reserva @{p1}@ no es válido"	
-	},
+        "header" : "Esperimento Solare",
+        "reservation": {
+                "obsolete": {
+                        "l1": "La prenotazine con id @{p1}@ è obsoleta",
+                        "l2": "Ne vuoi una nuova? Clicca",
+                        "here": "qui"
+                },
+                "unknown": "La prenotazione con id @{p1}@ non esiste",
+                "loading": "Sto caricando",
+                "problem": "Il telescopio non funziona correttamente. Per favore prova di nuovo tra alcuni minuti.",
+                "end": "La tua prenotazione è terminata. Speriamo che l'esperimento ti sia piaciuto!",
+                "login": "Non sei connesso. Ti sto trasferendo",
+                "nvalid" : "La prenotazione con id @{p1}@ non è valida."
+        },
 	"focuser": {
 				"tooltip":"Click here to change change the focuser position"
 	 		   },
