@@ -33,7 +33,7 @@ function InitDevices($gloriaAPI, $sequenceFactory, $scope){
 	
 	//Change the order of the ccd
 	$scope.setOrder = function(order){
-				
+		console.log("Changing ccd order");
 		$scope.ccd_order = parseInt(order);
 		$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
 			
@@ -82,8 +82,9 @@ function FocuserCtrl($gloriaAPI, $scope){
 		});
 		
 		$gloriaAPI.setParameterTreeValue($scope.requestRid,'focuser','steps',numSteps,function(success){
+			console.log("Move "+numSteps+" steps");
 			$gloriaAPI.executeOperation($scope.requestRid,'move_focus', function(success){
-				//Update text in popup
+				console.log("Focuser moved");
 				$scope.currentFocuserPosition = $( "#focuserPosition" ).text();
 			}, function(error){
 				//alert(error);
@@ -129,6 +130,33 @@ function GetCamerasCtrl($gloriaAPI, $scope){
 function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 	
 	$scope.mount_sequence = $sequenceFactory.getSequence();
+	
+	$scope.$watch('rid', function(){
+		
+		if ($scope.rid > 0){
+			$gloriaAPI.executeOperation($scope.rid,'load_mount_status',function(success){
+				$gloriaAPI.getParameterTreeValue($scope.rid,'mount','status',function(success){
+					console.log("Status:"+success);
+					if (success == "PARKED"){
+						$scope.status_mount = "night.mount.status.parked"
+					} else if (success == "TRACKING"){
+						$scope.status_mount = "night.mount.status.tracking"
+					} else if (success == "STOP"){
+						$scope.status_mount = "night.mount.status.stop"
+					}
+					
+				}, function(error){
+					$scope.mount_alarm = true;
+					$scope.mount_alarm_message = "night.mount.messages.alarm_status";
+					$scope.mount_status = "night.mount.status.error";
+				});
+			}, function(error){
+				$scope.mount_alarm = true;
+				$scope.mount_alarm_message = "night.mount.messages.alarm_status";
+				$scope.mount_status = "night.mount.status.error";
+			});
+		}
+	});
 	
 	$scope.move_north = function(){
 		if ($scope.hasMove){
@@ -187,14 +215,14 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 	
 	$scope.go = function(){
 
-				
+				console.log("RA"+$scope.rah);
 		if ($("#tags").val() == ""){	//Check if this field is empty
 			if ((($scope.rah>=0) && ($scope.rah<=24)) && (($scope.ram>=0) && ($scope.ram<=60)) && (($scope.ras>=0) && ($scope.ras<=60))){
 				if ((($scope.decg>=-90) && ($scope.decg<=90)) && (($scope.decm>=0) && ($scope.decm<=60)) && (($scope.decs>=0) && ($scope.decs<=60))){
 						//Set radec
 						SetRADEC($gloriaAPI, $scope);
 						//Execute go operation
-						GoRADEC($gloriaAPI,  $scope);
+//						GoRADEC($gloriaAPI,  $scope);
 						
 						
 					} else {
@@ -207,7 +235,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 			//Set target name
 			SetTargetName($gloriaAPI, $scope);
 			//Execute go operation
-			GoTargetName($gloriaAPI, $scope);
+//			GoTargetName($gloriaAPI, $scope);
 
 		}
 		
@@ -336,10 +364,10 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	$scope.hasFocuser = [false, false];
 	$scope.hasVideoMode = [false,false];
 	
-	$scope.hasCcd[0] = true;
+	//$scope.hasCcd[0] = true;
 	$scope.hasFilterWheel[0] = true;
-	$scope.hasCcd[1] = true;
-	$scope.hasVideoMode [0] = true;
+	//$scope.hasCcd[1] = true;
+	//$scope.hasVideoMode [0] = true;
 	
 	$scope.ccd_alarm = false;
 	
@@ -365,13 +393,25 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	*/
 
 	$scope.$watch('rid', function(){
+		
 		if ($scope.rid > 0){
 			console.log("Run init sequence");
 			
+			
+			GetNumCcds($gloriaAPI,$scope);
 			LoadCcdAttributes($gloriaAPI,$scope);
-			SetCcdOrder($gloriaAPI,$scope,1);
-			LoadCcdAttributes($gloriaAPI,$scope);
-			SetCcdOrder($gloriaAPI,$scope,0);
+			LoadContinuousMode($gloriaAPI,$scope)
+			
+			
+//			$scope.$watch('$scope-num_ccds', function(){
+//				console.log("Entrada");
+//				LoadCcdAttributes($gloriaAPI,$scope);
+//				SetCcdOrder($gloriaAPI,$scope,1);
+//				LoadCcdAttributes($gloriaAPI,$scope);
+//				SetCcdOrder($gloriaAPI,$scope,0);
+//			});
+			
+			
 			
 			//Load filters for CCD0.
 			$gloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
@@ -454,6 +494,36 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		}
 	};
 	
+}
+
+function GetNumCcds($gloriaAPI, data){
+	console.log("get_ccd");
+	return data.ccd_sequence.execute(function() {
+		return $gloriaAPI.getParameterValue(data.rid, 'cameras', function(success){
+			console.log("Number of ccds:"+success.ccd.number);
+			data.num_ccds = success.ccd.number;
+			if (success.ccd.number>=1){
+				data.hasCcd[0] = true;
+			} 
+			if (success.ccd.number>=2){
+				data.hasCcd[1] = true;
+			}
+			
+		}, function(error){
+			//alert(error);
+		});
+	});
+}
+function LoadContinuousMode($gloriaAPI, data){
+	console.log("load_continuous_mode");
+	return data.ccd_sequence.execute(function() {
+		return $gloriaAPI.executeOperation(data.rid,'load_continuous_image', function(success){
+			console.log("get continuous mode");
+			hasVideoMode[data.ccd_order] = true;
+		}, function(error){
+			//alert(error);
+		});
+	});
 }
 
 function LoadCcdAttributes($gloriaAPI, data){
@@ -585,7 +655,7 @@ function StartExposure($gloriaAPI, data, $timeout){
 		console.log("ee1"+data.ccd_order);
 		return $gloriaAPI.executeOperation(data.requestRid,'start_exposure',function(success){
 			console.log("ee2"+data.ccd_order);
-			scope.$parent.imageTaken = false;
+			data.$parent.imageTaken = false;
 			}, function(error){
 				data.isExposing = false;
 				data.status_main_ccd = "night.ccd.status.error";
@@ -707,15 +777,28 @@ function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 			$("#velocity").text(Math.round(weather.wind.value)+" m/s");
 			$("#humidity").text(Math.round(weather.rh.value)+" % RH");
 			$("#temperature").text(Math.round(weather.temperature.value)+" Deg.");
+			/*
+			 * Activate when the alarm will be included in the system
+			if (!$scope.weather_alarm){
+				console.log("No hay alarma");
+				$("#WeatherAlarmModal").modal();
+				$scope.weather_alarm = true;	
+			}
+			*/
 		}, function(error){
 
 		});
 	}, function(error){
-
+		if (error.status = 500){
+			$timeout.cancel($scope.weatherTimer);
+		}
 	});
 	$scope.weatherTimer = $timeout(function() {
 		drawWeatherConditions($gloriaAPI, $scope, $timeout);
 	}, 10000);
+	$scope.$on('$destroy', function() {
+		$timeout.cancel($scope.weatherTimer);
+	});
 }
 function WeatherDevice($gloriaAPI, $scope, $timeout){
 	$scope.$watch('rid', function(){
@@ -847,6 +930,7 @@ var ModalInstanceCtrl = function($scope, $modalInstance, $location, image) {
 };
 
 function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
+	
 	$scope.$watch('rid', function() {
 		if ($scope.rid > 0) {
 			
@@ -855,8 +939,8 @@ function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
 				var remainingMinutes = parseInt(remainingTime / 60);
 				var remainingSeconds = remainingTime % 60;
 				
-				$("#timer_minutes").text(remainingMinutes);
-				$("#timer_seconds").text(remainingSeconds);
+				//$("#timer_minutes").text(remainingMinutes);
+				//$("#timer_seconds").text(remainingSeconds);
 				
 				setInterval(function(){
 					remainingTime = Math.max(0,remainingTime - 1);
@@ -881,6 +965,9 @@ function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
 	});
 	$scope.onTimeOut = function(){
 		$gloriaAPI.getRemainingTime($scope.rid, function(data) {
+			if (!$scope.last_minutes){
+				$("#ReservationTimeModal").modal();	
+			}
 			console.log("Queda un minuto");
 			$scope.last_minutes = true;
 			$scope.remainingTimer = $timeout ($scope.onTimeOut, 5000);
