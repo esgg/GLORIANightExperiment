@@ -127,7 +127,7 @@ function GetCamerasCtrl($gloriaAPI, $scope){
 
 }
 /* Devices controllers */
-function MountDevice($gloriaAPI , $scope, $sequenceFactory){
+function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	
 	$scope.mount_sequence = $sequenceFactory.getSequence();
 	
@@ -143,6 +143,8 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 						$scope.status_mount = "night.mount.status.tracking"
 					} else if (success == "STOP"){
 						$scope.status_mount = "night.mount.status.stop"
+					} else if (success == "MOVING"){
+						$scope.status_mount = "night.mount.status.moving"
 					}
 					
 				}, function(error){
@@ -157,6 +159,33 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 			});
 		}
 	});
+	
+	$scope.mountMovementTimer = function(){
+		$gloriaAPI.executeOperation($scope.rid,'load_mount_status',function(success){
+			$gloriaAPI.getParameterTreeValue($scope.rid,'mount','status',function(success){
+				console.log("Read mount status:"+success);
+				if (success == "PARKED"){
+					$scope.status_mount = "night.mount.status.parked";
+				} else if (success == "TRACKING"){
+					$scope.status_mount = "night.mount.status.tracking";
+				} else if (success == "STOP"){
+					$scope.status_mount = "night.mount.status.stop";
+				} else if (success == "MOVING"){
+					$scope.status_mount = "night.mount.status.moving";
+					$scope.mountTimer = $timeout ($scope.mountMovementTimer, 1000);
+				}
+				
+			}, function(error){
+				$scope.mount_alarm = true;
+				$scope.mount_alarm_message = "night.mount.messages.alarm_status";
+				$scope.mount_status = "night.mount.status.error";
+			});
+		}, function(error){
+			$scope.mount_alarm = true;
+			$scope.mount_alarm_message = "night.mount.messages.alarm_status";
+			$scope.mount_status = "night.mount.status.error";
+		});
+	};
 	
 	$scope.move_north = function(){
 		if ($scope.hasMove){
@@ -222,8 +251,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 						//Set radec
 						SetRADEC($gloriaAPI, $scope);
 						//Execute go operation
-//						GoRADEC($gloriaAPI,  $scope);
-						
+						GoRADEC($gloriaAPI,  $scope,$timeout);
 						
 					} else {
 						alert("Wrong dev value: [-90-+90]:[0-60]:[0-60]");
@@ -235,8 +263,9 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory){
 			//Set target name
 			SetTargetName($gloriaAPI, $scope);
 			//Execute go operation
-//			GoTargetName($gloriaAPI, $scope);
-
+			GoTargetName($gloriaAPI, $scope, $timeout);
+			//Check the movement
+	
 		}
 		
 	};
@@ -298,8 +327,8 @@ function convertDecToDecimal(grades, arcminutes, arcseconds){
 function SetRADEC($gloriaAPI, data){
 	
 	var coordinates = new Object();
-	coordinates.ra = convertRaToDecimal(data.rah, data.ram, data.ras);
-	coordinates.dec = convertDecToDecimal(data.decg, data.decm,data.decs);
+	coordinates.ra = parseFloat(convertRaToDecimal(data.rah, data.ram, data.ras));
+	coordinates.dec = parseFloat(convertDecToDecimal(data.decg, data.decm,data.decs));
 	
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.coordinates',coordinates,function(success){
@@ -313,12 +342,12 @@ function SetRADEC($gloriaAPI, data){
 	
 }
 
-function GoRADEC($gloriaAPI, data){
+function GoRADEC($gloriaAPI, data, $timeout){
 	
 		
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.executeOperation(data.requestRid,'point_to_coordinates',function(success){
-			
+			data.mountTimer = $timeout (data.mountMovementTimer, 2000);
 		}, function(error){
 			data.mount_alarm = true;
 			data.mount_alarm_message = "night.mount.messages.alarm_taget";
@@ -342,11 +371,12 @@ function SetTargetName($gloriaAPI, data){
 	
 }
 
-function GoTargetName($gloriaAPI, data){
+function GoTargetName($gloriaAPI, data, $timeout){
 	
+	console.log("Ir");
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.executeOperation(data.requestRid,'point_to_object',function(success){
-			
+			data.mountTimer = $timeout (data.mountMovementTimer, 2000);
 		}, function(error){
 			data.mount_alarm = true;
 			data.mount_alarm_message = "night.mount.messages.alarm_taget";
@@ -400,7 +430,14 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 			
 			GetNumCcds($gloriaAPI,$scope);
 			LoadCcdAttributes($gloriaAPI,$scope);
-			LoadContinuousMode($gloriaAPI,$scope)
+			if ($scope.num_ccds>1){
+				SetCcdOrder($gloriaAPI,$scope,1);
+				LoadCcdAttributes($gloriaAPI,$scope);
+				SetCcdOrder($gloriaAPI,$scope,0);
+			}
+			
+			
+//			LoadContinuousMode($gloriaAPI,$scope)
 			
 			
 //			$scope.$watch('$scope-num_ccds', function(){
@@ -514,6 +551,7 @@ function GetNumCcds($gloriaAPI, data){
 		});
 	});
 }
+/*
 function LoadContinuousMode($gloriaAPI, data){
 	console.log("load_continuous_mode");
 	return data.ccd_sequence.execute(function() {
@@ -525,7 +563,7 @@ function LoadContinuousMode($gloriaAPI, data){
 		});
 	});
 }
-
+*/
 function LoadCcdAttributes($gloriaAPI, data){
 	console.log("load_ccd");
 	return data.ccd_sequence.execute(function() {
@@ -756,17 +794,19 @@ function exposureTimer($gloriaAPI, data, $timeout){
 					data.isExposing = false;
 				} else {
 					num_ccd_timer--;
-					data.timer = $timeout(function() {exposureTimer($gloriaAPI, data, $timeout);}, 1000);
+					data.timer = $timeout(function() {exposureTimer($gloriaAPI, data, $timeout);}, 2000);
 				}
 
 			}
 		}, function(error){
 			data.isExposing = false;
 			data.status_main_ccd = "night.ccd.status.error";
+			data.ccd_alarm_message = "night.ccd.messages.internal_server";
 		});
 	}, function(error){
 		data.isExposing = false;
 		data.status_main_ccd = "night.ccd.status.error";
+		data.ccd_alarm_message = "night.ccd.messages.internal_server";
 	});
 						
 }
@@ -979,4 +1019,45 @@ function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
 			}
 		});
 	};
+}
+
+function DomeCtrl($gloriaAPI, $scope,$timeout){
+	$scope.$watch('rid', function() {
+		if ($scope.rid > 0) {
+			$gloriaAPI.executeOperation($scope.rid,'load_dome_status',function(success){
+				$gloriaAPI.getParameterValue($scope.requestRid,'dome',function(dome){
+					console.log("Dome status:"+dome.status);
+					if (dome.status = "CLOSE"){
+						$("#DomeModal").modal();
+					}
+					$scope.domeStatusValue = dome.status;
+					$scope.domeStatusTimer = $timeout($scope.domeTimer, 10000);
+				}, function(error){
+
+				});
+			}, function(error){
+				
+			});
+		}
+	});
+	
+	$scope.domeTimer = function(){
+		$gloriaAPI.executeOperation($scope.rid,'load_dome_status',function(success){
+			$gloriaAPI.getParameterValue($scope.requestRid,'dome',function(dome){
+				console.log("Dome status:"+dome.status);
+				if (($scope.domeStatusValue="OPEN") && (dome.status == "CLOSE")){
+					$("#DomeModal").modal();
+				}
+				$scope.domeStatusValue = dome.status;
+				$scope.domeStatusTimer = $timeout($scope.domeTimer, 10000);
+			}, function(error){
+
+			});
+		}, function(error){
+			if (error.status = 500){
+				$timeout.cancel($scope.domeStatusTimer);
+			}
+		});
+	}
+		
 }
