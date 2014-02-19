@@ -1027,7 +1027,7 @@ function DomeCtrl($gloriaAPI, $scope,$timeout){
 			$gloriaAPI.executeOperation($scope.rid,'load_dome_status',function(success){
 				$gloriaAPI.getParameterValue($scope.requestRid,'dome',function(dome){
 					console.log("Dome status:"+dome.status);
-					if (dome.status = "CLOSE"){
+					if (dome.status == "CLOSE"){
 						$("#DomeModal").modal();
 					}
 					$scope.domeStatusValue = dome.status;
