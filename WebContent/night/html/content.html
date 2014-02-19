@@ -416,6 +416,22 @@
 			<span ng-style="{color: (last_minutes && 'red') || 'silver'}">:</span>
 			<span id="timer_seconds" ng-style="{color: (last_minutes && 'red') || 'silver'}">--</span>
 		</div>
+		
+		<div ng-controller="DomeCtrl">
+			<div class="modal hide fade" id="DomeModal">
+				<div class="modal-header">
+					<h3>{{'night.general.alert' | i18n}}</h3>
+				</div>
+				<div class="modal-body">
+					<span class="regular_text">Dome is closed</span>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-warning" data-dismiss="modal"
+							ng-click="">{{'night.mount.close' | i18n}}</button>
+				</div>
+			</div>
+		</div>
+		 
 	</div>
 
 	<div ng-controller="SolarImagesCtrl" class="span9"
