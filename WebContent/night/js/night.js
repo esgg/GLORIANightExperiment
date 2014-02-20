@@ -145,6 +145,8 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 						$scope.status_mount = "night.mount.status.stop"
 					} else if (success == "MOVING"){
 						$scope.status_mount = "night.mount.status.moving"
+					} else if (success == "UNDEFINED"){
+						$scope.status_mount = "night.mount.status.undefined"
 					}
 					
 				}, function(error){
@@ -1027,7 +1029,7 @@ function DomeCtrl($gloriaAPI, $scope,$timeout){
 			$gloriaAPI.executeOperation($scope.rid,'load_dome_status',function(success){
 				$gloriaAPI.getParameterValue($scope.requestRid,'dome',function(dome){
 					//console.log("Dome status:"+dome.status);
-					if (dome.status == "CLOSE"){
+					if (dome.status == "CLOSED"){
 						$("#DomeModal").modal();
 					}
 					$scope.domeStatusValue = dome.status;
@@ -1045,7 +1047,7 @@ function DomeCtrl($gloriaAPI, $scope,$timeout){
 		$gloriaAPI.executeOperation($scope.rid,'load_dome_status',function(success){
 			$gloriaAPI.getParameterValue($scope.requestRid,'dome',function(dome){
 				console.log("Dome status:"+dome.status);
-				if (($scope.domeStatusValue="OPEN") && (dome.status == "CLOSE")){
+				if (($scope.domeStatusValue=="OPEN") && (dome.status == "CLOSED")){
 					$("#DomeModal").modal();
 				}
 				$scope.domeStatusValue = dome.status;
