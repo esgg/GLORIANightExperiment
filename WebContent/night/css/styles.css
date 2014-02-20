@@ -418,8 +418,6 @@ a.prev span, a.next span {
 .title_night {
 	background-color: rgba(192, 192, 192, 0.14);
 	color: silver;
-	/*background-color: #151515;
-	color: rgb(168, 168, 168);*/
 }
 .bright-button {
 	filter: brightness(1.0);
