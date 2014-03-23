@@ -14,83 +14,93 @@
 		"nvalid" : "El identificador de reserva @{p1}@ no es válido"	
 	},
 	"focuser": {
-				"tooltip":"Click here to change change the focuser position"
+				"tooltip":"Pulsa aquí para cambiar la posición del enfocador"
 	 		   },
 	"mount": {
-				"title":"MOUNT",
+				"title":"MONTURA",
 				"ra":"RA",
 				"dec":"DEC",
-				"object":"TARGET",
-				"apply" : "Apply",
-				"close" : "Close",
+				"object":"OBJETIVO",
+				"apply" : "Aplicar",
+				"close" : "Cerrar",
 				"information": "You can move the telescope introducing the RADEC coordinates (first and second box) or the target name (third box)",
 				"messages": {
-					"ra_text": "Right Ascension Coordinate",
-					"dec_text": "Declination Coordinate"	,
-					"target_text": "Object Name",
-					"relative_move": "Move the telescope a little bit",
-					"no_alarm":"No alarm",
-					"alarm_set_radec": "Problem to set the RADEC coordinates",
-					"alarm_set_target": "Problem to set the target",
-					"alarm_taget":"Impossible to reach the target",
-					"alarm_status": "Problem to load mount status",
-					"info_ra" : "Right Ascension coordinates. Format:[0-23]:[0-59]:[0:59]"
+					"ra_text": "Coordenada de Ascensión Recta",
+					"dec_text": "Coordinada de declinación"	,
+					"target_text": "Nombre del objeto",
+					"relative_move": "Desplazamiento del telescopio",
+					"no_alarm":"Sin alarma",
+					"alarm_set_radec": "Se encontró un problema con las coordenadas",
+					"alarm_set_target": "Se encontró un problema al especificar el objetivo",
+					"alarm_taget":"No se puede alcanzar el objetivo",
+					"alarm_status": "Problema al acceder a la montura",
+					"info_ra" : "Pon aquí la ascensión recta del objetivo. Formato:[0-23]:[0-59]:[0:59]. ",
+					"info_dec": "Pon aquí la declinación del objetivo. Format: [-90 - 90]:[0 - 59]: [0 - 59].",
+					"info_target": "En este campo, puedes seleccionar objetos del catálogo de Messier(M1, M2, etc ...), del internacional(NGC500, etc ...) u objetos del sistema solar(JUPITER, SATURNO, etc ...)"
 				},
 				"catalog": {
-					"solar_tab": "SOLAR SYSTEM",
-					"mercury": "MERCURY",
+					"solar_tab": "SISTEMA SOLAR",
+					"mercury": "MERCURIO",
 					"venus": "VENUS",
-					"mars": "MARS",
+					"mars": "MARTE",
 					"jupiter": "JUPITER",
-					"saturn": "SATURN",
-					"neptune": "NEPTUNE",
-					"uranus": "URANUS",
-					"moon":"MOON"
+					"saturn": "SATURNO",
+					"neptune": "NEPTUNO",
+					"uranus": "URANO",
+					"moon":"LUNA"
 				},
 				"status": {
-					"ready":"READY",
+					"ready":"LISTA",
 					"error": "ERROR",
-					"stop": "STOP",
-					"undefined": "UNDEFINED",
-					"moving":"MOVING",
-					"tracking": "TRACKING",
-					"parked":"PARKED",
-					"parking":"PARKING"
+					"stop": "PARADA",
+					"undefined": "INDEFINIDO",
+					"moving":"MOVIENDO",
+					"tracking": "SEGUIMIENTO",
+					"parked":"APARCADA",
+					"parking":"APARCANDO"
 				}	
 			 },
 	"ccd": {
 				"title": "CCD",
-				"exposure_time": "TIME",
+				"exposure_time": "TIEMPO",
 				"information_exp": "This is the panel to control the cdds. To take an image, you have to introduce the time in the first box in seconds (max 120).",
 				"information_filter": "In the second box, you can choose one of the available filters in the telescope",
-				"filter": "FILTER",
+				"filter": "FILTRO",
 				"binning":"BINNING",
 				"status": {
-					"ready":"READY",
-					"exposing":"EXPOSING",
-					"transfering":"TRANSFERING",
-					"taken": "IMAGE TAKEN",
+					"ready":"LISTA",
+					"exposing":"EXPONIENDO",
+					"transfering":"TRANSFIRIENDO",
+					"taken": "IMAGEN TOMADA",
+					"generating": "GENERANDO",
 					"error": "ERROR"
 				},
 				"messages": {
-					"no_alarm": "No alarm",
-					"internal_server": "Problem to execute the operation",
-					"alarm_start_exposure": "Problem to start the exposition",
+					"no_alarm": "Sin alarma",
+					"internal_server": "Problema al ejecutar la orden",
+					"alarm_start_exposure": "Se produjo un problema al ejecutar la exposición",
 					"time_text": "Set the exposure time in seconds",
 					"filter_text": "Set a filter",
 					"binning_text": "Set the binning factor",
-					"expose_text": "Click here to start the exposition",
-					"video_text" : "Click here to select the video mode",
-					"main_ccd": "Click here to select the main ccd",
-					"secondary_ccd": "Click here to select the secondary ccd"
+					"expose_text": "Pulsa para tomar una imagen",
+					"video_text" : "Pulsa para seleccionar modo video",
+					"main_ccd": "Pulsa para seleccionar la cámara principal",
+					"secondary_ccd": "Pulsa para seleccionar la cámara secundaria",
+					"dec_alert": "Valor de declinación incorrecto",
+					"ra_alert": "Valor de ascensión recta incorrecto",
+					"info_exposition":"Selecciona el tiempo de exposición en segundos (max. 120). Este campo indica el tiempo que el obturador permanece abierto.",
+					"info_filter":"Selecciona un filtro."
 				}
 		   },
 	"weather": {
-		"alert": "Weather alert",
-		"alarm_text" : "An alarm has been activated in the telescope. The telescope will not be able to work properly."
+		"alert": "Alerta meteorológica",
+		"alarm_text" : "Se ha activado una alarma en el telescopio. El telescopio no podrá operar adecuadamente."
 	},
 	"general": {
-		"alert":"Alert",
-		"expiration_time": "Your reservation time is close to expire"
+		"alert":"Alerta",
+		"expiration_time": "Tu tiempo de reserva está próximo a terminar"
+	},
+	"album":{
+		"taken":"Tomaste esta imagen a las"
 	}
 }

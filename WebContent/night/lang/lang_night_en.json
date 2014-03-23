@@ -34,7 +34,9 @@
 					"alarm_set_target": "Problem to set the target",
 					"alarm_taget":"Impossible to reach the target",
 					"alarm_status": "Problem to load mount status",
-					"info_ra" : "Right Ascension coordinates. Format:[0-23]:[0-59]:[0:59]"
+					"info_ra" : "Put here the right ascension coordinate. Format:[0-23]:[0-59]:[0:59]. If you want to know more, click here",
+					"info_dec": "Put here the declination coordinate. Format: [-90 - 90]:[0 - 59]: [0 - 59].",
+					"info_target": "In this field, you can choose between object from messier catalog (M1, M2, etc ...), international(NGC500, etc ...) or solar system (JUPITER, SATURN, etc ...)"
 				},
 				"catalog": {
 					"solar_tab": "SOLAR SYSTEM",
@@ -70,6 +72,7 @@
 					"exposing":"EXPOSING",
 					"transfering":"TRANSFERING",
 					"taken": "IMAGE TAKEN",
+					"generating": "GENERATING",
 					"error": "ERROR"
 				},
 				"messages": {
@@ -82,7 +85,11 @@
 					"expose_text": "Click here to start the exposition",
 					"video_text" : "Click here to select the video mode",
 					"main_ccd": "Click here to select the main ccd",
-					"secondary_ccd": "Click here to select the secondary ccd"
+					"secondary_ccd": "Click here to select the secondary ccd",
+					"dec_alert": "Wrong dec value",
+					"ra_alert": "Wrong ra value",
+					"info_exposition":"Select the exposure time in seconds (max. 120 seconds). The exposure time indicates the time the shutter is open.",
+					"info_filter":"Select the filter."
 				}
 		   },
 	"weather": {
@@ -92,5 +99,8 @@
 	"general": {
 		"alert":"Alert",
 		"expiration_time": "Your reservation time is close to expire"
+	},
+	"album":{
+		"taken":"You took this image at"
 	}
 }
