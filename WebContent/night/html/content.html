@@ -2,6 +2,7 @@
 	href="night/prettyPhoto/css/prettyPhoto.css">
 <link rel="stylesheet" type="text/css" media="all"
 	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
+
 <div id="main_image">
 	<div id="main_image_container" style="margin-left: 0px">
 		<img id="image_0" class="main_img"
@@ -73,10 +74,7 @@
 						ng-style="{'opacity': mount_alarm ? 1 : 0.1}"
 						class="badge badge-important" ng-mouseleave="mount_alarm=false">0</span>
 	
-					<div id="mount_information" style="float: right;"
-						popover-placement="right" popover-animation="true"
-						popover-trigger="mouseenter"
-						popover="{{'night.mount.information' | i18n}}">
+					<div id="mount_information" style="float: right;" ng-click="showInformation()">
 						<img src="night/img/information.png" />
 					</div>
 				</div>
@@ -180,9 +178,9 @@
 								ng-click="cancel()">{{'night.mount.close' | i18n}}</button>
 						</div>
 					</div>
-					<table style="position: relative; left: 12px; border-spacing: 5px">
+					<table id="ra_table" style="position: relative; left: 12px; border-spacing: 5px">
 						<tr>
-							<td><!-- 
+							<td id="ra_coordinates"><!-- 
 								<input id="coords_ra" class="input_text" ng-model="ra"
 								ng-disabled="hasTargetName()"
 								placeholder="{{'night.mount.ra' | i18n}}"></input>
@@ -195,7 +193,7 @@
 								</td>
 						</tr>
 						<tr>
-							<td>
+							<td id="dec_coordinates">
 								<input id="decg" class="input_text_dec" ng-model="decg" ng-disabled="hasTargetName()"></input> :
 								<input id="decm" class="input_text_radec" ng-model="decm" ng-disabled="hasTargetName()"></input> :
 								<input id="decs" class="input_text_radec" ng-model="decs" ng-disabled="hasTargetName()"></input>
@@ -270,10 +268,7 @@
 					ng-style="{'opacity': ccd_alarm ? 1 : 0.1}"
 					class="badge badge-important" ng-mouseleave="ccd_alarm=false">0</span>
 
-				<div id="ccd_information" style="float: right;"
-					popover-placement="right" popover-animation="true"
-					popover-trigger="mouseenter"
-					popover="{{'night.ccd.information_exp' | i18n}}{{'night.ccd.information_filter' | i18n}}">
+				<div id="ccd_information" style="float: right;">
 					<img src="night/img/information.png" />
 				</div>
 			</div>
@@ -478,7 +473,7 @@
 	            				<img ng-src="{{image.jpg}}">        			
         					</div>
         					<div class="modal-footer" style="background-color: rgba(0, 0, 0, 0.6); border: none">
-								<p class="pull-left">{{'solar.blocks.images.took'}} {{image.date | utc | date:short}} UT.</p>
+								<p class="pull-left">{{'night.album.taken'}} {{image.date | utc | date:short}} UT.</p>
 								<a class="btn btn-primary" download="image.jpg" ng-href="{{image.jpg + '&download=true'}}">JPEG</a>
 								<a class="btn btn-warning" download="image.jpg" ng-href="{{image.fits + '&download=true'}}">FITS</a>            					
         					</div>
@@ -488,6 +483,12 @@
 	</div>
   
 </div>
+
+<div id="infRa" style="visibility:hidden">{{'night.mount.messages.info_ra' | i18n}}</div>
+<div id="infDec" style="visibility:hidden">{{'night.mount.messages.info_dec' | i18n}}</div>
+<div id="infTarget" style="visibility:hidden">{{'night.mount.messages.info_target' | i18n}}</div>
+<div id="infTime" style="visibility:hidden">{{'night.ccd.messages.info_exposition' | i18n}}</div>
+<div id="infFilter" style="visibility:hidden">{{'night.ccd.messages.info_filter' | i18n}}</div>
 
 <script>
 	/*
@@ -502,6 +503,17 @@
 	 content: "{{'night.ccd.exposure_time' | i18n}}",
 	 });
 	 */
+
+	 //mountTip.setContent($("#inf").text());
+	 
+	 //mountTip.show();
+	 
+	 var raTip = new Opentip("#mount_information",{target:"#ra_coordinates", tipJoint:"bottom left"});
+	 var decTip = new Opentip("#mount_information",{target:"#dec_coordinates", tipJoint:"bottom right"});
+	 var tags = new Opentip("#mount_information",{target:"#tags", tipJoint:"top left"});
+	 var timeTip = new Opentip("#ccd_information",{target:"#exposure_time", tipJoint:"bottom left"});
+	 var filterTip = new Opentip("#ccd_information",{target:"#filter_selector", tipJoint:"right"});
+	 
 	$("#focuser_slider").slider({
 		range : "max",
 		min : -1000,
