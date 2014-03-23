@@ -30,13 +30,17 @@ function InitDevices($gloriaAPI, $sequenceFactory, $scope){
 		}
 	});
 	*/
-	
+	console.log($("#inf").text());
 	//Change the order of the ccd
 	$scope.setOrder = function(order){
 		console.log("Changing ccd order");
 		$scope.ccd_order = parseInt(order);
 		$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
-			
+			$gloriaAPI.executeOperation($scope.rid,'get_ccd_attributes', function(success){
+				console.log("get ccd attributes from order:"+parseInt(order));
+			}, function(error){
+				//alert(error);
+			});
 		}, function(error){
 			
 		});
@@ -111,21 +115,44 @@ function FocuserCtrl($gloriaAPI, $scope){
 }
 
 //Draw surveillance cameras
-function GetCamerasCtrl($gloriaAPI, $scope){
+function GetCamerasCtrl($gloriaAPI, $scope, $timeout){
 	//Change to a $scope.rid
-		$gloriaAPI.getParameterValue($scope.requestRid,'cameras',function(success){
-			
-			$("#scam0_name").text(success.scam.images[0].name);
-			$("#scam0_img").attr("src",success.scam.images[0].url);
-			
-			$("#scam1_name").text(success.scam.images[1].name);
-			$("#scam1_img").attr("src",success.scam.images[1].url);
+	
+	$scope.$watch('rid', function(){
+		if ($scope.rid > 0){
+			$gloriaAPI.getParameterValue($scope.rid,'cameras',function(success){
 				
+				$scope.scam0 = success.scam.images[0].url;
+				$("#scam0_name").text(success.scam.images[0].name);
+				$("#scam0_img").attr("src",success.scam.images[0].url);
+				
+				$scope.scam1 = success.scam.images[1].url;
+				$("#scam1_name").text(success.scam.images[1].name);
+				$("#scam1_img").attr("src",success.scam.images[1].url);
+				
+					
 			}, function(error){
-					alert(error);
-					});
-
+				alert(error);
+			});
+			
+			$scope.scamStatusTimer = $timeout($scope.scamTimer, 10000);
+			
+			
+		}
+	});
+	
+	$scope.scamTimer = function(){
+		var currentDate = new Date();
+		console.log("Load scam:"+currentDate.getMinutes()+currentDate.getSeconds());
+		
+		$("#scam0_img").attr("src",$scope.scam0+"?"+currentDate.getMinutes()+currentDate.getSeconds());
+		$("#scam1_img").attr("src",$scope.scam1+"?"+currentDate.getMinutes()+currentDate.getSeconds());
+		
+		$scope.scamStatusTimer = $timeout($scope.scamTimer, 10000);
+		
+	}			
 }
+
 /* Devices controllers */
 function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	
@@ -243,6 +270,18 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 		
 	};
 	*/
+	$scope.showInformation = function(){
+
+		 
+//		raTip.setContent($("#infRa").text());
+//		raTip.show();
+//		
+//		decTip.setContent($("#infDec").text());
+//		decTip.show();
+//		
+//		tags.setContent($("#infTarget").text());
+//		tags.show();
+	};
 	
 	$scope.go = function(){
 
@@ -256,7 +295,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 						GoRADEC($gloriaAPI,  $scope,$timeout);
 						
 					} else {
-						alert("Wrong dev value: [-90-+90]:[0-60]:[0-60]");
+						alert("Wrong dec value: [-90-+90]:[0-60]:[0-60]");
 					}
 			}  else {
 				alert("Wrong ra value: [0-24]:[0-60]:[0-60]");
@@ -432,14 +471,16 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 			
 			GetNumCcds($gloriaAPI,$scope);
 			LoadCcdAttributes($gloriaAPI,$scope);
+			/*
 			if ($scope.num_ccds>1){
 				SetCcdOrder($gloriaAPI,$scope,1);
 				LoadCcdAttributes($gloriaAPI,$scope);
 				SetCcdOrder($gloriaAPI,$scope,0);
 			}
+			*/
 			
-			
-//			LoadContinuousMode($gloriaAPI,$scope)
+//			LoadContinuousMode($gloriaAPI,$scope);
+//			LoadContinuousUrl($gloriaAPI,$scope)
 			
 			
 //			$scope.$watch('$scope-num_ccds', function(){
@@ -498,6 +539,11 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	$scope.video = function(){
 		console.log("Video mode ....");
 		$scope.isVideo = true;
+		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){			
+			$timeout ($scope.continuousMode, 1000);
+		} else {
+			alert("Wrong parameter exposure time (MIN:0, MAX:120)");
+		}
 	};
 	
 	$scope.expose = function(){
@@ -533,6 +579,13 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		}
 	};
 	
+	$scope.continuousMode = function(){
+		console.log("Enter on continuous mode");
+		if ($scope.isVideo){
+			$scope.continuousTimer = $timeout ($scope.continuousMode, 1000);	
+		}
+	};
+	
 }
 
 function GetNumCcds($gloriaAPI, data){
@@ -553,19 +606,37 @@ function GetNumCcds($gloriaAPI, data){
 		});
 	});
 }
-/*
+
 function LoadContinuousMode($gloriaAPI, data){
 	console.log("load_continuous_mode");
 	return data.ccd_sequence.execute(function() {
 		return $gloriaAPI.executeOperation(data.rid,'load_continuous_image', function(success){
 			console.log("get continuous mode");
-			hasVideoMode[data.ccd_order] = true;
+			data.hasVideoMode[data.ccd_order] = true;
+			$gloriaAPI.getParameterTreeValue(data.rid,'cameras','ccd.images.cont', function(success){
+				console.log("URL:"+success);
+				data.hasVideoMode[data.ccd_order] = true;
+			}, function(error){
+				//alert(error);
+			});
 		}, function(error){
 			//alert(error);
 		});
 	});
 }
-*/
+
+function LoadContinuousUrl($gloriaAPI, data){
+	console.log("load_continuous_url");
+	return data.ccd_sequence.execute(function() {
+		return $gloriaAPI.getParameterTreeValue(data.rid,'cameras','ccd.images.cont', function(success){
+			console.log("URL:"+success);
+			data.hasVideoMode[data.ccd_order] = true;
+		}, function(error){
+			//alert(error);
+		});
+	});
+}
+
 function LoadCcdAttributes($gloriaAPI, data){
 	console.log("load_ccd");
 	return data.ccd_sequence.execute(function() {
@@ -736,11 +807,11 @@ function CheckInstImages($gloriaAPI, data, $timeout){
 function exposureTimer($gloriaAPI, data, $timeout){
 
 	console.log("Paso del timer");
-	data.status_main_ccd = "night.ccd.status.transfering";
+	data.status_main_ccd = "night.ccd.status.generating";
 	$gloriaAPI.executeOperation(data.requestRid,'load_image_urls',function(success){
 		$gloriaAPI.getParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].inst',function(success){
 			if ((success.jpg!=null) && (success.fits)!=null){
-		
+				data.status_main_ccd = "night.ccd.status.transfering";
 				console.log("Deleting timer");
 				//clearInterval(expTimer);
 				var mImage = new Image();
@@ -754,10 +825,10 @@ function exposureTimer($gloriaAPI, data, $timeout){
 						$("#main_image_container").css("margin-left",shift);
 						$("#loading").css("visibility","hidden");
 						$("#expose_0_button").removeAttr("disabled");
-						
+						data.status_main_ccd = "night.ccd.status.taken";
 					});
 				};
-				data.status_main_ccd = "night.ccd.status.taken";
+				
 				//$("#ccd_status").removeClass("mess-info");
 				data.isExposing = false;
 				data.$parent.imageTaken = true;
@@ -814,6 +885,12 @@ function exposureTimer($gloriaAPI, data, $timeout){
 }
 function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	console.log("Paso de estacion");
+	raTip.setContent($("#infRa").text());
+	decTip.setContent($("#infDec").text());
+	tags.setContent($("#infTarget").text());
+	timeTip.setContent($("#infTime").text());
+	filterTip.setContent($("#infFilter").text());
+		
 	$gloriaAPI.executeOperation($scope.rid,'load_weather_values',function(success){
 		$gloriaAPI.getParameterValue($scope.requestRid,'weather',function(weather){
 			$("#velocity").text(Math.round(weather.wind.value)+" m/s");
