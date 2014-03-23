@@ -8,7 +8,8 @@
 			"night/prettyPhoto/js/jquery.prettyPhoto.js",
 			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js",
 			"night/js/main.js",
-			"night/js/night.js"
+			"night/js/night.js",
+			"night/js/opentip/downloads/opentip-jquery.min.js"
 		]
 	},
 	"wrong": {
