@@ -290,11 +290,9 @@
 						</select></td>
 					</tr>
 					<tr>
-						<td><select id="binning_selector" class="selector"
-							ng-model="binning" ng-init="binning='1x1'"
-							tooltip="{{'night.ccd.messages.binning_text' | i18n}}">
-								<option>1x1</option>
-						</select></td>
+						<td><input id="gain" class="input_text"
+							ng-model="gain" 
+							placeholder="{{'night.ccd.gain' | i18n}}"></td>
 					</tr>
 				</table>
 
@@ -489,6 +487,7 @@
 <div id="infTarget" style="visibility:hidden">{{'night.mount.messages.info_target' | i18n}}</div>
 <div id="infTime" style="visibility:hidden">{{'night.ccd.messages.info_exposition' | i18n}}</div>
 <div id="infFilter" style="visibility:hidden">{{'night.ccd.messages.info_filter' | i18n}}</div>
+<div id="infGain" style="visibility:hidden">{{'night.ccd.messages.info_gain' | i18n}}</div>
 
 <script>
 	/*
@@ -513,6 +512,8 @@
 	 var tags = new Opentip("#mount_information",{target:"#tags", tipJoint:"top left"});
 	 var timeTip = new Opentip("#ccd_information",{target:"#exposure_time", tipJoint:"bottom left"});
 	 var filterTip = new Opentip("#ccd_information",{target:"#filter_selector", tipJoint:"right"});
+	 var gainTip = new Opentip("#ccd_information", {target:"#gain", tipJoint:"left"});
+	 
 	 
 	$("#focuser_slider").slider({
 		range : "max",
