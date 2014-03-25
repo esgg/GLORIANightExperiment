@@ -438,7 +438,7 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	//$scope.hasCcd[0] = true;
 	$scope.hasFilterWheel[0] = true;
 	//$scope.hasCcd[1] = true;
-	//$scope.hasVideoMode [0] = true;
+	$scope.hasVideoMode [0] = true;
 	
 	$scope.ccd_alarm = false;
 	
@@ -479,7 +479,7 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 			}
 			*/
 			
-//			LoadContinuousMode($gloriaAPI,$scope);
+			LoadContinuousMode($gloriaAPI,$scope);
 //			LoadContinuousUrl($gloriaAPI,$scope)
 			
 			
@@ -537,12 +537,17 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	};
 	*/
 	$scope.video = function(){
-		console.log("Video mode ....");
-		$scope.isVideo = true;
-		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){			
-			$timeout ($scope.continuousMode, 1000);
+		if (!$scope.isVideo){
+			console.log("Enter in video mode ....");
+			$scope.isVideo = true;
+			if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=2)){			
+				$timeout ($scope.continuousMode, 1000);
+			} else {
+				alert("Wrong parameter exposure time (MIN:0, MAX:2)");
+			}			
 		} else {
-			alert("Wrong parameter exposure time (MIN:0, MAX:120)");
+			console.log("Exit from video mode ....");
+			$scope.isVideo = false;
 		}
 	};
 	
@@ -560,6 +565,9 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 				
 				console.log("set exposure time:"+$scope.exposure_time[$scope.ccd_order]+" "+num_ccd_timer);
 				SetExposureTime($gloriaAPI, $scope);
+				
+				console.log("set gain:"+$scope.gain);
+				SetGain($gloriaAPI, $scope)
 
 				console.log("set ccd attributes");
 				SetCCDAttributes($gloriaAPI, $scope);
@@ -615,6 +623,7 @@ function LoadContinuousMode($gloriaAPI, data){
 			data.hasVideoMode[data.ccd_order] = true;
 			$gloriaAPI.getParameterTreeValue(data.rid,'cameras','ccd.images.cont', function(success){
 				console.log("URL:"+success);
+				data.continuousUrl[data.ccd_order] = success;
 				data.hasVideoMode[data.ccd_order] = true;
 			}, function(error){
 				//alert(error);
@@ -736,6 +745,15 @@ function convertThetaToCssDegs(theta){
 function SetExposureTime($gloriaAPI, data){
 	return data.ccd_sequence.execute(function() {
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].exposure',parseFloat(data.exposure_time),function(success){
+				
+			}, function(error){
+				data.isExposing = false;
+			});
+	});
+}
+function SetGain($gloriaAPI, data){
+	return data.ccd_sequence.execute(function() {
+		return $gloriaAPI.setParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].gain',parseFloat(data.gain),function(success){
 				
 			}, function(error){
 				data.isExposing = false;
@@ -890,6 +908,7 @@ function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	tags.setContent($("#infTarget").text());
 	timeTip.setContent($("#infTime").text());
 	filterTip.setContent($("#infFilter").text());
+	gainTip.setContent($("#infGain").text())
 		
 	$gloriaAPI.executeOperation($scope.rid,'load_weather_values',function(success){
 		$gloriaAPI.getParameterValue($scope.requestRid,'weather',function(weather){
