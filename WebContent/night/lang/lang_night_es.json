@@ -67,6 +67,7 @@
 				"information_filter": "In the second box, you can choose one of the available filters in the telescope",
 				"filter": "FILTRO",
 				"binning":"BINNING",
+				"gain":"GANANCIA",
 				"status": {
 					"ready":"LISTA",
 					"exposing":"EXPONIENDO",
@@ -89,7 +90,8 @@
 					"dec_alert": "Valor de declinación incorrecto",
 					"ra_alert": "Valor de ascensión recta incorrecto",
 					"info_exposition":"Selecciona el tiempo de exposición en segundos (max. 120). Este campo indica el tiempo que el obturador permanece abierto.",
-					"info_filter":"Selecciona un filtro."
+					"info_filter":"Selecciona un filtro.",
+					"info_gain":"Pon aquí la ganancia. Format: [0-1023]"
 				}
 		   },
 	"weather": {

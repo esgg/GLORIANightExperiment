@@ -67,6 +67,7 @@
 				"information_filter": "In the second box, you can choose one of the available filters in the telescope",
 				"filter": "FILTER",
 				"binning":"BINNING",
+				"gain":"GAIN",
 				"status": {
 					"ready":"READY",
 					"exposing":"EXPOSING",
@@ -89,7 +90,8 @@
 					"dec_alert": "Wrong dec value",
 					"ra_alert": "Wrong ra value",
 					"info_exposition":"Select the exposure time in seconds (max. 120 seconds). The exposure time indicates the time the shutter is open.",
-					"info_filter":"Select the filter."
+					"info_filter":"Select the filter.",
+					"info_gain":"Put here the gain. Format: [0-1023]"
 				}
 		   },
 	"weather": {
