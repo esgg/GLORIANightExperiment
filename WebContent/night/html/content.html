@@ -471,10 +471,12 @@
 	            				<img ng-src="{{image.jpg}}">        			
         					</div>
         					<div class="modal-footer" style="background-color: rgba(0, 0, 0, 0.6); border: none">
-								<p class="pull-left">{{'night.album.taken'}} {{image.date | utc | date:short}} UT.</p>
+								<p class="pull-left">{{'night.album.taken'  | i18n}} {{image.date | utc | date:short}} UT.</p>
+								<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{image.jpg}}" data-text="{{'night.twitter.send_image' | i18n}}" data-via="GloriaProject">Tweet</a>
 								<a class="btn btn-primary" download="image.jpg" ng-href="{{image.jpg + '&download=true'}}">JPEG</a>
 								<a class="btn btn-warning" download="image.jpg" ng-href="{{image.fits + '&download=true'}}">FITS</a>            					
         					</div>
+							<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 						</div>
    			 		</script>
 		</div>

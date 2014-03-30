@@ -156,6 +156,7 @@ function GetCamerasCtrl($gloriaAPI, $scope, $timeout){
 /* Devices controllers */
 function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	
+	$scope.hasMove = true;
 	$scope.mount_sequence = $sequenceFactory.getSequence();
 	
 	$scope.$watch('rid', function(){
