@@ -104,5 +104,8 @@
 	},
 	"album":{
 		"taken":"You took this image at"
+	},
+	"twitter":{
+		"send_image":"See my new astronomical image"
 	}
 }
