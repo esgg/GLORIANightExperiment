@@ -107,5 +107,11 @@
 	},
 	"twitter":{
 		"send_image":"See my new astronomical image"
+	},
+	"coordinates_modal": {
+		"title": "Ventana de coordenadas",
+		"introduction": "Especifica las coordenadas del target al que quieres apuntar. Recuerda que las coordenadas deben estar en J2000",
+		"right_ascension": "Ascensión recta",
+		"declination": "Declination"
 	}
 }
