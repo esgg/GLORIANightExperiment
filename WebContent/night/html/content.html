@@ -178,30 +178,51 @@
 								ng-click="cancel()">{{'night.mount.close' | i18n}}</button>
 						</div>
 					</div>
+					<div class="modal hide fade" id="CoordinatesModal">
+						<div class="modal-header">
+							<h3>{{'night.coordinates_modal.title' | i18n}}</h3>
+						</div>
+						<div class="modal-body">
+							{{'night.coordinates_modal.introduction' | i18n}}<br>
+							<table>
+								<tr>
+									<td>{{'night.coordinates_modal.right_ascension' | i18n}}</td>
+									<td>
+										<select ng-model="rah" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_rah for item_rah in Range(0,24)"></select>
+										<select ng-model="ram" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_ram for item_ram in Range(0,60)"></select>
+										<select ng-model="ras" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_ras for item_ras in Range(0,60)"></select>
+									</td>
+								</tr>
+								<tr>
+									<td>{{'night.coordinates_modal.declination' | i18n}}</td>
+									<td>
+										<select ng-model="decsign" class="selector_coordinates" ng-disabled="hasTargetName()">
+											<option value="+" selected>+</option>
+											<option value="-">-</option>
+										</select>
+										<select ng-model="decg" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_decg for item_decg in Range(0,90)"></select>
+										<select ng-model="decm" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_decm for item_decm in Range(0,60)"></select>
+										<select ng-model="decs" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_decs for item_decs in Range(0,60)"></select>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" ng-click="setCoordinates()">{{'night.mount.apply'
+								| i18n}}</button>
+							<button class="btn btn-warning" data-dismiss="modal"
+								ng-click="cancel()">{{'night.mount.close' | i18n}}</button>
+						</div>
+					</div>
 					<table id="ra_table" style="position: relative; left: 12px; border-spacing: 5px">
 						<tr>
-							<td id="ra_coordinates"><!-- 
-								<input id="coords_ra" class="input_text" ng-model="ra"
-								ng-disabled="hasTargetName()"
-								placeholder="{{'night.mount.ra' | i18n}}"></input>
-								 -->
-								 <input id="rah" class="input_text_dec" ng-model="rah" ng-disabled="hasTargetName()"></input> :
-								 <input id="ram" class="input_text_radec" ng-model="ram" ng-disabled="hasTargetName()"></input> :
-								 <input id="ras" class="input_text_radec" ng-model="ras" ng-disabled="hasTargetName()"></input>
-								
-								 
-								</td>
+							<td id="ra_coordinates">
+								{{rah}} : {{ram}} : {{ras}}
+							</td>
 						</tr>
 						<tr>
 							<td id="dec_coordinates">
-								<input id="decg" class="input_text_dec" ng-model="decg" ng-disabled="hasTargetName()"></input> :
-								<input id="decm" class="input_text_radec" ng-model="decm" ng-disabled="hasTargetName()"></input> :
-								<input id="decs" class="input_text_radec" ng-model="decs" ng-disabled="hasTargetName()"></input>
-							<!-- 
-								<input id="coords_dec" class="input_text" ng-model="dec"
-								ng-disabled="hasTargetName()"
-								placeholder="{{'night.mount.dec' | i18n}}"></input>
-								 -->
+								{{decsign}} : {{decg}} : {{decm}} : {{decs}}
 							</td>
 						</tr>
 						<tr>
@@ -214,6 +235,9 @@
 								</div></td>
 						</tr>
 					</table>
+					<div class="action_component" style="position:absolute;top:10px;right:-5px">
+						<img src="night/img/compass.png" width="24px" height="24px" ng-click="open_coordinates()"/>
+					</div>
 					<div align="center" class="status" ng-model="status_mount"
 					ng-init="status_mount='night.mount.status.ready'">
 					<span id="mount_status" class="status_text">{{status_mount |
@@ -275,18 +299,36 @@
 			<div id="main_ccd_parameters" ng-model="isExposing"
 				ng-init="isExposing=false">
 
+				<div>
+					<div id="exposure_slider" style="width:80px;"></div>
+					<div id="exposure_time" style="position:absolute;top:-2px;right:0px;font-weight:bold">0</div>
+				</div>
+				<div style="margin-top:10px;margin-bottom:10px">
+					<select id="filter_selector" class="selector"
+							ng-model="filter" ng-change="setFilter()"
+							ng-disabled="!hasFilterWheel[ccd_order]"
+							ng-options="item for item in filters_0">
+					</select>
+				</div>
+				<div>
+					<div id="gain_slider" style="width:80px;"></div>
+					<div id="gain" style="position:absolute;top:58px;right:0px;font-weight:bold">0</div>
+				</div>
+<!-- 
 				<table style="position: relative; left: 18px; border-spacing: 5px">
 					<tr>
-						<td><input id="exposure_time" class="input_text"
+						<td>
+						 <input id="exposure_time" class="input_text"
 							ng-model="exposure_time"
-							placeholder="{{'night.ccd.exposure_time' | i18n}}"></td>
+							placeholder="{{'night.ccd.exposure_time' | i18n}}">
+							 <div id="exposure_slider" style="height:10px;"></div><div id="exposure_time" style="float:right"></div>
+						</td>
 					</tr>
 					<tr>
 						<td><select id="filter_selector" class="selector"
 							ng-model="filter" ng-change="setFilter()"
 							ng-disabled="!hasFilterWheel[ccd_order]"
 							ng-options="item for item in filters_0">
-								<!-- <option ng-repeat="filter in filters_0">{{filter}}</option> -->
 						</select></td>
 					</tr>
 					<tr>
@@ -295,7 +337,7 @@
 							placeholder="{{'night.ccd.gain' | i18n}}"></td>
 					</tr>
 				</table>
-
+ 	 -->			
 				<div align="center" class="status" ng-model="status_main_ccd"
 					ng-init="status_main_ccd='night.ccd.status.ready'">
 					<span id="ccd_status" class="status_text"
@@ -363,7 +405,7 @@
 							width="24px" src="night/img/humidity.png" /></td>
 					</tr>
 					<tr>
-						<td><label class="no_alarm" id="humidity">--- % RH</label></td>
+						<td><div ng-style="{'color': humidity_alarm ? 'red' : 'silver'}" id="humidity">--- % RH</div></td>
 					</tr>
 				</table>
 			</div>
@@ -374,7 +416,7 @@
 							width="24px" src="night/img/wind.png" /></td>
 					</tr>
 					<tr>
-						<td><label class="no_alarm" id="velocity">--- m/s</label></td>
+						<td><div ng-style="{'color': wind_alarm ? 'red' : 'silver'}" id="velocity">--- m/s</div></td>
 					</tr>
 				</table>
 			</div>
@@ -386,8 +428,8 @@
 							src="night/img/temperature.png" /></td>
 					</tr>
 					<tr>
-						<td><label class="no_alarm" id="temperature">--- Deg.
-								M</label></td>
+						<td><div ng-style="{'color': temperature_alarm ? 'red' : 'silver'}" id="temperature">--- Deg.
+								M</div></td>
 					</tr>
 				</table>
 			</div>
@@ -515,6 +557,8 @@
 	 var timeTip = new Opentip("#ccd_information",{target:"#exposure_time", tipJoint:"bottom left"});
 	 var filterTip = new Opentip("#ccd_information",{target:"#filter_selector", tipJoint:"right"});
 	 var gainTip = new Opentip("#ccd_information", {target:"#gain", tipJoint:"left"});
+	 var expChange = false;
+	 var gainChange = false;
 	 
 	 
 	$("#focuser_slider").slider({
@@ -532,6 +576,31 @@
 				'-webkit-transform' : rotate,
 				'-ms-transform' : rotate
 			});
+		}
+	});
+	$("#exposure_slider").slider({
+		range : "max",
+		min : 0,
+		max : 120,
+		value : 0,
+		slide : function(event, ui) {
+			$("#exposure_time").text(ui.value);
+		},
+		change: function(event,ui){
+			expChange = true;
+		}
+	});
+	$("#gain_slider").slider({
+		range : "max",
+		min : 0,
+		max : 260,
+		value : 0,
+		slide : function(event, ui) {
+			$("#gain").text(ui.value);
+			
+		},
+		change: function(event,ui){
+			gainChange = true;
 		}
 	});
 </script>
