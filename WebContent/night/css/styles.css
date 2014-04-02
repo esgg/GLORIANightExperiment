@@ -254,7 +254,23 @@ a.prev span, a.next span {
 	padding-left:0px;
 	padding-right:0px;
 }
- 
+ .selector_coordinates{
+ 	background-color:#000000;
+	color: #FFFFFF;
+	border:1px solid #1A1414;
+	width: 40px;
+	height:25px;
+	font-size:12px;
+	padding-top:0px;
+	padding-bottom:0px;
+	margin-top:5px;
+	margin-bottom:5px;
+	margin-right:5px;
+	margin-left:5px;
+	-moz-appearance: none;
+ 	-webkit-appearance: none;
+ 	appearance: none;
+ }
  .ccd_button_disabled{
  	opacity:0.0;
  }
@@ -413,6 +429,9 @@ a.prev span, a.next span {
 .focuser-info
 {
 	opacity:1.0;
+}
+.weather_alarm{
+	color:red;
 }
 /* Album solar */
 .title_night {
