@@ -188,21 +188,21 @@
 								<tr>
 									<td>{{'night.coordinates_modal.right_ascension' | i18n}}</td>
 									<td>
-										<select ng-model="rah" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_rah for item_rah in Range(0,24)"></select>
-										<select ng-model="ram" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_ram for item_ram in Range(0,60)"></select>
-										<select ng-model="ras" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_ras for item_ras in Range(0,60)"></select>
+										<select ng-model="rah_sel" ng-init="rah_sel = 0" class="selector_coordinates" ng-options="item_rah for item_rah in Range(0,24)"></select>
+										<select ng-model="ram_sel" ng-init="ram_sel = 0" class="selector_coordinates" ng-options="item_ram for item_ram in Range(0,60)"></select>
+										<select ng-model="ras_sel" ng-init="ras_sel = 0" class="selector_coordinates" ng-options="item_ras for item_ras in Range(0,60)"></select>
 									</td>
 								</tr>
 								<tr>
 									<td>{{'night.coordinates_modal.declination' | i18n}}</td>
 									<td>
-										<select ng-model="decsign" class="selector_coordinates" ng-disabled="hasTargetName()">
+										<select ng-model="decsign_sel" ng-init="decsign_sel = '+'" class="selector_coordinates" >
 											<option value="+" selected>+</option>
 											<option value="-">-</option>
 										</select>
-										<select ng-model="decg" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_decg for item_decg in Range(0,90)"></select>
-										<select ng-model="decm" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_decm for item_decm in Range(0,60)"></select>
-										<select ng-model="decs" class="selector_coordinates" ng-disabled="hasTargetName()" ng-options="item_decs for item_decs in Range(0,60)"></select>
+										<select ng-model="decg_sel" ng-init="decg_sel = 0" class="selector_coordinates" ng-options="item_decg for item_decg in Range(0,90)"></select>
+										<select ng-model="decm_sel" ng-init="decm_sel = 0" class="selector_coordinates" ng-options="item_decm for item_decm in Range(0,60)"></select>
+										<select ng-model="decs_sel" ng-init="decs_sel = 0" class="selector_coordinates" ng-options="item_decs for item_decs in Range(0,60)"></select>
 									</td>
 								</tr>
 							</table>
@@ -222,13 +222,12 @@
 						</tr>
 						<tr>
 							<td id="dec_coordinates">
-								{{decsign}} : {{decg}} : {{decm}} : {{decs}}
+								{{decsign}}{{decg}} : {{decm}} : {{decs}}
 							</td>
 						</tr>
 						<tr>
 							<td><input id="tags" class="input_text"
-								ng-model="target_name" ng-disabled="hasCoordinates()"
-								placeholder="{{'night.mount.object' | i18n}}"></input></td>
+								ng-model="target_name" placeholder="{{'night.mount.object' | i18n}}"></input></td>
 							<td><div class="action_component">
 									<img src="night/img/catalog.png"
 										width="32px" height="32px" ng-click="open_catalog()" />
@@ -314,30 +313,7 @@
 					<div id="gain_slider" style="width:80px;"></div>
 					<div id="gain" style="position:absolute;top:58px;right:0px;font-weight:bold">0</div>
 				</div>
-<!-- 
-				<table style="position: relative; left: 18px; border-spacing: 5px">
-					<tr>
-						<td>
-						 <input id="exposure_time" class="input_text"
-							ng-model="exposure_time"
-							placeholder="{{'night.ccd.exposure_time' | i18n}}">
-							 <div id="exposure_slider" style="height:10px;"></div><div id="exposure_time" style="float:right"></div>
-						</td>
-					</tr>
-					<tr>
-						<td><select id="filter_selector" class="selector"
-							ng-model="filter" ng-change="setFilter()"
-							ng-disabled="!hasFilterWheel[ccd_order]"
-							ng-options="item for item in filters_0">
-						</select></td>
-					</tr>
-					<tr>
-						<td><input id="gain" class="input_text"
-							ng-model="gain" 
-							placeholder="{{'night.ccd.gain' | i18n}}"></td>
-					</tr>
-				</table>
- 	 -->			
+		
 				<div align="center" class="status" ng-model="status_main_ccd"
 					ng-init="status_main_ccd='night.ccd.status.ready'">
 					<span id="ccd_status" class="status_text"
