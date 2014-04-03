@@ -295,10 +295,11 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	
 	$scope.go = function(){
 
-				console.log("RA"+$scope.rah);
+				
 		if ($("#tags").val() == ""){	//Check if this field is empty
-			if ((($scope.rah>=0) && ($scope.rah<=24)) && (($scope.ram>=0) && ($scope.ram<=60)) && (($scope.ras>=0) && ($scope.ras<=60))){
-				if ((($scope.decg>=-90) && ($scope.decg<=90)) && (($scope.decm>=0) && ($scope.decm<=60)) && (($scope.decs>=0) && ($scope.decs<=60))){
+			if ($scope.rah != "--" && $scope.ram != "--" && $scope.ras != "--"){
+				if ($scope.decg != "--" && $scope.decm != "--" && $scope.decs != "--"){
+					console.log("Move to coordinates:");
 						//Set radec
 						SetRADEC($gloriaAPI, $scope);
 						//Execute go operation
@@ -311,6 +312,9 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 				alert("Wrong ra value: [0-24]:[0-60]:[0-60]");
 			}	
 		} else {
+			
+			$scope.target_name = $("#tags").val();
+			console.log("Move to target:"+$scope.target_name);
 			//Set target name
 			SetTargetName($gloriaAPI, $scope);
 			//Execute go operation
@@ -344,14 +348,14 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	};
 	
 	$scope.setTargetName = function(){
-//		$scope.target_name = name;
+		$scope.target_name = name;
 		$scope.target_name = $scope.target_selected;
-		$scope.rah = undefined;
-		$scope.ram = undefined;
-		$scope.ras = undefined;
-		$scope.decg = undefined;
-		$scope.decm = undefined;
-		$scope.decs = undefined;
+//		$scope.rah = undefined;
+//		$scope.ram = undefined;
+//		$scope.ras = undefined;
+//		$scope.decg = undefined;
+//		$scope.decm = undefined;
+//		$scope.decs = undefined;
 	};
 	$scope.selectTarget = function(name){
 		$scope.target_selected = name;
@@ -362,6 +366,16 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	        result.push(i);
 	    }
 	    return result;
+	};
+	$scope.setCoordinates = function(){
+		$scope.rah = $scope.rah_sel;
+		$scope.ram = $scope.ram_sel;
+		$scope.ras = $scope.ras_sel;
+		
+		$scope.decsign = $scope.decsign_sel;
+		$scope.decg = $scope.decg_sel;
+		$scope.decm = $scope.decm_sel;
+		$scope.decs = $scope.decs_sel;
 	};
 }
 
@@ -389,6 +403,9 @@ function SetRADEC($gloriaAPI, data){
 	var coordinates = new Object();
 	coordinates.ra = parseFloat(convertRaToDecimal(data.rah, data.ram, data.ras));
 	coordinates.dec = parseFloat(convertDecToDecimal(data.decg, data.decm,data.decs));
+	if (data.decsign == -1){
+		coordinates.dec = coordinates.dec * -1;
+	}
 	
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'mount','target.coordinates',coordinates,function(success){
