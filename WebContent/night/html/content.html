@@ -228,21 +228,21 @@
 						<tr>
 							<td><input id="tags" class="input_text"
 								ng-model="target_name" placeholder="{{'night.mount.object' | i18n}}"></input></td>
-							<td><div class="action_component">
+							<td><div class="action_component" style="position:absolute;top:45px;right:-35px">
 									<img src="night/img/catalog.png"
 										width="32px" height="32px" ng-click="open_catalog()" />
 								</div></td>
 						</tr>
 					</table>
-					<div class="action_component" style="position:absolute;top:10px;right:-5px">
+					<div class="action_component" style="position:absolute;top:10px;right:0px">
 						<img src="night/img/compass.png" width="24px" height="24px" ng-click="open_coordinates()"/>
 					</div>
 					<div align="center" class="status" ng-model="status_mount"
-					ng-init="status_mount='night.mount.status.ready'">
+					ng-init="status_mount='night.mount.status.ready'" style="position:relative;left:12px;width:85px">
 					<span id="mount_status" class="status_text">{{status_mount |
 						i18n}}</span>
 					</div>
-					<div id="mount_buttons_panel" style="float: right;">
+					<div id="mount_buttons_panel" style="position:absolute;bottom:-20px;right:0px">
 						<img src="night/img/telescope.png"
 							width="32px" height="32px" ng-click="go()"
 							tooltip="Move telescope" />
@@ -257,26 +257,26 @@
 						<td></td>
 						<td>
 							<div class="arrow_up"
-								ng-class="hasMove ? 'component_enabled' : 'component_disabled'"></div>
+								ng-class="hasMove ? 'component_enabled' : 'component_disabled'" ng-click="hasMove && move_north()"></div>
 						</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>
 							<div class="arrow_left"
-								ng-class="hasMove ? 'component_enabled' : 'component_disabled'"></div>
+								ng-class="hasMove ? 'component_enabled' : 'component_disabled'" ng-click="hasMove && move_west()"></div>
 						</td>
 						<td></td>
 						<td>
 							<div class="arrow_right"
-								ng-class="hasMove ? 'component_enabled' : 'component_disabled'"></div>
+								ng-class="hasMove ? 'component_enabled' : 'component_disabled'" ng-click="hasMove && move_east()"></div>
 						</td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>
 							<div class="arrow_down"
-								ng-class="hasMove ? 'component_enabled' : 'component_disabled'"></div>
+								ng-class="hasMove ? 'component_enabled' : 'component_disabled'" ng-click="hasMove && move_south()"></div>
 						</td>
 						<td></td>
 					</tr>
@@ -298,47 +298,47 @@
 			<div id="main_ccd_parameters" ng-model="isExposing"
 				ng-init="isExposing=false">
 
-				<div>
+				<div tooltip="{{'night.ccd.tooltip.exposure_time' | i18n}}">
 					<div id="exposure_slider" style="width:80px;"></div>
-					<div id="exposure_time" style="position:absolute;top:-2px;right:0px;font-weight:bold">0</div>
+					<div id="exposure_time" style="position:absolute;top:-6px;right:0px;font-weight:bold">0</div>
 				</div>
-				<div style="margin-top:10px;margin-bottom:10px">
+				<div tooltip="{{'night.ccd.tooltip.gain' | i18n}}">
+					<div id="gain_slider" style="width:80px;"></div>
+					<div id="gain" style="position:absolute;top:54px;right:0px;font-weight:bold">0</div>
+				</div>
+				<div style="margin-top:8px;margin-bottom:8px">
 					<select id="filter_selector" class="selector"
 							ng-model="filter" ng-change="setFilter()"
 							ng-disabled="!hasFilterWheel[ccd_order]"
 							ng-options="item for item in filters_0">
 					</select>
 				</div>
-				<div>
-					<div id="gain_slider" style="width:80px;"></div>
-					<div id="gain" style="position:absolute;top:58px;right:0px;font-weight:bold">0</div>
-				</div>
 		
 				<div align="center" class="status" ng-model="status_main_ccd"
-					ng-init="status_main_ccd='night.ccd.status.ready'">
+					ng-init="status_main_ccd='night.ccd.status.ready'" style="position:relative;width:85px">
 					<span id="ccd_status" class="status_text"
 						ng-class="{'mess-info':isExposing}">{{status_main_ccd |
 						i18n}}</span>
 				</div>
-				<div id="main_ccd_buttons_panel" style="float: right">
+				<div id="main_ccd_buttons_panel" style="position:relative;width:85px;" align="center">
 					<div style="display:inline"
 						ng-class="hasVideoMode[ccd_order] ? (isExposing && 'ccd_button_disabled' || (isVideo && 'ccd_button_selected' || 'ccd_button')) : 'ccd_button_disabled'"
 						ng-click="hasVideoMode[ccd_order] && !isExposing && video()">
-						<img src="night/img/video.png" width="40px"
-							height="34px" tooltip="{{'night.ccd.messages.video_text' | i18n}}" />
+						<img src="night/img/video.png" width="36px"
+							height="30px" tooltip="{{'night.ccd.messages.video_text' | i18n}}" />
 					</div>
 					<div style="display:inline"
 						ng-class="isExposing ? 'ccd_button_selected' : 'ccd_button'"
 						ng-click="!isExposing && expose()">
-						<img src="night/img/eye.png" width="40px"
-							height="34px" tooltip="{{'night.ccd.messages.expose_text' | i18n}}" />
+						<img src="night/img/eye.png" width="36px"
+							height="30px" tooltip="{{'night.ccd.messages.expose_text' | i18n}}" />
 					</div>	
 				</div>
 			</div>
 			<div id="ccd_button_1"
 				ng-class="hasCcd[1] ? ((ccd_order == 1) && 'ccd_button_selected' || 'ccd_button') : 'ccd_button_disabled'"
 				ng-click="hasCcd[1] && setOrder(1)"
-				style="position: relative; width: 40px; left: -600px; top: -20px;"
+				style="position: relative; width: 40px; left: -600px;top:-30px"
 				tooltip="{{'night.ccd.messages.secondary_ccd' | i18n}}">
 				<img src="night/img/ccd.png" />
 			</div>
@@ -510,22 +510,7 @@
 <div id="infGain" style="visibility:hidden">{{'night.ccd.messages.info_gain' | i18n}}</div>
 
 <script>
-	/*
-	 $("#ccd_alert").tooltip({
-	 show: {
-	 effect: "slideDown",
-	 delay: 250
-	 }
-	 });*/
-	/*
-	 $("#ccd_information").popover({
-	 content: "{{'night.ccd.exposure_time' | i18n}}",
-	 });
-	 */
-
-	 //mountTip.setContent($("#inf").text());
-	 
-	 //mountTip.show();
+	
 	 
 	 var raTip = new Opentip("#mount_information",{target:"#ra_coordinates", tipJoint:"bottom left"});
 	 var decTip = new Opentip("#mount_information",{target:"#dec_coordinates", tipJoint:"bottom right"});
@@ -533,7 +518,6 @@
 	 var timeTip = new Opentip("#ccd_information",{target:"#exposure_time", tipJoint:"bottom left"});
 	 var filterTip = new Opentip("#ccd_information",{target:"#filter_selector", tipJoint:"right"});
 	 var gainTip = new Opentip("#ccd_information", {target:"#gain", tipJoint:"left"});
-	 var expChange = false;
 	 var gainChange = false;
 	 
 	 
@@ -561,15 +545,12 @@
 		value : 0,
 		slide : function(event, ui) {
 			$("#exposure_time").text(ui.value);
-		},
-		change: function(event,ui){
-			expChange = true;
 		}
 	});
 	$("#gain_slider").slider({
 		range : "max",
-		min : 0,
-		max : 260,
+		min : 260,
+		max : 1023,
 		value : 0,
 		slide : function(event, ui) {
 			$("#gain").text(ui.value);
@@ -579,4 +560,5 @@
 			gainChange = true;
 		}
 	});
+	
 </script>
