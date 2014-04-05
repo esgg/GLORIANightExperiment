@@ -1,7 +1,7 @@
 
 var numImages=0;
 var focuserPosition=0;
-var max_ccd_timer=5;
+var max_ccd_timer=20;
 var num_ccd_timer=max_ccd_timer;
 
 function InitDevices($gloriaAPI, $sequenceFactory, $scope){
@@ -30,21 +30,22 @@ function InitDevices($gloriaAPI, $sequenceFactory, $scope){
 		}
 	});
 	*/
-	console.log($("#inf").text());
+	
 	//Change the order of the ccd
-	$scope.setOrder = function(order){
-		console.log("Changing ccd order");
-		$scope.ccd_order = parseInt(order);
-		$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
-			$gloriaAPI.executeOperation($scope.rid,'get_ccd_attributes', function(success){
-				console.log("get ccd attributes from order:"+parseInt(order));
+	
+		$scope.setOrder = function(order){
+			console.log("Changing ccd order");
+			$scope.ccd_order = parseInt(order);
+			$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
+				$gloriaAPI.executeOperation($scope.rid,'get_ccd_attributes', function(success){
+					console.log("get ccd attributes from order:"+parseInt(order));
+				}, function(error){
+					//alert(error);
+				});
 			}, function(error){
-				//alert(error);
+				
 			});
-		}, function(error){
-			
-		});
-	};
+		};
 		
 }
 
@@ -171,6 +172,8 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 	$scope.$watch('rid', function(){
 		
 		if ($scope.rid > 0){
+			$scope.mountTimer = $timeout ($scope.mountMovementTimer, 3000);
+			/*
 			$gloriaAPI.executeOperation($scope.rid,'load_mount_status',function(success){
 				$gloriaAPI.getParameterTreeValue($scope.rid,'mount','status',function(success){
 					console.log("Status:"+success);
@@ -196,12 +199,15 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 				$scope.mount_alarm_message = "night.mount.messages.alarm_status";
 				$scope.mount_status = "night.mount.status.error";
 			});
+			*/
 		}
 	});
 	
 	$scope.mountMovementTimer = function(){
+		console.log("Request movement:"+$scope.rid);
 		$gloriaAPI.executeOperation($scope.rid,'load_mount_status',function(success){
 			$gloriaAPI.getParameterTreeValue($scope.rid,'mount','status',function(success){
+				$scope.mount_alarm = false;
 				console.log("Read mount status:"+success);
 				if (success == "PARKED"){
 					$scope.status_mount = "night.mount.status.parked";
@@ -211,7 +217,6 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 					$scope.status_mount = "night.mount.status.stop";
 				} else if (success == "MOVING"){
 					$scope.status_mount = "night.mount.status.moving";
-					$scope.mountTimer = $timeout ($scope.mountMovementTimer, 1000);
 				}
 				
 			}, function(error){
@@ -224,6 +229,7 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 			$scope.mount_alarm_message = "night.mount.messages.alarm_status";
 			$scope.mount_status = "night.mount.status.error";
 		});
+		$scope.mountTimer = $timeout ($scope.mountMovementTimer, 5000);
 	};
 	
 	$scope.move_north = function(){
@@ -424,7 +430,7 @@ function GoRADEC($gloriaAPI, data, $timeout){
 		
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.executeOperation(data.requestRid,'point_to_coordinates',function(success){
-			data.mountTimer = $timeout (data.mountMovementTimer, 2000);
+			//data.mountTimer = $timeout (data.mountMovementTimer, 5000);
 		}, function(error){
 			data.mount_alarm = true;
 			data.mount_alarm_message = "night.mount.messages.alarm_taget";
@@ -453,7 +459,7 @@ function GoTargetName($gloriaAPI, data, $timeout){
 	console.log("Ir");
 	return data.mount_sequence.execute(function() {
 		return $gloriaAPI.executeOperation(data.requestRid,'point_to_object',function(success){
-			data.mountTimer = $timeout (data.mountMovementTimer, 2000);
+//			data.mountTimer = $timeout (data.mountMovementTimer, 5000);
 		}, function(error){
 			data.mount_alarm = true;
 			data.mount_alarm_message = "night.mount.messages.alarm_taget";
@@ -495,11 +501,12 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 			LoadContinuousMode($gloriaAPI,$scope);
 			
 			//Load filters for CCD0.
-			$gloriaAPI.executeOperation($scope.requestRid,'get_filters', function(success){
-				$gloriaAPI.getParameterValue($scope.requestRid, 'fw', function(listFilters){
+			console.log("Request filters:"+$scope.rid);
+			$gloriaAPI.executeOperation($scope.rid,'get_filters', function(success){
+				$gloriaAPI.getParameterValue($scope.rid, 'fw', function(listFilters){
 					$scope.filters_0 = listFilters.filters;
 					//We select the first of the list as default value
-					$gloriaAPI.setParameterTreeValue($scope.requestRid,'fw','selected',listFilters.filters[0],function(success){
+					$gloriaAPI.setParameterTreeValue(rid,'fw','selected',listFilters.filters[0],function(success){
 						$scope.filter = $scope.filters_0[0];
 					}, function(error){
 						
@@ -577,8 +584,8 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	$scope.video = function(){
 		if (!$scope.isVideo){
 			console.log("Enter in video mode ....");
+			$scope.status_main_ccd = "night.ccd.status.video_mode";
 			$scope.isVideo = true;
-			expChange = false;
 			gainChange = false;
 			$scope.ccd_sequence = $sequenceFactory.getSequence();
 			
@@ -603,6 +610,7 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 //				alert("Wrong parameter exposure time (MIN:0, MAX:2)");
 //			}			
 		} else {
+			$scope.status_main_ccd = "night.ccd.status.ready";
 			console.log("Exit from video mode ....");
 			$scope.isVideo = false;
 		}
@@ -633,23 +641,19 @@ function ContinuousMode($gloriaAPI,$scope, $timeout){
 	if ($scope.isVideo){
 		//Check if the exposition time value has change
 		
-		if (expChange || gainChange){
-			
-			$gloriaAPI.setParameterTreeValue($scope.requestRid,'cameras','ccd.images.['+$scope.ccd_order+'].exposure',parseFloat($("#exposure_time").text()),function(success){
-				$gloriaAPI.setParameterTreeValue($scope.requestRid,'cameras','ccd.images.['+$scope.ccd_order+'].gain',parseFloat($("#gain").text()),function(success){
-					$gloriaAPI.executeOperation($scope.requestRid,'set_ccd_attributes',function(success){
+		if (gainChange){
+			console.log("Change GAIN");
+			$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.images.['+$scope.ccd_order+'].gain',parseFloat($("#gain").text()),function(success){
+				$gloriaAPI.executeOperation($scope.rid,'set_ccd_attributes',function(success){
 						
-					}, function(error){
-						
-					});
 				}, function(error){
-					data.isExposing = false;
+						
 				});
 			}, function(error){
-				
+				data.isExposing = false;
 			});
+		
 			
-			expChange = false;
 			gainChange = false;
 		}
 		
@@ -684,6 +688,8 @@ function ContinuousMode($gloriaAPI,$scope, $timeout){
 		}
 		
 		
+	}else {
+		$("#exposure_slider").slider("enable");
 	}
 }
 
@@ -691,6 +697,7 @@ function CheckContImages($gloriaAPI, data, $timeout){
 	console.log("Enter in check continuous mode"+data.ccd_order);
 	return data.ccd_sequence.execute(function(){
 		console.log("Executing sequence"+data.ccd_order);
+		$("#exposure_slider").slider("disable");
 		data.continuousTimer =  $timeout (function() {ContinuousMode($gloriaAPI,data,$timeout);}, 1000);
 	});
 }
@@ -848,7 +855,7 @@ function SetExposureTime($gloriaAPI, data){
 	console.log("Set exposure time:"+$("#exposure_time").text()+" in order "+data.ccd_order);
 	return data.ccd_sequence.execute(function() {
 		return $gloriaAPI.setParameterTreeValue(data.requestRid,'cameras','ccd.images.['+data.ccd_order+'].exposure',parseFloat($("#exposure_time").text()),function(success){
-				
+				data.exposure_time = $("#exposure_time").text();
 			}, function(error){
 				data.isExposing = false;
 			});
@@ -906,6 +913,7 @@ function CheckInstImages($gloriaAPI, data, $timeout){
 			console.log("ee3"+data.ccd_order);
 			if (success != -1){
 				console.log("Image with id "+success+" generated");
+				console.log("Timer para dentro de:"+parseInt(data.exposure_time*1000));
 				
 				data.timer = $timeout(function() {exposureTimer($gloriaAPI, data, $timeout);}, parseInt(data.exposure_time*1000));
 				
@@ -985,7 +993,7 @@ function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	tags.setContent($("#infTarget").text());
 	timeTip.setContent($("#infTime").text());
 	filterTip.setContent($("#infFilter").text());
-	gainTip.setContent($("#infGain").text())
+	gainTip.setContent($("#infGain").text());
 		
 	$gloriaAPI.executeOperation($scope.rid,'load_weather_values',function(success){
 		$gloriaAPI.getParameterValue($scope.requestRid,'weather',function(weather){
