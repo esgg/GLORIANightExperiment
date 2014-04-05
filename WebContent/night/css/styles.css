@@ -23,13 +23,14 @@
 }
 #main_ccd_parameters{
 	position:relative;
-	top: 10px;
+	top: 25px;
 	left: 5px;
 	width:130px;
 }
 #main_ccd_panel{
 	position:relative;
-	top: 65px;
+	top: 50px;
+	width:125px;
 }
 .image_carousel {
 	padding: 15px 0 15px 40px;
@@ -119,7 +120,7 @@ a.prev span, a.next span {
 	position:relative;
 	left:180px;
 	width:530px;
-	top:-30px;
+	top:-60px;
 	display:inline;
 }
 
@@ -147,7 +148,7 @@ a.prev span, a.next span {
 }
 .status{
 	width:120px;
-	margin-top:5px;
+	margin-top:14px;
 }
 .status_text{
 	color:#FFFFFF;
@@ -190,6 +191,46 @@ a.prev span, a.next span {
 	height:50px;
 	
 }
+/*
+div.ui-slider-range.ui-widget-header {
+    background:#984d4a;
+}
+*/
+
+.ui-slider .ui-slider-handle {
+    height: 15px !important; 
+}
+
+
+div.ui-slider-range{
+	background:#984d4a;
+}
+
+/*
+div.ui-slider-horizontal{
+	height:10px;
+}
+*/
+/*
+.ui-state-default{
+	height:10px;
+}
+*/
+/*
+div.ui-widget-header{
+	background:#984d4a;
+}
+*/
+
+div.ui-slider  {
+    height: 5px; 
+}
+
+/*
+div.ui-slider-handle{
+	height: 10px !important;
+}
+*/
 /* Form style */
 
 .input_text{
@@ -249,8 +290,8 @@ a.prev span, a.next span {
 	font-size:12px;
 	padding-top:0px;
 	padding-bottom:0px;
-	margin-top:5px;
-	margin-bottom:5px;
+	margin-top:10px;
+	margin-bottom:10px;
 	padding-left:0px;
 	padding-right:0px;
 }
