@@ -14,7 +14,7 @@
         "nvalid": "The reservation id @{p1}@ is not valid"
     },
 	"focuser": {
-				"tooltip":"Click here to change change the focuser position"
+				"tooltip":"Click here to change the focuser position"
 	 		   },
 	"mount": {
 				"title":"MOUNT",
@@ -74,6 +74,7 @@
 					"transfering":"TRANSFERING",
 					"taken": "IMAGE TAKEN",
 					"generating": "GENERATING",
+					"video_mode": "VIDEO MODE",
 					"error": "ERROR"
 				},
 				"messages": {
@@ -92,6 +93,10 @@
 					"info_exposition":"Select the exposure time in seconds (max. 120 seconds). The exposure time indicates the time the shutter is open.",
 					"info_filter":"Select the filter.",
 					"info_gain":"Put here the gain. Format: [0-1023]"
+				},
+				"tooltip":{
+					"exposure_time": "Exposure time in seconds",
+					"gain": "Gain"
 				}
 		   },
 	"weather": {

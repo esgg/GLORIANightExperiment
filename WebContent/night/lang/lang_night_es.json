@@ -74,6 +74,7 @@
 					"transfering":"TRANSFIRIENDO",
 					"taken": "IMAGEN TOMADA",
 					"generating": "GENERANDO",
+					"video_mode": "MODO VIDEO",
 					"error": "ERROR"
 				},
 				"messages": {
@@ -92,6 +93,10 @@
 					"info_exposition":"Selecciona el tiempo de exposición en segundos (max. 120). Este campo indica el tiempo que el obturador permanece abierto.",
 					"info_filter":"Selecciona un filtro.",
 					"info_gain":"Pon aquí la ganancia. Format: [0-1023]"
+				},
+				"tooltip":{
+					"exposure_time": "Tiempo de exposición en segundos",
+					"gain": "Ganancia"
 				}
 		   },
 	"weather": {
