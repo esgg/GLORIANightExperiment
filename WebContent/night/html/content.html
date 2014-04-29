@@ -214,7 +214,7 @@
 								ng-click="cancel()">{{'night.mount.close' | i18n}}</button>
 						</div>
 					</div>
-					<table id="ra_table" style="position: relative; left: 12px; border-spacing: 5px">
+					<table id="ra_table" style="position: relative; left: 12px; border-spacing: 5px;margin-bottom:10px;">
 						<tr>
 							<td id="ra_coordinates">
 								{{rah}} : {{ram}} : {{ras}}
@@ -300,13 +300,17 @@
 
 				<div tooltip="{{'night.ccd.tooltip.exposure_time' | i18n}}">
 					<div id="exposure_slider" style="width:80px;"></div>
-					<div id="exposure_time" style="position:absolute;top:-6px;right:0px;font-weight:bold">0</div>
+					<div id="exposure_time_div" style="position:absolute;top:-6px;right:40px;width:0px;">
+						<input type="text" id="exposure_time" ng-disabled="!hasExposition[ccd_order]" ng-blur="check_exposure_time()" style="width:30px;font-size:10px;font-weight:bold;height:10px;"></input>
+					</div>
 				</div>
-				<div tooltip="{{'night.ccd.tooltip.gain' | i18n}}">
+				<div tooltip="{{'night.ccd.tooltip.gain' | i18n}}" style="margin-top:20px;">
 					<div id="gain_slider" style="width:80px;"></div>
-					<div id="gain" style="position:absolute;top:54px;right:0px;font-weight:bold">0</div>
+					<div id="gain_div" style="position:absolute;top:20px;right:-5px">
+						<input type="text" id="gain" ng-disabled="!hasGain[ccd_order]" ng-blur="check_gain()" style="width:30px;font-size:10px;font-weight:bold;height:10px;"></input>
+					</div>
 				</div>
-				<div style="margin-top:8px;margin-bottom:8px">
+				<div style="margin-top:8px;margin-bottom:4px">
 					<select id="filter_selector" class="selector"
 							ng-model="filter" ng-change="setFilter()"
 							ng-disabled="!hasFilterWheel[ccd_order]"
@@ -543,8 +547,9 @@
 		min : 0,
 		max : 120,
 		value : 0,
+		disabled:true,
 		slide : function(event, ui) {
-			$("#exposure_time").text(ui.value);
+			$("#exposure_time").val(ui.value);
 		}
 	});
 	$("#gain_slider").slider({
@@ -552,8 +557,9 @@
 		min : 260,
 		max : 1023,
 		value : 0,
+		disabled:true,
 		slide : function(event, ui) {
-			$("#gain").text(ui.value);
+			$("#gain").val(ui.value);
 			
 		},
 		change: function(event,ui){
