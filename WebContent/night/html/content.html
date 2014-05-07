@@ -9,6 +9,8 @@
 			src="night/img/nebulosa_tarantula.jpeg" />
 	</div>
 </div>
+<div id="roi">
+</div>
 <div id="container" ng-controller="InitDevices"
 	style="background-image: url(night/img/Template.png); background-size: 940px 744px; background-repeat: no-repeat">
 	<div ng-controller="FocuserCtrl"
@@ -301,13 +303,13 @@
 				<div tooltip="{{'night.ccd.tooltip.exposure_time' | i18n}}">
 					<div id="exposure_slider" style="width:80px;"></div>
 					<div id="exposure_time_div" style="position:absolute;top:-6px;right:40px;width:0px;">
-						<input type="text" id="exposure_time" ng-disabled="!hasExposition[ccd_order]" ng-blur="check_exposure_time()" style="width:30px;font-size:10px;font-weight:bold;height:10px;"></input>
+						<input type="text" id="exposure_time" ng-disabled="!hasExposition[ccd_order]" ng-blur="check_exposure_time()" style="width:30px;font-size:10px;font-weight:bold;height:10px;margin:0px;"></input>
 					</div>
 				</div>
 				<div tooltip="{{'night.ccd.tooltip.gain' | i18n}}" style="margin-top:20px;">
 					<div id="gain_slider" style="width:80px;"></div>
 					<div id="gain_div" style="position:absolute;top:20px;right:-5px">
-						<input type="text" id="gain" ng-disabled="!hasGain[ccd_order]" ng-blur="check_gain()" style="width:30px;font-size:10px;font-weight:bold;height:10px;"></input>
+						<input type="text" id="gain" ng-disabled="!hasGain[ccd_order]" ng-blur="check_gain()" style="width:30px;font-size:10px;font-weight:bold;height:10px;margin:0px;"></input>
 					</div>
 				</div>
 				<div style="margin-top:8px;margin-bottom:4px">
