@@ -40,6 +40,9 @@
 	<div ng-if="reservationEnd" class="alert alert-g"
 		style="width: 50%; margin-left: 25%; margin-top: 20px">
 		{{'night.reservation.end'|i18n}}</div>
+	<div ng-if="reservationEnd" style="margin-left:25%;height:100%">
+		<iframe id="questionnaire" ng-src="{{nightQuestions}}" style="width:100%;height:100%"></iframe>		
+	</div>
 	<div class="animate-show alert alert-g" ng-if="notAuthorized"
 		style="width: 40%; margin-left: 30%; margin-top: 20px">
 		{{'night.reservation.login'|i18n}}...</div>
