@@ -39,6 +39,39 @@ function InitDevices($gloriaAPI, $sequenceFactory, $scope){
 			$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
 				$gloriaAPI.executeOperation($scope.rid,'get_ccd_attributes', function(success){
 					console.log("get ccd attributes from order:"+parseInt(order));
+					//Check the exposure time
+					//Check if ccd has gain
+					$gloriaAPI.getParameterTreeValue($scope.rid,'cameras','ccd.images.['+parseInt(order)+']',function(success){
+						
+						$scope.gain = success.gain;
+						
+						$gloriaAPI.getParameterTreeValue($scope.rid,'cameras','ccd.images.['+parseInt(order)+'].caps.set-gain', function(success){
+							var ccd_scope = angular.element($("#main_ccd_panel")).scope();
+							if (success){
+								
+								$("#gain_slider").slider({value: $scope.gain, disabled:false});
+								scope.$apply(function(){
+							        ccd_scope.hasGain[$scope.ccd_order] = true;
+							    });
+								//$scope.hasGain[$scope.ccd_order] = true;
+								$("#gain").val($scope.gain);
+							} else {
+								
+								$("#gain_slider").slider({value: $scope.gain, disabled:true});
+								//$scope.hasGain[$scope.ccd_order] = false;
+								scope.$apply(function(){
+							        ccd_scope.hasGain[$scope.ccd_order] = false;
+							    });
+								$("#gain").val($scope.gain);
+							}
+						}, function(error){
+							
+						});
+						
+						
+					}, function(error){
+						
+					});
 				}, function(error){
 					//alert(error);
 				});
@@ -310,6 +343,8 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 						SetRADEC($gloriaAPI, $scope);
 						//Execute go operation
 						GoRADEC($gloriaAPI,  $scope,$timeout);
+						//TODO in GoRADEC function
+						$("#exposure_slider").slider({max:10,step:0.001});
 						
 					} else {
 						alert("Wrong dec value: [-90-+90]:[0-60]:[0-60]");
@@ -325,8 +360,13 @@ function MountDevice($gloriaAPI , $scope, $sequenceFactory,$timeout){
 			SetTargetName($gloriaAPI, $scope);
 			//Execute go operation
 			GoTargetName($gloriaAPI, $scope, $timeout);
-			//Check the movement
-	
+			//TODO in GoTargetName function
+			SetExposureTarget($gloriaAPI, $scope);
+			
+//			$("#exposure_slider").slider({max:10,step:0.001});
+//			$gloriaAPI.getParameterTreeValue($scope.rid,'focuser','position',function(success){
+//				
+//			});
 		}
 		
 	};
@@ -454,6 +494,32 @@ function SetTargetName($gloriaAPI, data){
 	
 }
 
+function SetExposureTarget($gloriaAPI, data){
+	return data.mount_sequence.execute(function() {
+		return $gloriaAPI.executeOperation(data.rid,'get_exposure_range',function(success){
+			console.log("Asking for exposure range");
+			$gloriaAPI.getParameterTreeValue(data.rid,"cameras",'ccd.images.['+data.ccd_order+'].range',function(success){
+				console.log("Range:"+success.min+"-"+success.max);
+				var valueExposure = $("#exposure_time").val();
+				if (valueExposure > success.max){
+					$("#exposure_time").val(success.max);
+					valueExposure = success.max;
+				}
+				$("#exposure_slider").slider({min:success.min, max:success.max, step:0.001, value:valueExposure});
+			}, function(error){
+				
+			});
+		}, function(error){
+			
+		});
+//		return $gloriaAPI.getParameterTreeValue(data.rid,'mount','target.object',data.target_name,function(success){
+//			
+//		}, function(error){
+//			
+//		});
+	});
+}
+
 function GoTargetName($gloriaAPI, data, $timeout){
 	
 	console.log("Ir");
@@ -488,8 +554,8 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 	//$scope.hasCcd[0] = true;
 	$scope.hasFilterWheel[0] = true;
 	//$scope.hasCcd[1] = true;
-	$scope.hasVideoMode [0] = true;
-	$scope.hasVideoMode [1] = true;
+	//$scope.hasVideoMode [0] = true;
+	//$scope.hasVideoMode [1] = true;
 	
 	$scope.ccd_alarm = false;
 	
@@ -513,7 +579,7 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 				$gloriaAPI.getParameterValue($scope.rid, 'fw', function(listFilters){
 					$scope.filters_0 = listFilters.filters;
 					//We select the first of the list as default value
-					$gloriaAPI.setParameterTreeValue(rid,'fw','selected',listFilters.filters[0],function(success){
+					$gloriaAPI.setParameterTreeValue($scope.rid,'fw','selected',listFilters.filters[0],function(success){
 						$scope.filter = $scope.filters_0[0];
 					}, function(error){
 						
@@ -562,7 +628,6 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		$scope.isVideo = false;
 		if (!$scope.isExposing){
 			if (!isNaN(expTimeParameter) && (expTimeParameter>=0) && (expTimeParameter<=$scope.maxExposition[$scope.ccd_order])){
-				if (!isNaN(gainParameter) && (gainParameter>=$scope.minGain[$scope.ccd_order]) && (gainParameter<=$scope.maxGain[$scope.ccd_order])){
 					$scope.ccd_sequence = $sequenceFactory.getSequence();
 					$scope.status_main_ccd = "night.ccd.status.exposing";
 					$scope.isExposing = true;
@@ -573,7 +638,10 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 					SetExposureTime($gloriaAPI, $scope);
 					
 					//console.log("set gain:"+$scope.gain);
-					SetGain($gloriaAPI, $scope)
+					if ($scope.hasGain[$scope.ccd_order]){
+						console.log("set gain");
+						SetGain($gloriaAPI, $scope);
+					}
 
 					console.log("set ccd attributes");
 					SetCCDAttributes($gloriaAPI, $scope);
@@ -584,9 +652,6 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 					console.log("load inst images")
 					CheckInstImages($gloriaAPI, $scope, $timeout);
 					
-				} else {
-					alert("Gain invalid");
-				}				
 			} else {
 				alert("Exposure time invalid");
 			}
@@ -691,6 +756,46 @@ function CcdDevice($gloriaAPI, $scope, $timeout, $sequenceFactory){
 		}
 	};
 	
+	$scope.setOrder = function(order){
+		console.log("Changing ccd order");
+		$scope.ccd_order = parseInt(order);
+		$gloriaAPI.setParameterTreeValue($scope.rid,'cameras','ccd.order',parseInt(order),function(success){
+			$gloriaAPI.executeOperation($scope.rid,'get_ccd_attributes', function(success){
+				console.log("get ccd attributes from order:"+parseInt(order));
+				//Check the exposure time
+				//Check if ccd has gain
+				$gloriaAPI.getParameterTreeValue($scope.rid,'cameras','ccd.images.['+parseInt(order)+']',function(success){
+					
+					$scope.gain = success.gain;
+					
+					$gloriaAPI.getParameterTreeValue($scope.rid,'cameras','ccd.images.['+parseInt(order)+'].caps.set-gain', function(success){
+						console.log("Alcance"+$scope.hasGain[0]);
+						if (success){
+							
+							$("#gain_slider").slider({value: $scope.gain, disabled:false});
+							//$scope.hasGain[$scope.ccd_order] = true;
+							$("#gain").val($scope.gain);
+						} else {
+							
+							$("#gain_slider").slider({value: $scope.gain, disabled:true});
+							//$scope.hasGain[$scope.ccd_order] = false;
+							$("#gain").val($scope.gain);
+						}
+					}, function(error){
+						
+					});
+					
+					
+				}, function(error){
+					
+				});
+			}, function(error){
+				//alert(error);
+			});
+		}, function(error){
+			
+		});
+	};
 }
 function ContinuousMode($gloriaAPI,$scope, $timeout){
 	console.log("Enter on continuous mode operation");
@@ -811,11 +916,27 @@ function LoadCcdAttributes($gloriaAPI, data){
 				data.hasExposition[data.ccd_order] = true;
 				$("#exposure_time").val(success.exposure);
 				
-				if (success.gain != -1){
-					$("#gain_slider").slider({value: success.gain, disabled:false});
-					data.hasGain[data.ccd_order] = true;
-					$("#gain").val(success.gain);
-				}
+				$gloriaAPI.getParameterTreeValue(data.rid,'cameras','ccd.images.['+data.ccd_order+'].caps.set-gain', function(success){
+
+					if (success){
+						
+						$("#gain_slider").slider({value: data.gain, disabled:false});
+						data.hasGain[data.ccd_order] = true;
+						$("#gain").val(data.gain);
+					} else {
+						
+						$("#gain_slider").slider({value: data.gain, disabled:true});
+						data.hasGain[data.ccd_order] = false;
+						$("#gain").val(data.gain);
+					}
+				}, function(error){
+					
+				});
+//				if (success.gain != -1){
+//					$("#gain_slider").slider({value: success.gain, disabled:false});
+//					data.hasGain[data.ccd_order] = true;
+//					$("#gain").val(success.gain);
+//				}
 				
 				
 				
@@ -1219,7 +1340,7 @@ var ModalInstanceCtrl = function($scope, $modalInstance, $location, image) {
 	};
 };
 
-function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
+function TimeReservationCtrl($gloriaAPI, $scope,$timeout, $gloriaLocale){
 	
 	$scope.$watch('rid', function() {
 		if ($scope.rid > 0) {
@@ -1266,6 +1387,15 @@ function TimeReservationCtrl($gloriaAPI, $scope,$timeout){
 		}, function(response){
 			console.log("Fin de la reserva en response:"+response.status);
 			$scope.$parent.$parent.$parent.reservationEnd = true;
+			/*
+			$("#questionnaire").attr("src","http://www.google.es");
+			console.log("ID:"+$gloriaLocale.getPreferredLanguage());
+			if ($gloriaLocale.id == "es"){
+				$("#questionnaire").attr("src","http://goo.gl/S4PjxS");	
+			} else {
+				$("#questionnaire").attr("src","http://goo.gl/Th8nmI");
+			}
+			*/
 			if (response.status == 406) {
 				console.log("Fin de la reserva");
 			}
