@@ -11,8 +11,26 @@
         "problem": "The telescope is not working properly. Please try again in a few minutes",
         "end": "Your reservation has ended, we hope you enjoyed the experiment!",
         "login": "You are not logged in. Redirecting",
-        "nvalid": "The reservation id @{p1}@ is not valid"
+        "nvalid": "The reservation id @{p1}@ is not valid",
+        "rating": "What is your opinion about the experiment?",
+        "questionnaire":"http://goo.gl/Th8nmI",
+        "send": "Send"
     },
+    "tutorial": {
+    	"step1":"Step 1: Enlarge the webcam images by moving the pointer over them, to get to see the telescope movement.",
+    	"step2":"Step 2: Remaining Time of observation",
+    	"step3":"Step 3: Search objects by their absolute equatorial Coordinates.",
+    	"step4":"Step 4: Search objects by their names: M13, NGC5194,...",
+    	"step5":"Step 5: Search Planets",
+    	"step6":"Step 6: Slew telescope Icon",
+    	"step7":"Step 7: Images Focuser",
+    	"step8":"Step 8: CCD Camera selector",
+    	"step9":"Step 9: Filter selector",
+    	"step10": "Step 10: Exposure Time selector in seconds",
+    	"step11": "Step 11: Camera Gain selector",
+    	"step12": "Step 12: Click here to take an image",
+    	"step13": "Step 13: Click in a snapshot to enlarge it. You can download it in JPG and FITS"
+    			},
 	"focuser": {
 				"tooltip":"Click here to change the focuser position"
 	 		   },

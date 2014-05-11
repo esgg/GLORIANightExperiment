@@ -1,7 +1,7 @@
 'use strict';
 
 function NightMainCtrl($gloriaAPI, $scope, $timeout, $gloriaLocale,
-		$routeParams) {
+		$routeParams, $sce) {
 
 	$scope.mainPath = 'night';
 	$scope.nightReady = false;
@@ -27,7 +27,16 @@ function NightMainCtrl($gloriaAPI, $scope, $timeout, $gloriaLocale,
 	$scope.imageTaken = true;
 	$scope.ccdProblem = false;
 	$scope.weatherAlarm = false;
-
+	
+	console.log("Language:"+$gloriaLocale.id);
+	
+	if ($gloriaLocale.id == "es"){
+		$scope.nightQuestions = $sce.trustAsResourceUrl("http://goo.gl/S4PjxS");
+	} else {
+		$scope.nightQuestions = $sce.trustAsResourceUrl("http://goo.gl/Th8nmI");
+		
+	}
+	
 	$scope.specificHtml = $scope.mainPath + '/html/content.html';
 
 	$scope.onReservation = function() {

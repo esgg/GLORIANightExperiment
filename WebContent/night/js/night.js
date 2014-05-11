@@ -1171,15 +1171,31 @@ function exposureTimer($gloriaAPI, data, $timeout){
 }
 function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	console.log("Paso de estacion");
+	
 	raTip.setContent($("#infRa").text());
 	decTip.setContent($("#infDec").text());
 	tags.setContent($("#infTarget").text());
 	timeTip.setContent($("#infTime").text());
 	filterTip.setContent($("#infFilter").text());
 	gainTip.setContent($("#infGain").text());
+	
+	step1.setContent($("#tutStep1").text());
+	step2.setContent($("#tutStep2").text());
+	step3.setContent($("#tutStep3").text());
+	step4.setContent($("#tutStep4").text());
+	step5.setContent($("#tutStep5").text());
+	step6.setContent($("#tutStep6").text());
+	step7.setContent($("#tutStep7").text());
+	step8.setContent($("#tutStep8").text());
+	step9.setContent($("#tutStep9").text());
+	step10.setContent($("#tutStep10").text());
+	step11.setContent($("#tutStep11").text());
+	step12.setContent($("#tutStep12").text());
+	step13.setContent($("#tutStep13").text());
+	
 		
 	$gloriaAPI.executeOperation($scope.rid,'load_weather_values',function(success){
-		$gloriaAPI.getParameterValue($scope.requestRid,'weather',function(weather){
+		$gloriaAPI.getParameterValue($scope.rid,'weather',function(weather){
 			$("#velocity").text(Math.round(weather.wind.value)+" m/s");
 			$("#humidity").text(Math.round(weather.rh.value)+" % RH");
 			$("#temperature").text(Math.round(weather.temperature.value)+" Deg.");

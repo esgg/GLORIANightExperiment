@@ -230,13 +230,13 @@
 						<tr>
 							<td><input id="tags" class="input_text"
 								ng-model="target_name" placeholder="{{'night.mount.object' | i18n}}"></input></td>
-							<td><div class="action_component" style="position:absolute;top:45px;right:-35px">
+							<td><div id="catalog_button" class="action_component" style="position:absolute;top:45px;right:-35px">
 									<img src="night/img/catalog.png"
 										width="32px" height="32px" ng-click="open_catalog()" />
 								</div></td>
 						</tr>
 					</table>
-					<div class="action_component" style="position:absolute;top:10px;right:0px">
+					<div id="coordinates_button" class="action_component" style="position:absolute;top:10px;right:0px">
 						<img src="night/img/compass.png" width="24px" height="24px" ng-click="open_coordinates()"/>
 					</div>
 					<div align="center" class="status" ng-model="status_mount"
@@ -333,7 +333,7 @@
 						<img src="night/img/video.png" width="36px"
 							height="30px" tooltip="{{'night.ccd.messages.video_text' | i18n}}" />
 					</div>
-					<div style="display:inline"
+					<div id="exposure_button" style="display:inline"
 						ng-class="isExposing ? 'ccd_button_selected' : 'ccd_button'"
 						ng-click="!isExposing && expose()">
 						<img src="night/img/eye.png" width="36px"
@@ -455,7 +455,7 @@
 		<div align="center">
 			<h5 class="label-info title_night" style="margin-top: 0px">Álbum</h5>
 		</div>
-		<div
+		<div id="album_panel"
 			style="float: left; cursor: pointer; width: 18px; margin-top: 12px; margin-left: 12px; height: 36px">
 			<img ng-show="currentIndex > 0" class="animate-show bright-button"
 				ng-src="night/img/left.png" ng-click="nextLeft()">
@@ -505,9 +505,11 @@
    			 		</script>
 		</div>
 	</div>
-  
+<div style="position:absolute;top:250px;left:1300px">
+	<a href="https://github.com/esgg/GLORIANightExperiment" target="_blank">
+		<img src="night/img/construction-small.jpg">
+	</a>
 </div>
-
 <div id="infRa" style="visibility:hidden">{{'night.mount.messages.info_ra' | i18n}}</div>
 <div id="infDec" style="visibility:hidden">{{'night.mount.messages.info_dec' | i18n}}</div>
 <div id="infTarget" style="visibility:hidden">{{'night.mount.messages.info_target' | i18n}}</div>
@@ -515,15 +517,45 @@
 <div id="infFilter" style="visibility:hidden">{{'night.ccd.messages.info_filter' | i18n}}</div>
 <div id="infGain" style="visibility:hidden">{{'night.ccd.messages.info_gain' | i18n}}</div>
 
+<div id="tutStep1" style="visibility:hidden">{{'night.tutorial.step1' | i18n}}</div>
+<div id="tutStep2" style="visibility:hidden">{{'night.tutorial.step2' | i18n}}</div>
+<div id="tutStep3" style="visibility:hidden">{{'night.tutorial.step3' | i18n}}</div>
+<div id="tutStep4" style="visibility:hidden">{{'night.tutorial.step4' | i18n}}</div>
+<div id="tutStep5" style="visibility:hidden">{{'night.tutorial.step5' | i18n}}</div>
+<div id="tutStep6" style="visibility:hidden">{{'night.tutorial.step6' | i18n}}</div>
+<div id="tutStep7" style="visibility:hidden">{{'night.tutorial.step7' | i18n}}</div>
+<div id="tutStep8" style="visibility:hidden">{{'night.tutorial.step8' | i18n}}</div>
+<div id="tutStep9" style="visibility:hidden">{{'night.tutorial.step9' | i18n}}</div>
+<div id="tutStep10" style="visibility:hidden">{{'night.tutorial.step10' | i18n}}</div>
+<div id="tutStep11" style="visibility:hidden">{{'night.tutorial.step11' | i18n}}</div>
+<div id="tutStep12" style="visibility:hidden">{{'night.tutorial.step12' | i18n}}</div>
+<div id="tutStep12" style="visibility:hidden">{{'night.tutorial.step13' | i18n}}</div>
+
 <script>
 	
 	 
-	 var raTip = new Opentip("#mount_information",{target:"#ra_coordinates", tipJoint:"bottom left"});
-	 var decTip = new Opentip("#mount_information",{target:"#dec_coordinates", tipJoint:"bottom right"});
-	 var tags = new Opentip("#mount_information",{target:"#tags", tipJoint:"top left"});
+	 var raTip = new Opentip("#ccd_information",{target:"#ra_coordinates", tipJoint:"bottom left"});
+	 var decTip = new Opentip("#ccd_information",{target:"#dec_coordinates", tipJoint:"bottom right"});
+	 var tags = new Opentip("#ccd_information",{target:"#tags", tipJoint:"top left"});
 	 var timeTip = new Opentip("#ccd_information",{target:"#exposure_time", tipJoint:"bottom left"});
 	 var filterTip = new Opentip("#ccd_information",{target:"#filter_selector", tipJoint:"right"});
 	 var gainTip = new Opentip("#ccd_information", {target:"#gain", tipJoint:"left"});
+	 
+	 var step1 = new Opentip("#mount_information",{target:"#scam0_name", tipJoint:"bottom right"});
+	 var step2 = new Opentip("#mount_information",{target:"#timer_minutes", tipJoint:"top left"});
+	 var step3 = new Opentip("#mount_information",{target:"#coordinates_button", tipJoint:"bottom left"});
+	 var step4 = new Opentip("#mount_information",{target:"#tags", tipJoint:"bottom right"});
+	 var step5 = new Opentip("#mount_information",{target:"#catalog_button", tipJoint:"left"});
+	 var step6 = new Opentip("#mount_information",{target:"#mount_buttons_panel", tipJoint:"bottom right"});
+	 var step7 = new Opentip("#mount_information",{target:"#focus_marker", tipJoint:"bottom left"});
+	 var step8 = new Opentip("#mount_information",{target:"#ccd_button_0", tipJoint:"right"});
+	 var step9 = new Opentip("#mount_information",{target:"#filter_selector", tipJoint:"bottom right"});
+	 var step10 = new Opentip("#mount_information",{target:"#exposure_slider", tipJoint:"bottom right"});
+	 var step11 = new Opentip("#mount_information",{target:"#gain_div", tipJoint:"bottom left"});
+	 var step12 = new Opentip("#mount_information",{target:"#exposure_button", tipJoint:"bottom left"});
+	 var step13 = new Opentip("#mount_information",{target:"#album_panel", tipJoint:"bottom left"});
+	 
+	 
 	 var gainChange = false;
 	 
 	 

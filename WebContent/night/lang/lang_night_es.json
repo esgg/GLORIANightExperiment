@@ -1,121 +1,142 @@
 {
 	"header": "Experimento Nocturno",
-	"reservation": {
-		"obsolete": {
-			"l1": "El identificador de reserva @{p1}@ es obsoleto",
-			"l2": "¿Quieres uno nuevo?. Haz click",
-			"here": "aquí"
-		},
-		"unknown": "El identificador de reserva @{p1}@ no existe",
-		"loading": "Cargando",
-		"problem": "Parece que el telescopio no está funcionando bien. Por favor, inténtalo de nuevo en unos minutos",
-		"end": "Tu reserva ha terminado, ¡Esperamos que hayas disfrutado!",
-		"login": "Sesión no iniciada. Redireccionando",
-		"nvalid" : "El identificador de reserva @{p1}@ no es válido"	
-	},
+	 "reservation": {
+        "obsolete": {
+            "l1": "The reservation id @{p1}@ is obsolete",
+            "l2": "Want to get a new one?. Click",
+            "here": "here"
+        },
+        "unknown": "The reservation id @{p1}@ does not exist",
+        "loading": "Loading",
+        "problem": "The telescope is not working properly. Please try again in a few minutes",
+        "end": "Your reservation has ended, we hope you enjoyed the experiment!",
+        "login": "You are not logged in. Redirecting",
+        "nvalid": "The reservation id @{p1}@ is not valid",
+        "rating": "What is your opinion about the experiment?",
+        "questionnaire":"http://goo.gl/Th8nmI",
+        "send": "Send"
+    },
+     "tutorial": {
+    	"step1":"Step 1: Enlarge the webcam images by moving the pointer over them, to get to see the telescope movement.",
+    	"step2":"Step 2: Remaining Time of observation",
+    	"step3":"Step 3: Search objects by their absolute equatorial Coordinates.",
+    	"step4":"Step 4: Search objects by their names: M13, NGC5194,...",
+    	"step5":"Step 5: Search Planets",
+    	"step6":"Step 6: Slew telescope Icon",
+    	"step7":"Step 7: Images Focuser",
+    	"step8":"Step 8: CCD Camera selector",
+    	"step9":"Step 9: Filter selector",
+    	"step10": "Step 10: Exposure Time selector in seconds",
+    	"step11": "Step 11: Camera Gain selector",
+    	"step12": "Step 12: Click here to take an image",
+    	"step13": "Step 13: Click in a snapshot to enlarge it. You can download it in JPG and FITS"
+    			},
 	"focuser": {
-				"tooltip":"Pulsa aquí para cambiar la posición del enfocador"
+				"tooltip":"Click here to change the focuser position"
 	 		   },
 	"mount": {
-				"title":"MONTURA",
+				"title":"MOUNT",
 				"ra":"RA",
 				"dec":"DEC",
-				"object":"OBJETIVO",
-				"apply" : "Aplicar",
-				"close" : "Cerrar",
+				"object":"TARGET",
+				"apply" : "Apply",
+				"close" : "Close",
 				"information": "You can move the telescope introducing the RADEC coordinates (first and second box) or the target name (third box)",
 				"messages": {
-					"ra_text": "Coordenada de Ascensión Recta",
-					"dec_text": "Coordinada de declinación"	,
-					"target_text": "Nombre del objeto",
-					"relative_move": "Desplazamiento del telescopio",
-					"no_alarm":"Sin alarma",
-					"alarm_set_radec": "Se encontró un problema con las coordenadas",
-					"alarm_set_target": "Se encontró un problema al especificar el objetivo",
-					"alarm_taget":"No se puede alcanzar el objetivo",
-					"alarm_status": "Problema al acceder a la montura",
-					"info_ra" : "Pon aquí la ascensión recta del objetivo. Formato:[0-23]:[0-59]:[0:59]. ",
-					"info_dec": "Pon aquí la declinación del objetivo. Format: [-90 - 90]:[0 - 59]: [0 - 59].",
-					"info_target": "En este campo, puedes seleccionar objetos del catálogo de Messier(M1, M2, etc ...), del internacional(NGC500, etc ...) u objetos del sistema solar(JUPITER, SATURNO, etc ...)"
+					"ra_text": "Right Ascension Coordinate",
+					"dec_text": "Declination Coordinate"	,
+					"target_text": "Object Name",
+					"relative_move": "Move the telescope a little bit",
+					"no_alarm":"No alarm",
+					"alarm_set_radec": "Problem to set the RADEC coordinates",
+					"alarm_set_target": "Problem to set the target",
+					"alarm_taget":"Impossible to reach the target",
+					"alarm_status": "Problem to load mount status",
+					"info_ra" : "Put here the right ascension coordinate. Format:[0-23]:[0-59]:[0:59]. If you want to know more, click here",
+					"info_dec": "Put here the declination coordinate. Format: [-90 - 90]:[0 - 59]: [0 - 59].",
+					"info_target": "In this field, you can choose between object from messier catalog (M1, M2, etc ...), international(NGC500, etc ...) or solar system (JUPITER, SATURN, etc ...)"
 				},
 				"catalog": {
-					"solar_tab": "SISTEMA SOLAR",
-					"mercury": "MERCURIO",
+					"solar_tab": "SOLAR SYSTEM",
+					"mercury": "MERCURY",
 					"venus": "VENUS",
-					"mars": "MARTE",
+					"mars": "MARS",
 					"jupiter": "JUPITER",
-					"saturn": "SATURNO",
-					"neptune": "NEPTUNO",
-					"uranus": "URANO",
-					"moon":"LUNA"
+					"saturn": "SATURN",
+					"neptune": "NEPTUNE",
+					"uranus": "URANUS",
+					"moon":"MOON"
 				},
 				"status": {
-					"ready":"LISTA",
+					"ready":"READY",
 					"error": "ERROR",
-					"stop": "PARADA",
-					"undefined": "INDEFINIDO",
-					"moving":"MOVIENDO",
-					"tracking": "SEGUIMIENTO",
-					"parked":"APARCADA",
-					"parking":"APARCANDO"
+					"stop": "STOP",
+					"undefined": "UNDEFINED",
+					"moving":"MOVING",
+					"tracking": "TRACKING",
+					"parked":"PARKED",
+					"parking":"PARKING"
 				}	
 			 },
 	"ccd": {
 				"title": "CCD",
-				"exposure_time": "TIEMPO",
+				"exposure_time": "TIME",
 				"information_exp": "This is the panel to control the cdds. To take an image, you have to introduce the time in the first box in seconds (max 120).",
 				"information_filter": "In the second box, you can choose one of the available filters in the telescope",
-				"filter": "FILTRO",
+				"filter": "FILTER",
 				"binning":"BINNING",
-				"gain":"GANANCIA",
+				"gain":"GAIN",
 				"status": {
-					"ready":"LISTA",
-					"exposing":"EXPONIENDO",
-					"transfering":"TRANSFIRIENDO",
-					"taken": "IMAGEN TOMADA",
-					"generating": "GENERANDO",
-					"video_mode": "MODO VIDEO",
+					"ready":"READY",
+					"exposing":"EXPOSING",
+					"transfering":"TRANSFERING",
+					"taken": "IMAGE TAKEN",
+					"generating": "GENERATING",
+					"video_mode": "VIDEO MODE",
 					"error": "ERROR"
 				},
 				"messages": {
-					"no_alarm": "Sin alarma",
-					"internal_server": "Problema al ejecutar la orden",
-					"alarm_start_exposure": "Se produjo un problema al ejecutar la exposición",
+					"no_alarm": "No alarm",
+					"internal_server": "Problem to execute the operation",
+					"alarm_start_exposure": "Problem to start the exposition",
 					"time_text": "Set the exposure time in seconds",
 					"filter_text": "Set a filter",
 					"binning_text": "Set the binning factor",
-					"expose_text": "Pulsa para tomar una imagen",
-					"video_text" : "Pulsa para seleccionar modo video",
-					"main_ccd": "Pulsa para seleccionar la cámara principal",
-					"secondary_ccd": "Pulsa para seleccionar la cámara secundaria",
-					"dec_alert": "Valor de declinación incorrecto",
-					"ra_alert": "Valor de ascensión recta incorrecto",
-					"info_exposition":"Selecciona el tiempo de exposición en segundos (max. 120). Este campo indica el tiempo que el obturador permanece abierto.",
-					"info_filter":"Selecciona un filtro.",
-					"info_gain":"Pon aquí la ganancia. Format: [0-1023]"
+					"expose_text": "Click here to start the exposition",
+					"video_text" : "Click here to select the video mode",
+					"main_ccd": "Click here to select the main ccd",
+					"secondary_ccd": "Click here to select the secondary ccd",
+					"dec_alert": "Wrong dec value",
+					"ra_alert": "Wrong ra value",
+					"info_exposition":"Select the exposure time in seconds (max. 120 seconds). The exposure time indicates the time the shutter is open.",
+					"info_filter":"Select the filter.",
+					"info_gain":"Put here the gain. Format: [0-1023]"
 				},
 				"tooltip":{
-					"exposure_time": "Tiempo de exposición en segundos",
-					"gain": "Ganancia"
+					"exposure_time": "Exposure time in seconds",
+					"gain": "Gain"
 				}
 		   },
 	"weather": {
-		"alert": "Alerta meteorológica",
-		"alarm_text" : "Se ha activado una alarma en el telescopio. El telescopio no podrá operar adecuadamente."
+		"alert": "Weather alert",
+		"alarm_text" : "An alarm has been activated in the telescope. The telescope will not be able to work properly."
 	},
 	"general": {
-		"alert":"Alerta",
-		"expiration_time": "Tu tiempo de reserva está próximo a terminar"
+		"alert":"Alert",
+		"expiration_time": "Your reservation time is close to expire"
 	},
 	"album":{
-		"taken":"Tomaste esta imagen a las"
+		"taken":"You took this image at"
+	},
+	"twitter":{
+		"send_image":"See my new astronomical image"
 	},
 	"coordinates_modal": {
 		"title": "Ventana de coordenadas",
 		"introduction": "Especifica las coordenadas del target al que quieres apuntar. Recuerda que las coordenadas deben estar en J2000",
 		"right_ascension": "Ascensión recta",
-		"declination": "Declinación",
-		"invalid_ra": "Coordinada de ascensión recta inválida",
-		"invalid_dec": Coordinada de declinación inválida"
+		"declination": "Declination",
+		"invalid_ra": "Invalid Right Ascension coordinate",
+		"invalid_dec": "Invalid Declination coordinate"
 	}
 }
