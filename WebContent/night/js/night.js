@@ -920,12 +920,12 @@ function LoadCcdAttributes($gloriaAPI, data){
 
 					if (success){
 						
-						$("#gain_slider").slider({value: data.gain, disabled:false});
+						//$("#gain_slider").slider({value: data.gain, disabled:false});
 						data.hasGain[data.ccd_order] = true;
 						$("#gain").val(data.gain);
 					} else {
 						
-						$("#gain_slider").slider({value: data.gain, disabled:true});
+						//$("#gain_slider").slider({value: data.gain, disabled:true});
 						data.hasGain[data.ccd_order] = false;
 						$("#gain").val(data.gain);
 					}
@@ -1172,13 +1172,16 @@ function exposureTimer($gloriaAPI, data, $timeout){
 function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	console.log("Paso de estacion");
 	
+	
+	/*
 	raTip.setContent($("#infRa").text());
 	decTip.setContent($("#infDec").text());
 	tags.setContent($("#infTarget").text());
 	timeTip.setContent($("#infTime").text());
 	filterTip.setContent($("#infFilter").text());
 	gainTip.setContent($("#infGain").text());
-	
+	*/
+	/*
 	step1.setContent($("#tutStep1").text());
 	step2.setContent($("#tutStep2").text());
 	step3.setContent($("#tutStep3").text());
@@ -1192,7 +1195,7 @@ function drawWeatherConditions($gloriaAPI, $scope, $timeout){
 	step11.setContent($("#tutStep11").text());
 	step12.setContent($("#tutStep12").text());
 	step13.setContent($("#tutStep13").text());
-	
+	*/
 		
 	$gloriaAPI.executeOperation($scope.rid,'load_weather_values',function(success){
 		$gloriaAPI.getParameterValue($scope.rid,'weather',function(weather){

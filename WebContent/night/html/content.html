@@ -9,8 +9,6 @@
 			src="night/img/nebulosa_tarantula.jpeg" />
 	</div>
 </div>
-<div id="roi">
-</div>
 <div id="container" ng-controller="InitDevices"
 	style="background-image: url(night/img/Template.png); background-size: 940px 744px; background-repeat: no-repeat">
 	<div ng-controller="FocuserCtrl"
@@ -307,7 +305,7 @@
 					</div>
 				</div>
 				<div tooltip="{{'night.ccd.tooltip.gain' | i18n}}" style="margin-top:20px;">
-					<div id="gain_slider" style="width:80px;"></div>
+					<div id="gain_slider" ng-if="hasGain[ccd_order]" style="width:80px;"></div>
 					<div id="gain_div" style="position:absolute;top:20px;right:-5px">
 						<input type="text" id="gain" ng-disabled="!hasGain[ccd_order]" ng-blur="check_gain()" style="width:30px;font-size:10px;font-weight:bold;height:10px;margin:0px;"></input>
 					</div>
@@ -505,11 +503,12 @@
    			 		</script>
 		</div>
 	</div>
-<div style="position:absolute;top:250px;left:1300px">
+<div style="position:absolute;top:250px;left:1000px">
 	<a href="https://github.com/esgg/GLORIANightExperiment" target="_blank">
 		<img src="night/img/construction-small.jpg">
 	</a>
 </div>
+<!-- 
 <div id="infRa" style="visibility:hidden">{{'night.mount.messages.info_ra' | i18n}}</div>
 <div id="infDec" style="visibility:hidden">{{'night.mount.messages.info_dec' | i18n}}</div>
 <div id="infTarget" style="visibility:hidden">{{'night.mount.messages.info_target' | i18n}}</div>
@@ -530,17 +529,18 @@
 <div id="tutStep11" style="visibility:hidden">{{'night.tutorial.step11' | i18n}}</div>
 <div id="tutStep12" style="visibility:hidden">{{'night.tutorial.step12' | i18n}}</div>
 <div id="tutStep12" style="visibility:hidden">{{'night.tutorial.step13' | i18n}}</div>
-
+ -->
 <script>
 	
-	 
+	 /*
 	 var raTip = new Opentip("#ccd_information",{target:"#ra_coordinates", tipJoint:"bottom left"});
 	 var decTip = new Opentip("#ccd_information",{target:"#dec_coordinates", tipJoint:"bottom right"});
 	 var tags = new Opentip("#ccd_information",{target:"#tags", tipJoint:"top left"});
 	 var timeTip = new Opentip("#ccd_information",{target:"#exposure_time", tipJoint:"bottom left"});
 	 var filterTip = new Opentip("#ccd_information",{target:"#filter_selector", tipJoint:"right"});
 	 var gainTip = new Opentip("#ccd_information", {target:"#gain", tipJoint:"left"});
-	 
+	 */
+	 /*
 	 var step1 = new Opentip("#mount_information",{target:"#scam0_name", tipJoint:"bottom right"});
 	 var step2 = new Opentip("#mount_information",{target:"#timer_minutes", tipJoint:"top left"});
 	 var step3 = new Opentip("#mount_information",{target:"#coordinates_button", tipJoint:"bottom left"});
@@ -554,7 +554,7 @@
 	 var step11 = new Opentip("#mount_information",{target:"#gain_div", tipJoint:"bottom left"});
 	 var step12 = new Opentip("#mount_information",{target:"#exposure_button", tipJoint:"bottom left"});
 	 var step13 = new Opentip("#mount_information",{target:"#album_panel", tipJoint:"bottom left"});
-	 
+	 */
 	 
 	 var gainChange = false;
 	 
@@ -591,7 +591,7 @@
 		min : 260,
 		max : 1023,
 		value : 0,
-		disabled:true,
+		disabled:false,
 		slide : function(event, ui) {
 			$("#gain").val(ui.value);
 			
